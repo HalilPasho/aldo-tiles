@@ -1,0 +1,26 @@
+---
+import business from '../data/business.json';
+import copy from '../data/copy.json';
+---
+
+{
+  !business.launchReady && (
+    <aside class="preview-banner" aria-label={copy.site.previewBannerLabel}>
+      <p>{copy.site.previewBanner}</p>
+    </aside>
+  )
+}
+
+<style>
+  .preview-banner {
+    padding: var(--space-2xs) var(--gutter);
+    background: var(--color-ink);
+    color: var(--color-on-ink);
+    font-size: var(--text-sm);
+    text-align: center;
+  }
+
+  .preview-banner p {
+    max-width: none;
+  }
+</style>

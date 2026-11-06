@@ -1,0 +1,158 @@
+---
+import business from '../data/business.json';
+import copy from '../data/copy.json';
+import CallLink from './CallLink.astro';
+import Logo from './Logo.astro';
+
+const { footer, nav, homeLinkLabel } = copy.site;
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer on-ink">
+  <div class="wrap site-footer__grid">
+    <div class="site-footer__brand">
+      <a class="site-footer__logo" href="/" aria-label={`${business.name} ${homeLinkLabel}`}>
+        <Logo tone="dark" />
+      </a>
+      <p class="site-footer__muted">{footer.blurb}</p>
+      <p class="site-footer__muted">{footer.basedIn} {business.baseCity}, {business.province}</p>
+    </div>
+
+    <nav aria-labelledby="footer-services">
+      <h2 class="site-footer__heading" id="footer-services">{footer.servicesHeading}</h2>
+      <ul>
+        {
+          nav.services.map(({ label, path }) => (
+            <li>
+              <a class="site-footer__link" href={path}>
+                {label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <nav aria-labelledby="footer-pages">
+      <h2 class="site-footer__heading" id="footer-pages">{footer.pagesHeading}</h2>
+      <ul>
+        {
+          nav.pages.map(({ label, path }) => (
+            <li>
+              <a class="site-footer__link" href={path}>
+                {label}
+              </a>
+            </li>
+          ))
+        }
+        <li>
+          <a class="site-footer__link" href={footer.privacyPath}>{footer.privacyLabel}</a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="site-footer__contact">
+      <h2 class="site-footer__heading">{footer.contactHeading}</h2>
+      <ul>
+        <li><CallLink /></li>
+        <li>
+          <a class="site-footer__link" href={`mailto:${business.email.value}`}>{business.email.value}</a>
+        </li>
+      </ul>
+      <h2 class="site-footer__heading site-footer__heading--spaced">{footer.areasHeading}</h2>
+      <p class="site-footer__muted">{business.areasServed.value.join(', ')}</p>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <p class="site-footer__legal">&copy; {year} {business.name}. {footer.rights}</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    padding-block-start: var(--space-2xl);
+  }
+
+  .site-footer__grid {
+    display: grid;
+    gap: var(--space-xl) var(--space-lg);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--footer-column-min)), 1fr));
+  }
+
+  .site-footer__contact {
+    grid-column: 1 / -1;
+  }
+
+  .site-footer__brand {
+    grid-column: 1 / -1;
+    display: grid;
+    gap: var(--space-sm);
+  }
+
+  .site-footer__logo {
+    display: block;
+    width: var(--logo-width-footer);
+    margin-block-end: var(--space-xs);
+  }
+
+  .site-footer__heading {
+    margin-block-end: var(--space-xs);
+    color: var(--color-accent-on-ink);
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-strong);
+    letter-spacing: 0;
+    line-height: var(--leading-body);
+  }
+
+  .site-footer__heading--spaced {
+    margin-block-start: var(--space-lg);
+  }
+
+  .site-footer__muted {
+    color: var(--color-on-ink-muted);
+  }
+
+  .site-footer__link {
+    display: flex;
+    align-items: center;
+    min-height: var(--tap-target);
+    overflow-wrap: anywhere;
+    text-decoration: none;
+  }
+
+  .site-footer__link:hover {
+    text-decoration: underline;
+    text-decoration-color: var(--color-accent-on-ink);
+  }
+
+  .site-footer__legal {
+    margin-block-start: var(--space-xl);
+    padding-block: var(--space-md);
+    border-block-start: var(--line-thin) solid var(--color-line-on-ink);
+    max-width: none;
+    color: var(--color-on-ink-muted);
+    font-size: var(--text-sm);
+  }
+
+  @media (min-width: 900px) {
+    .site-footer__grid {
+      grid-template-columns: 1.5fr 1fr 1fr 1.2fr;
+    }
+
+    .site-footer__contact {
+      grid-column: auto;
+    }
+
+    .site-footer__brand {
+      grid-column: auto;
+      align-content: start;
+      padding-inline-end: var(--space-xl);
+    }
+
+    .site-footer__logo {
+      width: var(--logo-width-footer-wide);
+    }
+  }
+</style>

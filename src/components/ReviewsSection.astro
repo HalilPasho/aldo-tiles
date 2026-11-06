@@ -1,0 +1,45 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import copy from '../data/copy.json';
+import ReviewCard from './ReviewCard.astro';
+
+interface Props {
+  reviews: CollectionEntry<'reviews'>[];
+}
+
+const { reviews } = Astro.props;
+---
+
+{
+  reviews.length > 0 && (
+    <section class="wrap reviews">
+      <h2>{copy.home.reviews.heading}</h2>
+      <ul class="reviews__list">
+        {reviews.map((review) => (
+          <li>
+            <ReviewCard {review} />
+          </li>
+        ))}
+      </ul>
+    </section>
+  )
+}
+
+<style>
+  .reviews {
+    display: grid;
+    gap: var(--space-lg);
+    padding-block-end: var(--space-2xl);
+  }
+
+  .reviews__list {
+    display: grid;
+    gap: var(--space-xl);
+  }
+
+  @media (min-width: 900px) {
+    .reviews__list {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+</style>

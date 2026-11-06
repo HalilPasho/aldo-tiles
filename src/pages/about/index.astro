@@ -1,0 +1,214 @@
+---
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import business from '../../data/business.json';
+import copy from '../../data/copy.json';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { breadcrumbSchema, localBusinessSchema } from '../../lib/seo';
+
+const { about } = copy;
+const path = '/about/';
+const breadcrumbs = [
+  { name: copy.site.breadcrumbHome, path: '/' },
+  { name: about.breadcrumb, path },
+];
+
+const years = business.yearsExperience.value;
+const credentials = business.credentials.value;
+const areas = business.areasServed.value;
+const hasExperience = Boolean(years) || credentials.length > 0;
+const hasAreas = areas.length > 0;
+---
+
+<BaseLayout
+  title={about.metaTitle}
+  description={about.metaDescription}
+  {path}
+  schema={[localBusinessSchema(business), breadcrumbSchema(business.siteUrl.value, breadcrumbs)]}
+>
+  <div class="wrap page-head">
+    <Breadcrumbs items={breadcrumbs} />
+    <h1>{about.h1}</h1>
+    <p class="page-head__lead">{about.lead}</p>
+  </div>
+
+  <div class="wrap">
+    <section class="text-row">
+      <h2>{about.story.heading}</h2>
+      <div class="text-row__body">
+        {about.story.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+      </div>
+    </section>
+  </div>
+
+  <section class="wrap about-work">
+    <div class="about-work__intro">
+      <h2>{about.wayOfWorking.heading}</h2>
+      <p class="about-muted">{about.wayOfWorking.intro}</p>
+    </div>
+    <ol class="tile-grid about-steps">
+      {
+        about.wayOfWorking.steps.map(({ title, text }) => (
+          <li class="panel about-step">
+            <h3>{title}</h3>
+            <p class="about-muted">{text}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+
+  {
+    (hasExperience || hasAreas) && (
+      <div class:list={['wrap about-facts tile-grid', { 'tile-grid--split': hasExperience && hasAreas }]}>
+        {hasExperience && (
+          <section class="panel on-ink about-experience">
+            <h2>{about.experience.heading}</h2>
+            <div class="about-experience__facts">
+              {years ? (
+                <p class="about-years">
+                  <span class="about-years__number">{years}</span>
+                  <span class="about-years__label">{about.experience.yearsLabel}</span>
+                </p>
+              ) : null}
+              {credentials.length > 0 && (
+                <ul class="about-credentials">
+                  {credentials.map((credential) => (
+                    <li>{credential}</li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </section>
+        )}
+
+        {hasAreas && (
+          <section class="panel about-areas">
+            <h2>{about.areas.heading}</h2>
+            <p class="about-muted">{about.areas.intro}</p>
+            <ul class="about-areas__list">
+              {areas.map((area) => (
+                <li>{area}</li>
+              ))}
+            </ul>
+          </section>
+        )}
+      </div>
+    )
+  }
+
+  <CtaBand heading={about.cta.heading} text={about.cta.text} />
+</BaseLayout>
+
+<style>
+  .about-muted {
+    color: var(--color-muted);
+  }
+
+  .about-work {
+    display: grid;
+    gap: var(--space-lg);
+    padding-block: var(--space-xl) var(--space-2xl);
+  }
+
+  .about-work__intro {
+    display: grid;
+    gap: var(--space-xs);
+  }
+
+  .about-steps {
+    counter-reset: step;
+  }
+
+  .about-step {
+    display: grid;
+    align-content: start;
+    gap: var(--space-xs);
+    counter-increment: step;
+  }
+
+  .about-step::before {
+    content: counter(step);
+    color: var(--color-accent-text);
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    font-weight: var(--weight-display);
+    line-height: var(--leading-tight);
+  }
+
+  .about-facts {
+    padding-block-end: var(--space-2xl);
+  }
+
+  .about-experience,
+  .about-areas {
+    display: grid;
+    align-content: start;
+    gap: var(--space-md);
+  }
+
+  .about-experience__facts {
+    display: grid;
+    gap: var(--space-lg);
+    align-items: end;
+  }
+
+  .about-years {
+    display: grid;
+    gap: var(--space-2xs);
+  }
+
+  .about-years__number {
+    color: var(--color-accent-on-ink);
+    font-family: var(--font-display);
+    font-size: var(--text-3xl);
+    font-weight: var(--weight-display);
+    line-height: 1;
+  }
+
+  .about-years__label {
+    color: var(--color-on-ink-muted);
+  }
+
+  .about-credentials {
+    display: grid;
+    gap: var(--space-xs);
+    font-weight: var(--weight-strong);
+  }
+
+  .about-areas h2 {
+    font-size: var(--text-xl);
+  }
+
+  .about-areas__list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-2xs) var(--space-md);
+    font-weight: var(--weight-strong);
+  }
+
+  @media (min-width: 640px) {
+    .about-steps {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .about-step:last-child {
+      grid-column: 1 / -1;
+    }
+
+    .about-experience__facts {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: var(--space-xl);
+    }
+  }
+
+  @media (min-width: 1100px) {
+    .about-steps {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+
+    .about-step:last-child {
+      grid-column: auto;
+    }
+  }
+</style>

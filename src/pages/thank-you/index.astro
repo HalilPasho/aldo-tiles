@@ -1,0 +1,49 @@
+---
+import Button from '../../components/Button.astro';
+import CallPanel from '../../components/CallPanel.astro';
+import copy from '../../data/copy.json';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const { thankYou } = copy;
+---
+
+<BaseLayout title={thankYou.metaTitle} description={thankYou.metaDescription} path="/thank-you/" noindex>
+  <div class="wrap section tile-grid tile-grid--split">
+    <section class="panel sent">
+      <h1>{thankYou.h1}</h1>
+      <p class="sent__text">{thankYou.text}</p>
+      <div class="sent__links">
+        <Button href="/" variant="secondary">{thankYou.homeLabel}</Button>
+        <Button href="/projects/" variant="secondary">{thankYou.projectsLabel}</Button>
+      </div>
+    </section>
+
+    <CallPanel prompt={thankYou.callPrompt} />
+  </div>
+</BaseLayout>
+
+<style>
+  .sent {
+    display: grid;
+    align-content: start;
+    gap: var(--space-lg);
+  }
+
+  .sent__text {
+    color: var(--color-muted);
+    font-size: var(--text-lg);
+  }
+
+  .sent__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    margin-block-start: var(--space-xs);
+  }
+
+  @media (max-width: 639px) {
+    .sent__links :global(.button) {
+      width: 100%;
+    }
+  }
+</style>

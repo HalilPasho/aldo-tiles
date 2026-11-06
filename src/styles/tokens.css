@@ -1,0 +1,131 @@
+@import '@fontsource/brygada-1918/latin-500.css';
+@import '@fontsource/hanken-grotesk/latin-400.css';
+@import '@fontsource/hanken-grotesk/latin-600.css';
+
+:root {
+  --color-ink: #091e2b;
+  --color-accent: #b6812a;
+  --color-accent-text: #9a6618;
+  --color-surface: #f8f7f5;
+  --color-surface-raised: #ffffff;
+  --color-line: #d8d3ca;
+  --color-muted: #4d5760;
+
+  --color-on-accent: var(--color-ink);
+  --color-on-ink: #f8f7f5;
+  --color-on-ink-muted: #c3ccd2;
+  --color-accent-on-ink: #d4a34e;
+  --color-line-on-ink: #2c4656;
+  --color-focus: var(--color-ink);
+  --color-focus-on-ink: #f8f7f5;
+  --color-field-line: var(--color-muted);
+  --color-error: #a3261b;
+
+  --font-display: 'Brygada 1918', Georgia, 'Times New Roman', serif;
+  --font-body: 'Hanken Grotesk', 'Segoe UI', Arial, sans-serif;
+  --weight-display: 500;
+  --weight-body: 400;
+  --weight-strong: 600;
+
+  --text-sm: 0.9375rem;
+  --text-base: 1.0625rem;
+  --text-lg: 1.25rem;
+  /* The vw caps only matter at large text on a phone. They keep a long word like "Installation" whole. 11vw keeps --text-xl above 200% body text from 320px up. */
+  --text-xl: min(clamp(1.375rem, 1.25rem + 0.6vw, 1.625rem), 11vw);
+  --text-2xl: min(clamp(1.875rem, 1.5rem + 1.7vw, 2.75rem), 12vw);
+  --text-3xl: min(clamp(2.375rem, 1.7rem + 3.2vw, 4.25rem), 14vw);
+  --leading-body: 1.6;
+  --leading-heading: 1.12;
+  --leading-tight: 1.2;
+  --leading-lead: 1.45;
+  --tracking-heading: -0.012em;
+  --measure: 65ch;
+
+  --space-2xs: 0.25rem;
+  --space-xs: 0.5rem;
+  --space-sm: 0.75rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2.5rem;
+  --space-2xl: clamp(3rem, 2rem + 4vw, 5.5rem);
+
+  /* Tile language: the gap between tiles, the barely eased edge of a cut tile, and the lean of the logo's tile panel. */
+  --grout: 6px;
+  --radius-tile: 2px;
+  --radius-field: 3px;
+  --rake: 31deg;
+  --tile-tone-faint: 0.12;
+  --tile-tone-soft: 0.2;
+  --tile-tone-mid: 0.45;
+  --tile-tone-strong: 0.68;
+  --tile-tone-deep: 0.85;
+
+  --wrap-width: 80rem;
+  --gutter: min(clamp(1rem, 0.4rem + 3vw, 3rem), 5vw);
+  --tap-target: 44px;
+  --button-height: 48px;
+  --line-thin: 1px;
+  --line-strong: 2px;
+  --underline-offset: 0.2em;
+  --icon-size: 1.125em;
+  --focus-width: 3px;
+  /* The bar's height while it's sticky, always one row of buttons from 320px up, so the scroll padding never lets it cover a focused link. Past that, MobileCallBar stops being sticky. */
+  --call-bar-height: max(60px, calc(2.275rem + 22px));
+  --header-height: 76px;
+  --header-sticky-height: 88px;
+
+  --logo-width-small: 90px;
+  --logo-width-header: 104px;
+  --logo-width-header-wide: 124px;
+  --logo-width-footer: 168px;
+  --logo-width-footer-wide: 196px;
+
+  --nav-divider-height: 1.25rem;
+  --breadcrumb-divider-height: 0.9em;
+  --menu-glyph-tile: 7px;
+  --menu-glyph-gap: 2px;
+  --menu-tile-min-height: 84px;
+  --menu-tile-min-width: 8.5rem;
+  --footer-column-min: 9.5rem;
+
+  --panel-padding: min(clamp(1.25rem, 0.75rem + 2vw, 2.5rem), 6.25vw);
+  --panel-split-columns: minmax(0, 1.75fr) minmax(0, 1fr);
+  --text-row-columns: minmax(0, 1fr) minmax(0, 2fr);
+  --field-message-height: 10rem;
+  --select-chevron-size: 0.5rem;
+  --call-panel-tile-width: 11rem;
+  --call-panel-field-min-height: 9rem;
+
+  --cta-copy-width: 30rem;
+  --cta-field-strip-height: 7rem;
+  --cta-field-start: 60%;
+  --cta-field-tile-width: 14rem;
+
+  --hero-copy-share: 0.52;
+  --hero-photo-ratio: 5 / 3;
+  --hero-photo-min-height: 34rem;
+  --hero-strip-height: clamp(1.75rem, 1rem + 2.4vw, 3.25rem);
+  --hero-strip-tile-width: clamp(6rem, 4rem + 8vw, 11rem);
+  --project-photo-ratio: 4 / 3;
+  --service-photo-ratio: 4 / 3;
+  --service-head-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  --gallery-row-height-phone: 20rem;
+  --gallery-row-height: min(20rem, 8.75rem + 14.1vw);
+  --gallery-photo-max-height: 45rem;
+  --gallery-facts-basis: 32rem;
+  --proof-fact-min-width: 8rem;
+  --proof-fact-wide-min-width: 16rem;
+  --area-tile-min-width: 8rem;
+  --area-tile-min-height: 7.5rem;
+  --contact-area-min-width: 7rem;
+  --bullet-size: 0.625rem;
+  --bullet-offset: 0.5em;
+
+  --layer-header: 20;
+  --layer-call-bar: 30;
+  --layer-skip-link: 40;
+
+  --pressed-opacity: 0.7;
+  --duration-quick: 150ms;
+  --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+}

@@ -1,0 +1,37 @@
+---
+import logo from '../assets/logo.svg?raw';
+import logoOnDark from '../assets/logo-on-dark.svg?raw';
+
+interface Props {
+  tone?: 'light' | 'dark';
+}
+
+const { tone = 'light' } = Astro.props;
+---
+
+<span class:list={['logo', `logo--${tone}`]} set:html={tone === 'dark' ? logoOnDark : logo} />
+
+<style>
+  .logo {
+    display: block;
+    width: 100%;
+  }
+
+  .logo :global(svg) {
+    width: 100%;
+    height: auto;
+  }
+
+  /* These override the fills saved in the SVG files, so a change in tokens.css also recolours the logo. */
+  .logo--light :global(.logo-ink) {
+    fill: var(--color-ink);
+  }
+
+  .logo--dark :global(.logo-ink) {
+    fill: var(--color-on-ink);
+  }
+
+  .logo :global(.logo-gold) {
+    fill: var(--color-accent);
+  }
+</style>

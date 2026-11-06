@@ -1,0 +1,167 @@
+---
+import { getCollection } from 'astro:content';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import CallLink from '../../components/CallLink.astro';
+import ContactForm from '../../components/ContactForm.astro';
+import business from '../../data/business.json';
+import copy from '../../data/copy.json';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { byOrder } from '../../lib/order';
+import { breadcrumbSchema } from '../../lib/seo';
+
+const { contact } = copy;
+const path = '/contact/';
+const breadcrumbs = [
+  { name: copy.site.breadcrumbHome, path: '/' },
+  { name: contact.breadcrumb, path },
+];
+const services = (await getCollection('services'))
+  .sort(byOrder)
+  .map(({ id, data }) => ({ id, title: data.title }));
+const areas = business.areasServed.value;
+---
+
+<BaseLayout
+  title={contact.metaTitle}
+  description={contact.metaDescription}
+  {path}
+  schema={[breadcrumbSchema(business.siteUrl.value, breadcrumbs)]}
+>
+  <div class="wrap page-head">
+    <Breadcrumbs items={breadcrumbs} />
+    <h1>{contact.h1}</h1>
+    <p class="page-head__lead">{contact.intro}</p>
+  </div>
+
+  <div class="wrap contact-page tile-grid tile-grid--split">
+    <section class="panel">
+      <ContactForm {services} />
+    </section>
+
+    <div class:list={['tile-grid contact-side', { 'contact-side--no-areas': areas.length === 0 }]}>
+      <section class="panel on-ink contact-direct">
+        <h2>{contact.direct.heading}</h2>
+        <p class="contact-direct__text">{contact.direct.text}</p>
+        <dl class="contact-direct__list">
+          <div>
+            <dt>{contact.direct.phoneLabel}</dt>
+            <dd><CallLink variant="button" /></dd>
+          </div>
+          <div>
+            <dt>{contact.direct.emailLabel}</dt>
+            <dd><a class="contact-direct__email" href={`mailto:${business.email.value}`}>{business.email.value}</a></dd>
+          </div>
+        </dl>
+      </section>
+
+      <section class="panel contact-note">
+        <h2>{contact.next.heading}</h2>
+        <ol class="contact-steps">
+          {contact.next.steps.map((step) => <li>{step}</li>)}
+        </ol>
+      </section>
+
+      {
+        areas.length > 0 && (
+          <section class="panel contact-note">
+            <h2>{contact.areas.heading}</h2>
+            <p class="contact-note__text">{contact.areas.intro}</p>
+            <ul class="contact-areas">
+              {areas.map((area) => (
+                <li>{area}</li>
+              ))}
+            </ul>
+          </section>
+        )
+      }
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .contact-page {
+    padding-block-end: var(--space-2xl);
+  }
+
+  .contact-side {
+    grid-template-rows: auto auto 1fr;
+  }
+
+  .contact-side--no-areas {
+    grid-template-rows: auto 1fr;
+  }
+
+  .contact-side h2 {
+    font-size: var(--text-xl);
+  }
+
+  .contact-direct,
+  .contact-note {
+    display: grid;
+    gap: var(--space-sm);
+  }
+
+  .contact-direct__text,
+  .contact-direct__list dt {
+    color: var(--color-on-ink-muted);
+  }
+
+  .contact-direct__list {
+    display: grid;
+    gap: var(--space-sm);
+    margin: var(--space-xs) 0 0;
+  }
+
+  .contact-direct__list dt {
+    font-size: var(--text-sm);
+  }
+
+  .contact-direct__list dd {
+    margin: 0;
+  }
+
+  .contact-direct__list :global(.button) {
+    width: 100%;
+  }
+
+  .contact-direct__email {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap-target);
+    overflow-wrap: anywhere;
+    text-decoration-color: var(--color-accent-on-ink);
+  }
+
+  .contact-note__text {
+    color: var(--color-muted);
+  }
+
+  .contact-steps {
+    display: grid;
+    gap: var(--space-sm);
+    counter-reset: step;
+  }
+
+  .contact-steps li {
+    display: grid;
+    grid-template-columns: var(--space-lg) minmax(0, 1fr);
+    gap: var(--space-xs);
+    counter-increment: step;
+  }
+
+  .contact-steps li::before {
+    content: counter(step);
+    color: var(--color-accent-text);
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+    font-weight: var(--weight-display);
+    line-height: var(--leading-body);
+  }
+
+  .contact-areas {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, max(var(--contact-area-min-width), 50% - var(--space-md))), 1fr));
+    gap: var(--space-2xs) var(--space-md);
+    font-weight: var(--weight-strong);
+  }
+</style>

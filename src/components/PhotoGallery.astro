@@ -1,0 +1,82 @@
+---
+import type { ImageMetadata } from 'astro';
+import { Image } from 'astro:assets';
+
+interface Props {
+  photos: { src: ImageMetadata; alt: string }[];
+}
+
+const FILE_WIDTHS = [480, 800, 1200, 1600];
+const FILL_WIDTH_SHARE = 93;
+// In step with the media query below, --gallery-photo-max-height and the wrap's widest content.
+const HEIGHT_CAP_STARTS = 900;
+const PHOTO_MAX_HEIGHT = 720;
+const CONTENT_MAX_WIDTH = 1190;
+
+const { photos } = Astro.props;
+
+function fileWidths(sourceWidth: number) {
+  return [...new Set(FILE_WIDTHS.map((width) => Math.min(width, sourceWidth)))];
+}
+
+// The most a photo can fill, not what it usually fills. Where it lands depends on the photos beside it and the screen, and too small a figure would make it soft.
+function sizesFor(ratio: number) {
+  const widest = Math.ceil(Math.min(ratio * PHOTO_MAX_HEIGHT, CONTENT_MAX_WIDTH));
+  const fills = Math.max(HEIGHT_CAP_STARTS, Math.ceil((widest * 100) / FILL_WIDTH_SHARE));
+  return `(min-width: ${fills}px) ${widest}px, ${FILL_WIDTH_SHARE}vw`;
+}
+---
+
+<div class="photo-gallery" data-photo-gallery>
+  {
+    photos.map(({ src, alt }, index) => {
+      const ratio = src.width / src.height;
+      return (
+        <Image
+          class="photo-gallery__photo"
+          style={`--photo-ratio: ${ratio.toFixed(4)}`}
+          {src}
+          {alt}
+          widths={fileWidths(src.width)}
+          sizes={sizesFor(ratio)}
+          loading={index === 0 ? 'eager' : 'lazy'}
+          fetchpriority={index === 0 ? 'high' : undefined}
+        />
+      );
+    })
+  }
+  <slot />
+</div>
+
+<style>
+  .photo-gallery {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--grout);
+  }
+
+  /* Justified rows: each photo starts and grows in proportion to its shape, so a row fills the width at one height and nothing is cropped.
+     Growth is scaled up because flex items sharing less than 1 in total would leave part of the row empty.
+     The phone row height is tall enough that portraits stack instead of shrinking into two narrow columns.
+     From 640px it's low enough that a photo too short to fill a row alone has room for an ordinary photo beside it. A photo that does stack, like 16:9 under about 1200px, fills its row. */
+  .photo-gallery__photo {
+    flex: 1 1 calc(var(--photo-ratio) * var(--gallery-row-height-phone));
+    flex-grow: calc(var(--photo-ratio) * 100);
+    min-width: 0;
+    object-fit: cover;
+    border-radius: var(--radius-tile);
+  }
+
+  @media (min-width: 640px) {
+    .photo-gallery__photo {
+      flex-basis: calc(var(--photo-ratio) * var(--gallery-row-height));
+    }
+  }
+
+  /* From here the facts tile can sit beside a lone upright photo. Below this the tile has its own row, so a capped photo would leave a hole and fills its row instead. */
+  @media (min-width: 900px) {
+    .photo-gallery__photo {
+      max-width: calc(var(--photo-ratio) * var(--gallery-photo-max-height));
+    }
+  }
+</style>

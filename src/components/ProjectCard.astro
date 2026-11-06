@@ -1,0 +1,98 @@
+---
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+  sizes?: string;
+  eager?: boolean;
+}
+
+const { project, sizes = '(min-width: 1100px) 400px, (min-width: 640px) 50vw, 100vw', eager = false } = Astro.props;
+const { title, city, tileType, photos } = project.data;
+const [photo] = photos;
+---
+
+<article class="project-card">
+  <Image
+    class="project-card__photo"
+    src={photo.src}
+    alt={photo.alt}
+    widths={[400, 600, 800]}
+    {sizes}
+    loading={eager ? 'eager' : 'lazy'}
+    fetchpriority={eager ? 'high' : undefined}
+  />
+  <div class="project-card__text">
+    <h3 class="project-card__title">
+      <a class="project-card__link" href={`/projects/${project.id}/`}>{title}</a>
+    </h3>
+    <p class="project-card__city">{city}</p>
+    <p class="project-card__tile">{tileType}</p>
+  </div>
+</article>
+
+<style>
+  .project-card {
+    position: relative;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    gap: var(--space-sm);
+    height: 100%;
+  }
+
+  .project-card__photo {
+    width: 100%;
+    height: auto;
+    aspect-ratio: var(--project-photo-ratio);
+    object-fit: cover;
+    border-radius: var(--radius-tile);
+  }
+
+  .project-card__text {
+    display: grid;
+    align-content: start;
+    gap: var(--space-2xs);
+  }
+
+  .project-card__title {
+    font-size: var(--text-lg);
+    line-height: var(--leading-tight);
+  }
+
+  .project-card__link {
+    text-decoration: none;
+  }
+
+  /* The whole card is the tap target, while screen readers hear only the project's name as the link. */
+  .project-card__link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius-tile);
+  }
+
+  .project-card:hover .project-card__link {
+    text-decoration: underline;
+    text-decoration-thickness: var(--line-strong);
+  }
+
+  .project-card__link:focus-visible {
+    outline: none;
+  }
+
+  .project-card__link:focus-visible::after {
+    outline: var(--focus-width) solid var(--color-focus);
+    outline-offset: var(--line-strong);
+  }
+
+  .project-card__city {
+    font-weight: var(--weight-strong);
+  }
+
+  .project-card__tile {
+    color: var(--color-muted);
+    font-size: var(--text-sm);
+    line-height: var(--leading-lead);
+  }
+</style>

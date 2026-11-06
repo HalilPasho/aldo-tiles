@@ -1,0 +1,159 @@
+---
+import { Image } from 'astro:assets';
+import heroPhoto from '../assets/sample-hero.jpg';
+import copy from '../data/copy.json';
+import Button from './Button.astro';
+import CallLink from './CallLink.astro';
+
+const { h1, hero } = copy.home;
+const STRIP_TILES = 10;
+// From 900px up the frame is taller than the photo's shape, so cover scales the photo to the frame's height.
+// That needs a file about 64rem wide however narrow the column is.
+const PHOTO_SIZES = '(min-width: 900px) max(50vw, 64rem), 100vw';
+---
+
+<section class="hero" data-hero>
+  <div class="hero__copy">
+    <h1>{h1}</h1>
+    <p class="hero__lead" data-hero-lead>{hero.lead}</p>
+    <div class="hero__actions">
+      <CallLink variant="button" />
+      <Button href={copy.site.cta.messagePath} variant="secondary">{hero.formLabel}</Button>
+    </div>
+  </div>
+  <div class="hero__media">
+    <div class="hero__frame">
+      <Image
+        class="hero__photo"
+        src={heroPhoto}
+        alt={hero.imageAlt}
+        widths={[480, 800, 1200, 1600, 2000]}
+        sizes={PHOTO_SIZES}
+        loading="eager"
+        fetchpriority="high"
+      />
+    </div>
+    <div class="hero__strip" aria-hidden="true">
+      {Array.from({ length: STRIP_TILES }, () => <span />)}
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    display: grid;
+    overflow: clip;
+  }
+
+  .hero__copy {
+    display: grid;
+    align-content: center;
+    gap: var(--space-md);
+    padding: var(--space-lg) var(--gutter) var(--space-xl);
+  }
+
+  .hero__lead {
+    color: var(--color-muted);
+    font-size: var(--text-lg);
+    line-height: var(--leading-lead);
+  }
+
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    margin-block-start: var(--space-xs);
+  }
+
+  .hero__media {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: 1fr auto;
+    gap: var(--grout);
+    order: -1;
+    min-width: 0;
+  }
+
+  /* The photo fills its frame, so a tall phone shot can't change the height of the hero. From 900px up, the frame has a minimum height and grows with the text. */
+  .hero__frame {
+    position: relative;
+    aspect-ratio: var(--hero-photo-ratio);
+  }
+
+  .hero__photo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .hero__strip {
+    display: flex;
+    gap: var(--grout);
+    height: var(--hero-strip-height);
+    margin-inline-start: calc(var(--hero-strip-tile-width) * -0.5);
+    transform: skewX(var(--rake));
+  }
+
+  .hero__strip span {
+    flex: none;
+    width: var(--hero-strip-tile-width);
+    border-radius: var(--radius-tile);
+    background: var(--color-ink);
+  }
+
+  .hero__strip span:nth-child(1) {
+    opacity: var(--tile-tone-deep);
+  }
+
+  .hero__strip span:nth-child(2) {
+    background: var(--color-accent);
+  }
+
+  .hero__strip span:nth-child(3) {
+    opacity: var(--tile-tone-strong);
+  }
+
+  .hero__strip span:nth-child(4) {
+    opacity: var(--tile-tone-mid);
+  }
+
+  .hero__strip span:nth-child(5) {
+    opacity: var(--tile-tone-soft);
+  }
+
+  .hero__strip span:nth-child(n + 6) {
+    opacity: var(--tile-tone-faint);
+  }
+
+  @media (min-width: 900px) {
+    /* The text lines up with the page's wrap, and the photo runs off the right edge of the screen. */
+    .hero {
+      grid-template-columns:
+        minmax(var(--gutter), 1fr)
+        minmax(0, calc(var(--wrap-width) * var(--hero-copy-share) - var(--gutter)))
+        minmax(0, calc(var(--wrap-width) * (1 - var(--hero-copy-share)) - var(--gutter)))
+        minmax(var(--gutter), 1fr);
+    }
+
+    .hero__copy {
+      grid-column: 2;
+      padding: var(--space-xl) var(--space-xl) var(--space-xl) 0;
+    }
+
+    .hero__media {
+      grid-column: 3 / -1;
+      order: 0;
+    }
+
+    .hero__frame {
+      min-height: var(--hero-photo-min-height);
+      aspect-ratio: auto;
+    }
+
+    .hero__strip {
+      margin-inline-start: calc(var(--hero-strip-height) * 0.3);
+    }
+  }
+</style>

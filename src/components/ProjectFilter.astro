@@ -1,0 +1,119 @@
+---
+import copy from '../data/copy.json';
+
+interface Props {
+  options: { id: string; label: string }[];
+}
+
+const { options } = Astro.props;
+const { filterLegend, filterAll } = copy.projects;
+
+const choices = [{ id: 'all', label: filterAll }, ...options];
+---
+
+<fieldset class="project-filter" data-project-filter>
+  <legend class="project-filter__legend">{filterLegend}</legend>
+  <div class="project-filter__options">
+    {
+      choices.map(({ id, label }, index) => (
+        <label class="project-filter__option">
+          <input class="project-filter__radio" type="radio" name="project-filter" value={id} checked={index === 0} />
+          <span class="project-filter__tile">{label}</span>
+        </label>
+      ))
+    }
+  </div>
+</fieldset>
+
+<style>
+  /* A fieldset refuses to shrink below its content unless told to, which would push a phone's page sideways. */
+  .project-filter {
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .project-filter__legend {
+    padding: 0;
+    margin-block-end: var(--space-xs);
+    font-weight: var(--weight-strong);
+  }
+
+  .project-filter__options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--grout);
+  }
+
+  .project-filter__option {
+    position: relative;
+    display: flex;
+    flex: 1 1 auto;
+  }
+
+  /* The real radio covers its whole tile, so the tap target and keyboard behaviour are the browser's own. */
+  .project-filter__radio {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  .project-filter__tile {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    gap: var(--space-sm);
+    min-height: var(--tap-target);
+    padding: var(--space-xs) var(--space-md);
+    border: var(--line-thin) solid var(--color-line);
+    border-radius: var(--radius-tile);
+    background: var(--color-surface-raised);
+    line-height: var(--leading-tight);
+    transition:
+      background-color var(--duration-quick) var(--ease-out),
+      border-color var(--duration-quick) var(--ease-out),
+      color var(--duration-quick) var(--ease-out);
+  }
+
+  /* The logo's raked tile stands in for the radio's dot. It stays empty until chosen, so colour isn't the only signal. */
+  .project-filter__tile::before {
+    content: '';
+    flex: none;
+    width: var(--bullet-size);
+    height: var(--bullet-size);
+    border: var(--line-thin) solid var(--color-field-line);
+    border-radius: var(--line-thin);
+    transform: skewX(var(--rake));
+  }
+
+  .project-filter__radio:hover + .project-filter__tile {
+    border-color: var(--color-ink);
+  }
+
+  .project-filter__radio:checked + .project-filter__tile {
+    border-color: var(--color-ink);
+    background: var(--color-ink);
+    color: var(--color-on-ink);
+  }
+
+  .project-filter__radio:checked + .project-filter__tile::before {
+    border-color: var(--color-accent-on-ink);
+    background: var(--color-accent-on-ink);
+  }
+
+  .project-filter__radio:focus-visible + .project-filter__tile {
+    outline: var(--focus-width) solid var(--color-focus);
+    outline-offset: var(--line-strong);
+  }
+
+  @media (forced-colors: active) {
+    .project-filter__radio:checked + .project-filter__tile::before {
+      forced-color-adjust: none;
+    }
+  }
+</style>

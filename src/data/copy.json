@@ -1,0 +1,280 @@
+{
+  "sample": true,
+  "home": {
+    "metaTitle": "Tile Installer in Mississauga, ON | Aldo Tile",
+    "metaDescription": "Aldo Tile installs bathroom, shower, floor, backsplash and commercial tile in Mississauga and nearby areas. Careful preparation and clean, considered work.",
+    "h1": "Careful Tile Installation in Mississauga, for Homes and Businesses",
+    "hero": {
+      "lead": "Showers, floors, backsplashes and commercial spaces, prepared properly underneath and laid with straight, considered lines on top. Tell us about your project and we'll give you a clear, written quote.",
+      "formLabel": "Ask for a quote",
+      "imageAlt": "Sample placeholder image: large pale marble-look tile with fine grey veining"
+    },
+    "proof": {
+      "heading": "Why people call us",
+      "yearsLabel": "years installing tile",
+      "areasLabel": "areas served",
+      "credentialsLabel": "Credentials"
+    },
+    "services": {
+      "heading": "What we install",
+      "intro": "From a single backsplash to a building's worth of washrooms, each job gets the same attention to what sits behind the tile.",
+      "linkLabel": "Learn more"
+    },
+    "projects": {
+      "heading": "Recent projects",
+      "intro": "A look at tile we've laid in homes and businesses, with the tile used and the story behind each job.",
+      "linkLabel": "See all projects"
+    },
+    "reviews": {
+      "heading": "What clients say",
+      "sampleLabel": "Sample review"
+    },
+    "areas": {
+      "heading": "Where we work",
+      "intro": "We're based in Mississauga and take on jobs in these nearby areas. Just outside the list? Ask us anyway."
+    },
+    "cta": {
+      "heading": "Have a tile project in mind?",
+      "text": "Call or send a message with a few details about the space. A rough size and a photo are all we need to get started."
+    }
+  },
+  "about": {
+    "metaTitle": "About Aldo Tile | Tile Installer in Mississauga",
+    "metaDescription": "Meet Aldo Tile, a Mississauga tile installer who cares about what's behind the wall as much as the finish. Learn how we plan, prepare and complete each job.",
+    "h1": "About Aldo Tile",
+    "breadcrumb": "About",
+    "lead": "A Mississauga tile business built on preparation, straight lines and clear communication.",
+    "story": {
+      "heading": "What we believe",
+      "paragraphs": [
+        "Aldo Tile is built on one simple belief: good tile work is mostly decided before the first tile goes on. A shower depends on the membrane behind it. A floor depends on what's underneath it.",
+        "That belief shapes how we approach a job. We look at what the wall, floor or schedule actually needs before we talk about the finish.",
+        "We take on work for homeowners updating one room, and for contractors and property managers who need a tile trade on site. The scale changes, but the standards don't."
+      ]
+    },
+    "wayOfWorking": {
+      "heading": "How we work",
+      "intro": "No two jobs are alike, but the steps stay the same.",
+      "steps": [
+        {
+          "title": "We listen and look",
+          "text": "You tell us what you want, and we look at the space, the structure and anything that could affect the finished result."
+        },
+        {
+          "title": "You get a clear quote",
+          "text": "The written quote spells out what's included, what preparation is needed and when we expect to do the work."
+        },
+        {
+          "title": "We plan the layout",
+          "text": "Before setting tile, we work out where the lines fall and where the cuts go, and we check anything important with you."
+        },
+        {
+          "title": "We prepare, then install",
+          "text": "Waterproofing, levelling and other hidden work get the same care as the tile that everyone will see."
+        },
+        {
+          "title": "We finish and clean up",
+          "text": "We check the work with you, explain any care it needs and leave the space ready to use."
+        }
+      ]
+    },
+    "experience": {
+      "heading": "Experience and credentials",
+      "yearsLabel": "years installing tile"
+    },
+    "areas": {
+      "heading": "Areas we serve",
+      "intro": "We work from Mississauga and take on jobs in these nearby areas."
+    },
+    "cta": {
+      "heading": "Let's talk about your space",
+      "text": "Whether it's one room or a full commercial package, a short conversation is the best place to start."
+    }
+  },
+  "contact": {
+    "metaTitle": "Contact Aldo Tile | Tile Quotes in Mississauga",
+    "metaDescription": "Contact Aldo Tile for a quote on bathroom, floor, backsplash or commercial tile installation in Mississauga. Call us or send a few details through our form.",
+    "h1": "Tell Us About Your Tile Project",
+    "breadcrumb": "Contact",
+    "intro": "Call us, or fill out the form with a few details. The more you can tell us about the space, the more useful our first answer will be.",
+    "direct": {
+      "heading": "Prefer to talk?",
+      "text": "Calling is the quickest way to reach us. If we're on a job, leave a message and we'll get back to you.",
+      "phoneLabel": "Phone",
+      "emailLabel": "Email"
+    },
+    "next": {
+      "heading": "What happens next",
+      "steps": [
+        "We read your message and reply using the details you gave us.",
+        "We ask any questions and arrange a time to see the space if needed.",
+        "You receive a written quote that spells out the work."
+      ]
+    },
+    "areas": {
+      "heading": "Areas we serve",
+      "intro": "We're based in Mississauga and work in these nearby areas."
+    },
+    "form": {
+      "heading": "Send a message",
+      "requiredNote": "Fields marked Required must be filled in.",
+      "requiredLabel": "Required",
+      "optionalLabel": "Optional",
+      "selectPrompt": "Choose one",
+      "name": "Your name",
+      "phone": "Phone number",
+      "email": "Email address",
+      "city": "City",
+      "projectType": "Type of project",
+      "projectTypeHome": "Home",
+      "projectTypeCommercial": "Commercial",
+      "service": "Service you need",
+      "serviceOther": "Something else",
+      "message": "About your project",
+      "messageHint": "For example: the room, its rough size, the tile you have in mind and when you'd like the work done.",
+      "submit": "Send message",
+      "subject": "New tile enquiry from the website",
+      "honeypot": "Leave this field empty",
+      "privacyNote": "We only use your details to reply about your job.",
+      "privacyLink": "Read our privacy notice"
+    }
+  },
+  "thankYou": {
+    "metaTitle": "Message Sent | Aldo Tile",
+    "metaDescription": "Your message has been sent to Aldo Tile. We'll read it and reply about your tile project using the details you shared with us.",
+    "h1": "Thanks, Your Message Is on Its Way",
+    "text": "We'll read it and get back to you about your project using the details you gave us.",
+    "callPrompt": "Need to talk sooner? Give us a call.",
+    "homeLabel": "Back to the home page",
+    "projectsLabel": "Look through our projects"
+  },
+  "notFound": {
+    "metaTitle": "Page Not Found | Aldo Tile",
+    "metaDescription": "We couldn't find that page on the Aldo Tile website. Use these links to reach our tile services, recent projects or contact details.",
+    "h1": "We Can't Find That Page",
+    "text": "The link may be old, or the address may have a typo. These pages should get you back on track.",
+    "linksHeading": "Try one of these",
+    "links": [
+      { "label": "Home", "path": "/" },
+      { "label": "Bathroom and shower tile", "path": "/services/bathroom-shower-tile-installation/" },
+      { "label": "Floor tile", "path": "/services/floor-tile-installation/" },
+      { "label": "Kitchen backsplashes", "path": "/services/kitchen-backsplash-installation/" },
+      { "label": "Commercial tile", "path": "/services/commercial-tile-installation/" },
+      { "label": "Projects", "path": "/projects/" },
+      { "label": "Contact us", "path": "/contact/" }
+    ],
+    "callPrompt": "Or call us and we'll help directly."
+  },
+  "privacy": {
+    "metaTitle": "Privacy Notice | Aldo Tile",
+    "metaDescription": "A short, plain notice about what the Aldo Tile contact form collects, where your message goes, how it is used and how to ask us to delete it.",
+    "h1": "Privacy Notice",
+    "breadcrumb": "Privacy notice",
+    "lead": "This site has one form, used to contact us about tile work. Here is what happens to what you send.",
+    "sections": [
+      {
+        "heading": "What the form collects",
+        "paragraphs": ["When you send the contact form, we receive the details you enter:"],
+        "list": [
+          "Your name",
+          "Your phone number",
+          "Your email address, if you give one",
+          "Your city",
+          "Whether the project is for a home or a business",
+          "The service you're asking about",
+          "Your message"
+        ]
+      },
+      {
+        "heading": "Where it goes",
+        "paragraphs": [
+          "Your message is stored by Netlify, the company that hosts this website and runs the form, and it's emailed to Aldo Tile.",
+          "Netlify may also record technical details, such as your IP address and browser information, to manage spam."
+        ]
+      },
+      {
+        "heading": "How we use it",
+        "paragraphs": ["We use your details only to reply to you about your job. We don't add you to a mailing list, and we don't sell your details or share them for marketing."]
+      },
+      {
+        "heading": "Asking us to delete it",
+        "paragraphs": ["You can ask us to delete your message and details at any time. Email us at the address below and we'll take care of it."],
+        "deletionEmail": true
+      }
+    ],
+    "deletionEmailLabel": "Email for deletion requests"
+  },
+  "projects": {
+    "metaTitle": "Tile Projects in Mississauga and Nearby | Aldo Tile",
+    "metaDescription": "Browse Aldo Tile projects: showers, floors, kitchen backsplashes and commercial spaces in Mississauga and nearby areas, with the tile used on each job.",
+    "h1": "Tile Projects",
+    "intro": "Choose a service to narrow the list, or open a project to see its photos, the tile used and how the job went.",
+    "filterLegend": "Show projects for",
+    "filterAll": "All projects",
+    "listHeading": "Project list",
+    "emptyText": "There are no projects to show right now. Send a message and tell us about your job.",
+    "detail": {
+      "tileTypeLabel": "Tile used",
+      "cityLabel": "Location",
+      "projectTypeLabel": "Project type",
+      "projectTypeHome": "Home",
+      "projectTypeCommercial": "Commercial",
+      "serviceLabel": "Service",
+      "serviceLinkLabel": "More about this service",
+      "contactLabel": "Ask about a project like this",
+      "backLabel": "Back to all projects"
+    }
+  },
+  "servicePage": {
+    "highlightsHeading": "What's included",
+    "projectsHeading": "Related projects",
+    "faqHeading": "Common questions",
+    "ctaHeading": "Ready to talk about your project?",
+    "ctaText": "Call us or send a few details, and we'll explain what your space needs and what it will take."
+  },
+  "site": {
+    "skipLink": "Skip to main content",
+    "previewBanner": "Preview: sample content",
+    "previewBannerLabel": "Site status",
+    "homeLinkLabel": "home page",
+    "callPrefix": "Call",
+    "breadcrumbLabel": "Breadcrumb",
+    "breadcrumbHome": "Home",
+    "nav": {
+      "label": "Main",
+      "menuLabel": "Menu",
+      "closeLabel": "Close",
+      "services": [
+        { "label": "Bathrooms and showers", "path": "/services/bathroom-shower-tile-installation/" },
+        { "label": "Floors", "path": "/services/floor-tile-installation/" },
+        { "label": "Backsplashes", "path": "/services/kitchen-backsplash-installation/" },
+        { "label": "Commercial", "path": "/services/commercial-tile-installation/" }
+      ],
+      "pages": [
+        { "label": "Projects", "path": "/projects/" },
+        { "label": "About", "path": "/about/" },
+        { "label": "Contact", "path": "/contact/" }
+      ]
+    },
+    "callBar": {
+      "label": "Quick contact",
+      "messageLabel": "Message",
+      "messagePath": "/contact/"
+    },
+    "cta": {
+      "messageLabel": "Send a message",
+      "messagePath": "/contact/"
+    },
+    "footer": {
+      "blurb": "Bathroom, shower, floor, backsplash and commercial tile, prepared properly underneath and laid with care.",
+      "basedIn": "Based in",
+      "servicesHeading": "Services",
+      "pagesHeading": "Explore",
+      "contactHeading": "Get in touch",
+      "areasHeading": "Areas we serve",
+      "privacyLabel": "Privacy notice",
+      "privacyPath": "/privacy/",
+      "rights": "All rights reserved."
+    }
+  }
+}

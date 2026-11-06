@@ -1,0 +1,257 @@
+---
+import copy from '../data/copy.json';
+import Button from './Button.astro';
+
+interface Props {
+  services: { id: string; title: string }[];
+}
+
+const { services } = Astro.props;
+const { form } = copy.contact;
+const { privacyPath } = copy.site.footer;
+---
+
+<div class="contact-form">
+  <div class="contact-form__intro">
+    <h2>{form.heading}</h2>
+    <p class="contact-form__note">{form.requiredNote}</p>
+  </div>
+
+  <form name="contact" method="POST" action="/thank-you/" data-netlify="true" netlify-honeypot="bot-field">
+    <input type="hidden" name="subject" value={form.subject} />
+
+    <p class="contact-form__trap">
+      <label for="contact-bot-field">{form.honeypot}</label>
+      <input id="contact-bot-field" type="text" name="bot-field" tabindex="-1" autocomplete="off" />
+    </p>
+
+    <div class="field">
+      <label class="field__label" for="contact-name">
+        {form.name} <span class="field__mark field__mark--required">{form.requiredLabel}</span>
+      </label>
+      <input class="field__control" id="contact-name" type="text" name="name" autocomplete="name" required />
+    </div>
+
+    <div class="field">
+      <label class="field__label" for="contact-phone">
+        {form.phone} <span class="field__mark field__mark--required">{form.requiredLabel}</span>
+      </label>
+      <input class="field__control" id="contact-phone" type="tel" name="phone" autocomplete="tel" required />
+    </div>
+
+    <div class="field">
+      <label class="field__label" for="contact-email">
+        {form.email} <span class="field__mark">{form.optionalLabel}</span>
+      </label>
+      <input class="field__control" id="contact-email" type="email" name="email" autocomplete="email" />
+    </div>
+
+    <div class="field">
+      <label class="field__label" for="contact-city">
+        {form.city} <span class="field__mark">{form.optionalLabel}</span>
+      </label>
+      <input class="field__control" id="contact-city" type="text" name="city" autocomplete="address-level2" />
+    </div>
+
+    <div class="field">
+      <label class="field__label" for="contact-project-type">
+        {form.projectType} <span class="field__mark">{form.optionalLabel}</span>
+      </label>
+      <div class="field__select">
+        <select class="field__control" id="contact-project-type" name="projectType" autocomplete="off">
+          <option value="">{form.selectPrompt}</option>
+          <option value={form.projectTypeHome}>{form.projectTypeHome}</option>
+          <option value={form.projectTypeCommercial}>{form.projectTypeCommercial}</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field__label" for="contact-service">
+        {form.service} <span class="field__mark">{form.optionalLabel}</span>
+      </label>
+      <div class="field__select">
+        <select class="field__control" id="contact-service" name="service" autocomplete="off">
+          <option value="">{form.selectPrompt}</option>
+          {services.map(({ title }) => <option value={title}>{title}</option>)}
+          <option value={form.serviceOther}>{form.serviceOther}</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field field--wide">
+      <label class="field__label" for="contact-message">
+        {form.message} <span class="field__mark field__mark--required">{form.requiredLabel}</span>
+      </label>
+      <p class="field__hint" id="contact-message-hint">{form.messageHint}</p>
+      <textarea
+        class="field__control field__control--message"
+        id="contact-message"
+        name="message"
+        rows="6"
+        autocomplete="off"
+        aria-describedby="contact-message-hint"
+        required></textarea>
+    </div>
+
+    <div class="contact-form__actions">
+      <Button type="submit">{form.submit}</Button>
+      <p class="contact-form__privacy">
+        {form.privacyNote}{' '}
+        <a class="contact-form__privacy-link" href={privacyPath}>{form.privacyLink}</a>
+      </p>
+    </div>
+  </form>
+</div>
+
+<style>
+  .contact-form {
+    display: grid;
+    gap: var(--space-lg);
+  }
+
+  .contact-form__intro {
+    display: grid;
+    gap: var(--space-xs);
+  }
+
+  .contact-form__note,
+  .contact-form__privacy,
+  .field__hint {
+    color: var(--color-muted);
+    font-size: var(--text-sm);
+  }
+
+  form {
+    display: grid;
+    gap: var(--space-lg) var(--space-md);
+  }
+
+  .contact-form__trap {
+    display: none;
+  }
+
+  .field {
+    display: grid;
+    align-content: start;
+    gap: var(--space-xs);
+    min-width: 0;
+  }
+
+  .field__label {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0 var(--space-xs);
+    font-weight: var(--weight-strong);
+  }
+
+  .field__mark {
+    color: var(--color-muted);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-body);
+  }
+
+  .field__mark--required {
+    color: var(--color-accent-text);
+    font-weight: var(--weight-strong);
+  }
+
+  .field__control {
+    width: 100%;
+    min-height: var(--button-height);
+    padding: var(--space-xs) var(--space-sm);
+    border: var(--line-thin) solid var(--color-field-line);
+    border-radius: var(--radius-field);
+    background: var(--color-surface-raised);
+    font-size: var(--text-base);
+    appearance: none;
+  }
+
+  .field__control:hover {
+    border-color: var(--color-ink);
+  }
+
+  .field__control:user-invalid {
+    border-color: var(--color-error);
+    box-shadow: inset 0 0 0 var(--line-thin) var(--color-error);
+  }
+
+  .field__control--message {
+    display: block;
+    min-height: var(--field-message-height);
+    resize: vertical;
+  }
+
+  .field__select {
+    position: relative;
+  }
+
+  .field__select select {
+    padding-inline-end: var(--space-xl);
+  }
+
+  .field__select::after {
+    content: '';
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline-end: var(--space-md);
+    width: var(--select-chevron-size);
+    height: var(--select-chevron-size);
+    border-block-end: var(--line-strong) solid currentColor;
+    border-inline-end: var(--line-strong) solid currentColor;
+    pointer-events: none;
+    translate: 0 -70%;
+    rotate: 45deg;
+  }
+
+  .contact-form__actions {
+    display: grid;
+    gap: var(--space-sm);
+  }
+
+  .contact-form__privacy-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap-target);
+    color: var(--color-ink);
+  }
+
+  @media (min-width: 640px) {
+    form {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .field--wide,
+    .contact-form__actions {
+      grid-column: 1 / -1;
+    }
+
+    .contact-form__actions {
+      grid-template-columns: auto minmax(0, 1fr);
+      align-items: center;
+      gap: var(--space-lg);
+    }
+  }
+
+  /* Beside the side panels the form's tile can run taller than its fields, so the message box takes up the difference. */
+  @media (min-width: 900px) {
+    .contact-form {
+      grid-template-rows: auto 1fr;
+      height: 100%;
+    }
+
+    form {
+      grid-template-rows: auto auto auto 1fr auto;
+    }
+
+    .field--wide {
+      grid-template-rows: auto auto 1fr;
+      align-content: stretch;
+    }
+
+    .field__control--message {
+      height: 100%;
+    }
+  }
+</style>

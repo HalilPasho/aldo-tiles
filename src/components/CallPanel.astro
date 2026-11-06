@@ -1,0 +1,76 @@
+---
+import CallLink from './CallLink.astro';
+
+interface Props {
+  prompt: string;
+}
+
+const { prompt } = Astro.props;
+const TILE_COUNT = 12;
+---
+
+<div class="panel on-ink call-panel">
+  <div class="call-panel__field" aria-hidden="true">
+    {Array.from({ length: TILE_COUNT }, () => <span />)}
+  </div>
+  <p class="call-panel__prompt">{prompt}</p>
+  <CallLink variant="button" />
+</div>
+
+<style>
+  .call-panel {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-content: end;
+    gap: var(--space-md);
+    overflow: clip;
+  }
+
+  .call-panel__field {
+    display: none;
+  }
+
+  .call-panel__prompt {
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+    font-weight: var(--weight-display);
+    line-height: var(--leading-tight);
+  }
+
+  /* Beside the main panel the navy runs tall, so the logo's raked tile panel fills it and bleeds off the top and sides. */
+  @media (min-width: 900px) {
+    .call-panel {
+      grid-template-rows: 1fr auto auto;
+      align-content: stretch;
+    }
+
+    .call-panel__field {
+      display: grid;
+      grid-template-columns: repeat(4, var(--call-panel-tile-width));
+      grid-auto-rows: 1fr;
+      gap: var(--grout);
+      min-height: var(--call-panel-field-min-height);
+      margin-block: calc(var(--panel-padding) * -1) var(--space-md);
+      margin-inline-start: calc(var(--call-panel-tile-width) * -1);
+      transform: skewX(var(--rake));
+    }
+
+    .call-panel__field span {
+      border-radius: var(--radius-tile);
+      background: var(--color-line-on-ink);
+    }
+
+    .call-panel__field span:nth-child(3n + 1) {
+      opacity: var(--tile-tone-mid);
+    }
+
+    .call-panel__field span:nth-child(4n) {
+      opacity: var(--tile-tone-strong);
+    }
+
+    .call-panel__field span:nth-child(6) {
+      background: var(--color-accent);
+      opacity: 1;
+    }
+  }
+</style>

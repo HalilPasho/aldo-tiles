@@ -1,0 +1,78 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+type Props = {
+  href?: string;
+  variant?: 'primary' | 'secondary';
+  type?: 'button' | 'submit';
+} & Omit<HTMLAttributes<'a'>, 'href' | 'type'>;
+
+const { href, variant = 'primary', type = 'button', class: className, ...rest } = Astro.props;
+const classes = ['button', `button--${variant}`, className];
+---
+
+{
+  href ? (
+    <a href={href} class:list={classes} {...rest}>
+      <slot />
+    </a>
+  ) : (
+    <button type={type} class:list={classes} {...(rest as HTMLAttributes<'button'>)}>
+      <slot />
+    </button>
+  )
+}
+
+<style>
+  .button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-xs);
+    max-width: 100%;
+    min-height: var(--button-height);
+    padding: var(--space-xs) var(--space-lg);
+    border: var(--line-strong) solid transparent;
+    border-radius: var(--radius-tile);
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    font-weight: var(--weight-strong);
+    line-height: var(--leading-tight);
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+      background-color var(--duration-quick) var(--ease-out),
+      border-color var(--duration-quick) var(--ease-out),
+      color var(--duration-quick) var(--ease-out);
+  }
+
+  .button--primary {
+    background: var(--color-accent);
+    color: var(--color-on-accent);
+  }
+
+  .button--primary:hover {
+    background: var(--color-ink);
+    color: var(--color-on-ink);
+  }
+
+  .button--secondary {
+    border-color: currentColor;
+    background: transparent;
+    color: inherit;
+  }
+
+  .button--secondary:hover {
+    border-color: var(--color-ink);
+    background: var(--color-ink);
+    color: var(--color-on-ink);
+  }
+
+  :global(.on-ink) .button--primary:hover,
+  :global(.on-ink) .button--secondary:hover {
+    border-color: var(--color-on-ink);
+    background: var(--color-on-ink);
+    color: var(--color-ink);
+  }
+</style>

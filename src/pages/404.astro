@@ -1,0 +1,83 @@
+---
+import CallPanel from '../components/CallPanel.astro';
+import copy from '../data/copy.json';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const { notFound } = copy;
+---
+
+<BaseLayout title={notFound.metaTitle} description={notFound.metaDescription} path="/404/" noindex>
+  <div class="wrap section tile-grid tile-grid--split">
+    <section class="panel lost">
+      <h1>{notFound.h1}</h1>
+      <p class="lost__text">{notFound.text}</p>
+      <h2 class="lost__heading">{notFound.linksHeading}</h2>
+      <ul class="tile-grid lost__links">
+        {
+          notFound.links.map(({ label, path }) => (
+            <li>
+              <a class="lost__link" href={path}>
+                {label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <CallPanel prompt={notFound.callPrompt} />
+  </div>
+</BaseLayout>
+
+<style>
+  .lost {
+    display: grid;
+    align-content: start;
+    gap: var(--space-md);
+  }
+
+  .lost__text {
+    color: var(--color-muted);
+    font-size: var(--text-lg);
+  }
+
+  .lost__heading {
+    margin-block-start: var(--space-md);
+    font-size: var(--text-xl);
+  }
+
+  .lost__links {
+    gap: var(--space-xs);
+  }
+
+  .lost__link {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    min-height: var(--button-height);
+    padding: var(--space-xs) var(--space-md);
+    border: var(--line-thin) solid var(--color-field-line);
+    border-radius: var(--radius-tile);
+    background: var(--color-surface);
+    font-weight: var(--weight-strong);
+    transition:
+      background-color var(--duration-quick) var(--ease-out),
+      color var(--duration-quick) var(--ease-out);
+  }
+
+  .lost__link:hover,
+  .lost__link:active {
+    background: var(--color-ink);
+    color: var(--color-on-ink);
+  }
+
+  @media (min-width: 640px) {
+    .lost__links {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .lost__links li:last-child:nth-child(odd) {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

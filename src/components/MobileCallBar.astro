@@ -1,0 +1,52 @@
+---
+import copy from '../data/copy.json';
+import Button from './Button.astro';
+import CallLink from './CallLink.astro';
+
+const { callBar } = copy.site;
+---
+
+<aside class="call-bar on-ink" aria-label={callBar.label}>
+  <CallLink variant="button" />
+  <Button href={callBar.messagePath} variant="secondary">{callBar.messageLabel}</Button>
+</aside>
+
+<style>
+  /* Sticky rather than fixed: it keeps its own space after the footer, so it can't cover the footer however tall large text makes it. */
+  .call-bar {
+    position: sticky;
+    inset-block-end: 0;
+    z-index: var(--layer-call-bar);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--grout);
+    padding: var(--grout);
+    padding-block-end: calc(var(--grout) + env(safe-area-inset-bottom, 0px));
+  }
+
+  .call-bar :global(.button) {
+    flex: 1 1 auto;
+    padding-inline: var(--space-xs);
+  }
+
+  .call-bar :global(.button--primary) {
+    flex-grow: 2;
+  }
+
+  /* In rem, so this follows the text size. Past here the buttons no longer reliably fit one row, and two rows on a sticky bar would take a quarter of the screen. So the bar stays after the footer, stacked, and the phone number is still in the header. */
+  @container page (max-width: 16.59rem) {
+    .call-bar {
+      position: static;
+    }
+
+    .call-bar :global(.button) {
+      flex-basis: 100%;
+    }
+  }
+
+  @media (min-width: 760px) {
+    .call-bar {
+      display: none;
+    }
+  }
+</style>

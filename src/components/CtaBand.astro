@@ -1,0 +1,133 @@
+---
+import copy from '../data/copy.json';
+import Button from './Button.astro';
+import CallLink from './CallLink.astro';
+
+interface Props {
+  heading: string;
+  text: string;
+}
+
+const { heading, text } = Astro.props;
+const { cta } = copy.site;
+const TILE_COUNT = 12;
+---
+
+<section class="cta-band">
+  <div class="cta-band__field" aria-hidden="true">
+    {Array.from({ length: TILE_COUNT }, () => <span />)}
+  </div>
+  <div class="wrap cta-band__inner">
+    <div class="cta-band__copy">
+      <h2>{heading}</h2>
+      <p class="cta-band__text">{text}</p>
+      <div class="cta-band__actions">
+        <CallLink variant="button" />
+        <Button href={cta.messagePath} variant="secondary">{cta.messageLabel}</Button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta-band {
+    position: relative;
+    overflow: clip;
+    border-block-start: var(--line-thin) solid var(--color-line);
+  }
+
+  /* The raked panel of tile from the logo, with its one gold tile. Narrow screens show only the gold row. */
+  .cta-band__field {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--grout);
+    width: 150%;
+    height: var(--cta-field-strip-height);
+    margin-inline-start: -14%;
+    transform: skewX(var(--rake));
+  }
+
+  .cta-band__field span {
+    border-radius: var(--radius-tile);
+    background: var(--color-ink);
+  }
+
+  .cta-band__field span:nth-child(-n + 4),
+  .cta-band__field span:nth-child(n + 9) {
+    display: none;
+  }
+
+  .cta-band__field span:nth-child(3),
+  .cta-band__field span:nth-child(8),
+  .cta-band__field span:nth-child(12) {
+    opacity: var(--tile-tone-soft);
+  }
+
+  .cta-band__field span:nth-child(4) {
+    opacity: var(--tile-tone-faint);
+  }
+
+  .cta-band__field span:nth-child(1),
+  .cta-band__field span:nth-child(2),
+  .cta-band__field span:nth-child(7),
+  .cta-band__field span:nth-child(11) {
+    opacity: var(--tile-tone-mid);
+  }
+
+  .cta-band__field span:nth-child(10) {
+    opacity: var(--tile-tone-strong);
+  }
+
+  .cta-band__field span:nth-child(5),
+  .cta-band__field span:nth-child(9) {
+    opacity: var(--tile-tone-deep);
+  }
+
+  .cta-band__field span:nth-child(6) {
+    background: var(--color-accent);
+  }
+
+  .cta-band__inner {
+    position: relative;
+    padding-block: var(--space-xl) var(--space-2xl);
+  }
+
+  .cta-band__copy {
+    display: grid;
+    gap: var(--space-md);
+    max-width: var(--cta-copy-width);
+  }
+
+  .cta-band__text {
+    color: var(--color-muted);
+  }
+
+  .cta-band__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    margin-block-start: var(--space-xs);
+  }
+
+  @media (min-width: 1100px) {
+    .cta-band__field {
+      position: absolute;
+      inset-block: 0;
+      inset-inline-start: var(--cta-field-start);
+      grid-template-columns: repeat(4, var(--cta-field-tile-width));
+      grid-template-rows: repeat(3, 1fr);
+      width: auto;
+      height: auto;
+      margin: 0;
+    }
+
+    .cta-band__field span:nth-child(-n + 4),
+    .cta-band__field span:nth-child(n + 9) {
+      display: block;
+    }
+
+    .cta-band__inner {
+      padding-block: var(--space-2xl);
+    }
+  }
+</style>

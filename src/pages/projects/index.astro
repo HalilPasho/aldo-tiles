@@ -1,0 +1,96 @@
+---
+import { getCollection } from 'astro:content';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import Button from '../../components/Button.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import ProjectFilter from '../../components/ProjectFilter.astro';
+import business from '../../data/business.json';
+import copy from '../../data/copy.json';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { byOrder } from '../../lib/order';
+import { projectFilterCss } from '../../lib/project-filter';
+import { breadcrumbSchema } from '../../lib/seo';
+
+const { projects: words, site } = copy;
+const path = '/projects/';
+const breadcrumbs = [
+  { name: site.breadcrumbHome, path: '/' },
+  { name: words.h1, path },
+];
+
+const projects = (await getCollection('projects')).sort(byOrder);
+const usedServices = new Set(projects.map(({ data }) => data.service.id));
+const services = (await getCollection('services', ({ id }) => usedServices.has(id))).sort(byOrder);
+const filterOptions = services.map(({ id, data }) => ({
+  id,
+  label: site.nav.services.find((link) => link.path === `/services/${id}/`)?.label ?? data.title,
+}));
+---
+
+<BaseLayout
+  title={words.metaTitle}
+  description={words.metaDescription}
+  {path}
+  schema={[breadcrumbSchema(business.siteUrl.value, breadcrumbs)]}
+>
+  {projects.length > 0 && <style slot="head" is:inline set:html={projectFilterCss(filterOptions.map(({ id }) => id))} />}
+
+  <div class="wrap page-head">
+    <Breadcrumbs items={breadcrumbs} />
+    <h1>{words.h1}</h1>
+    <p class="page-head__lead">{projects.length > 0 ? words.intro : words.emptyText}</p>
+    {
+      projects.length === 0 && (
+        <div>
+          <Button href={site.cta.messagePath}>{site.cta.messageLabel}</Button>
+        </div>
+      )
+    }
+  </div>
+
+  {
+    projects.length > 0 && (
+      <section class="wrap projects-browser">
+        <ProjectFilter options={filterOptions} />
+        <h2 class="visually-hidden">{words.listHeading}</h2>
+        <ul class="projects-grid" data-project-grid>
+          {projects.map((project, index) => (
+            <li data-project-service={project.data.service.id}>
+              <ProjectCard
+                {project}
+                eager={index === 0}
+                sizes="(min-width: 1280px) 393px, (min-width: 1024px) 31vw, (min-width: 640px) 46vw, 92vw"
+              />
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+</BaseLayout>
+
+<style>
+  .projects-browser {
+    display: grid;
+    gap: var(--space-xl);
+    padding-block-end: var(--space-2xl);
+  }
+
+  .projects-grid {
+    display: grid;
+    gap: var(--space-xl) var(--grout);
+    min-width: 0;
+  }
+
+  @media (min-width: 640px) {
+    .projects-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .projects-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+</style>

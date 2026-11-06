@@ -1,0 +1,256 @@
+---
+import { getCollection } from 'astro:content';
+import Button from '../components/Button.astro';
+import CtaBand from '../components/CtaBand.astro';
+import Hero from '../components/Hero.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import ReviewsSection from '../components/ReviewsSection.astro';
+import ServiceCard from '../components/ServiceCard.astro';
+import business from '../data/business.json';
+import copy from '../data/copy.json';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { byOrder } from '../lib/order';
+import { localBusinessSchema } from '../lib/seo';
+
+const { home } = copy;
+const RECENT_PROJECTS = 4;
+
+const services = (await getCollection('services')).sort(byOrder);
+const projects = (await getCollection('projects')).sort(byOrder).slice(0, RECENT_PROJECTS);
+const reviews = (await getCollection('reviews')).sort((a, b) => a.id.localeCompare(b.id));
+
+const years = business.yearsExperience.value;
+const areas = business.areasServed.value;
+const credentials = business.credentials.value;
+const hasProof = Boolean(years) || areas.length > 0 || credentials.length > 0;
+---
+
+<BaseLayout title={home.metaTitle} description={home.metaDescription} path="/" schema={[localBusinessSchema(business)]}>
+  <Hero />
+
+  {
+    hasProof && (
+      <section class="wrap tile-grid proof" data-proof>
+        <h2 class="panel on-ink proof__heading">{home.proof.heading}</h2>
+        {years ? (
+          <p class="panel proof__fact">
+            <span class="proof__number">{years}</span>
+            <span class="proof__label">{home.proof.yearsLabel}</span>
+          </p>
+        ) : null}
+        {areas.length > 0 && (
+          <p class="panel proof__fact">
+            <span class="proof__number">{areas.length}</span>
+            <span class="proof__label">{home.proof.areasLabel}</span>
+          </p>
+        )}
+        {credentials.length > 0 && (
+          <div class="panel proof__fact proof__fact--wide">
+            <ul class="proof__credentials">
+              {credentials.map((credential) => (
+                <li>{credential}</li>
+              ))}
+            </ul>
+            <p class="proof__label">{home.proof.credentialsLabel}</p>
+          </div>
+        )}
+      </section>
+    )
+  }
+
+  <section class="wrap home-services">
+    <div class="home-intro">
+      <h2>{home.services.heading}</h2>
+      <p class="home-muted">{home.services.intro}</p>
+    </div>
+    <ul class="tile-grid home-services__grid">
+      {
+        services.map((service) => (
+          <li>
+            <ServiceCard {service} />
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  {
+    projects.length > 0 && (
+      <section class="wrap home-projects">
+        <div class="home-intro">
+          <h2>{home.projects.heading}</h2>
+          <p class="home-muted">{home.projects.intro}</p>
+        </div>
+        <ul class="home-projects__grid">
+          {projects.map((project) => (
+            <li>
+              <ProjectCard
+                {project}
+                sizes="(min-width: 1280px) 296px, (min-width: 1100px) 25vw, (min-width: 640px) 50vw, 100vw"
+              />
+            </li>
+          ))}
+        </ul>
+        <div>
+          <Button href="/projects/" variant="secondary">
+            {home.projects.linkLabel}
+          </Button>
+        </div>
+      </section>
+    )
+  }
+
+  <ReviewsSection {reviews} />
+
+  {
+    areas.length > 0 && (
+      <section class="wrap home-areas">
+        <div class="home-intro">
+          <h2>{home.areas.heading}</h2>
+          <p class="home-muted">{home.areas.intro}</p>
+        </div>
+        <ul class="tile-grid home-areas__list" data-areas>
+          {areas.map((area) => (
+            <li class:list={['home-area', area === business.baseCity ? 'home-area--base' : 'on-ink']}>{area}</li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+
+  <CtaBand heading={home.cta.heading} text={home.cta.text} />
+</BaseLayout>
+
+<style>
+  .home-muted {
+    color: var(--color-muted);
+  }
+
+  .home-intro {
+    display: grid;
+    align-content: start;
+    gap: var(--space-xs);
+  }
+
+  /* Flex, not grid, so the tiles close up and leave no hole when a fact is missing from business.json. */
+  .proof {
+    display: flex;
+    flex-wrap: wrap;
+    padding-block-start: var(--space-lg);
+  }
+
+  .proof__heading {
+    flex: 1 1 100%;
+    font-size: var(--text-xl);
+  }
+
+  .proof__fact {
+    display: grid;
+    flex: 1 1 var(--proof-fact-min-width);
+    align-content: space-between;
+    gap: var(--space-xs);
+    max-width: none;
+  }
+
+  .proof__fact--wide {
+    flex-basis: var(--proof-fact-wide-min-width);
+  }
+
+  .proof__number {
+    font-family: var(--font-display);
+    font-size: var(--text-3xl);
+    font-weight: var(--weight-display);
+    line-height: 1;
+  }
+
+  .proof__credentials {
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+    font-weight: var(--weight-display);
+    line-height: var(--leading-tight);
+  }
+
+  .proof__label {
+    color: var(--color-muted);
+  }
+
+  .home-services {
+    display: grid;
+    gap: var(--space-lg) var(--space-xl);
+    padding-block: var(--space-2xl);
+  }
+
+  .home-services__grid {
+    min-width: 0;
+  }
+
+  .home-projects {
+    display: grid;
+    gap: var(--space-lg);
+    padding-block-end: var(--space-2xl);
+  }
+
+  .home-projects__grid {
+    display: grid;
+    gap: var(--space-xl) var(--grout);
+  }
+
+  .home-areas {
+    display: grid;
+    gap: var(--space-lg);
+    padding-block-end: var(--space-2xl);
+  }
+
+  .home-areas__list {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .home-area {
+    display: flex;
+    flex: 1 1 var(--area-tile-min-width);
+    align-items: flex-end;
+    min-height: var(--area-tile-min-height);
+    padding: var(--space-sm);
+    border-radius: var(--radius-tile);
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+    font-weight: var(--weight-display);
+    line-height: var(--leading-tight);
+  }
+
+  .home-area--base {
+    background: var(--color-accent);
+    color: var(--color-on-accent);
+  }
+
+  @media (min-width: 640px) {
+    .home-services__grid,
+    .home-projects__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .home-area {
+      padding: var(--space-md);
+      font-size: var(--text-xl);
+    }
+  }
+
+  @media (min-width: 900px) {
+    .home-services {
+      grid-template-columns: var(--text-row-columns);
+    }
+  }
+
+  @media (min-width: 1100px) {
+    .proof__heading,
+    .proof__fact {
+      flex: 1 1 0;
+      min-width: 0;
+    }
+
+    .home-projects__grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+</style>

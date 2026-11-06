@@ -1,0 +1,167 @@
+---
+import { getCollection, getEntry, render, type CollectionEntry } from 'astro:content';
+import Breadcrumbs from '../../../components/Breadcrumbs.astro';
+import Button from '../../../components/Button.astro';
+import PhotoGallery from '../../../components/PhotoGallery.astro';
+import business from '../../../data/business.json';
+import copy from '../../../data/copy.json';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { breadcrumbSchema } from '../../../lib/seo';
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects');
+  return projects.map((project) => ({ params: { slug: project.id }, props: { project } }));
+}
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+}
+
+const { project } = Astro.props;
+const { title, city, projectType, tileType, summary, metaDescription, photos } = project.data;
+const { detail } = copy.projects;
+const { Content } = await render(project);
+
+const service = await getEntry(project.data.service);
+if (!service) {
+  throw new Error(
+    `Project "${project.id}" names the service "${project.data.service.id}", which doesn't exist. Fix the service line in its index.md, or add that service in src/content/services/.`,
+  );
+}
+
+const path = `/projects/${project.id}/`;
+const breadcrumbs = [
+  { name: copy.site.breadcrumbHome, path: '/' },
+  { name: copy.projects.h1, path: '/projects/' },
+  { name: title, path },
+];
+const facts = [
+  { label: detail.tileTypeLabel, value: tileType },
+  { label: detail.cityLabel, value: city },
+  { label: detail.projectTypeLabel, value: projectType === 'home' ? detail.projectTypeHome : detail.projectTypeCommercial },
+  { label: detail.serviceLabel, value: service.data.title },
+];
+---
+
+<BaseLayout
+  title={`${title} | ${business.name}`}
+  description={metaDescription}
+  {path}
+  schema={[breadcrumbSchema(business.siteUrl.value, breadcrumbs)]}
+>
+  <div class="wrap page-head">
+    <Breadcrumbs items={breadcrumbs} />
+    <h1>{title}</h1>
+    <p class="page-head__lead">{summary}</p>
+  </div>
+
+  <div class="wrap">
+    <PhotoGallery {photos}>
+      <div class="panel on-ink project-facts">
+        <dl class="project-facts__list">
+          {
+            facts.map(({ label, value }) => (
+              <div>
+                <dt class="project-facts__label">{label}</dt>
+                <dd class="project-facts__value">{value}</dd>
+              </div>
+            ))
+          }
+        </dl>
+        <Button class="project-facts__contact" href={copy.site.cta.messagePath}>{detail.contactLabel}</Button>
+      </div>
+    </PhotoGallery>
+  </div>
+
+  <div class="wrap project-detail">
+    <div class="project-story">
+      <Content />
+    </div>
+    <div class="project-actions">
+      <Button href={`/services/${service.id}/`} variant="secondary">{detail.serviceLinkLabel}</Button>
+      <a class="project-actions__back" href="/projects/">{detail.backLabel}</a>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  /* The last tile in the gallery's rows. From 900px it takes whatever room the last photo leaves. Below that it has its own row.
+     It can be a narrow tile beside a photo or a full-width strip, so its contents respond to its own width, not the screen's. */
+  .project-facts {
+    display: grid;
+    flex: 100 1 100%;
+    align-content: space-between;
+    gap: var(--space-lg);
+    min-width: 0;
+    container-type: inline-size;
+  }
+
+  .project-facts__list {
+    display: grid;
+    gap: var(--space-md) var(--space-lg);
+    margin: 0;
+  }
+
+  @container (min-width: 22rem) {
+    .project-facts__list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .project-facts__contact {
+      justify-self: start;
+    }
+  }
+
+  @container (min-width: 44rem) {
+    .project-facts__list {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  .project-facts__label {
+    color: var(--color-on-ink-muted);
+    font-size: var(--text-sm);
+  }
+
+  .project-facts__value {
+    margin: 0;
+    font-weight: var(--weight-strong);
+    line-height: var(--leading-lead);
+  }
+
+  .project-detail {
+    display: grid;
+    gap: var(--space-xl) var(--space-2xl);
+    padding-block: var(--space-xl) var(--space-2xl);
+  }
+
+  .project-story {
+    display: grid;
+    gap: var(--space-md);
+    min-width: 0;
+  }
+
+  .project-actions {
+    display: grid;
+    align-content: start;
+    gap: var(--space-sm);
+    min-width: 0;
+  }
+
+  .project-actions__back {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: var(--tap-target);
+  }
+
+  @media (min-width: 900px) {
+    .project-facts {
+      flex-basis: var(--gallery-facts-basis);
+    }
+
+    .project-detail {
+      grid-template-columns: var(--panel-split-columns);
+    }
+  }
+</style>

@@ -1,0 +1,66 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import copy from '../data/copy.json';
+
+interface Props {
+  service: CollectionEntry<'services'>;
+}
+
+const { service } = Astro.props;
+---
+
+<article class="panel service-card">
+  <h3>
+    <a class="service-card__link" href={`/services/${service.id}/`}>{service.data.title}</a>
+  </h3>
+  <p class="service-card__summary">{service.data.summary}</p>
+  <p class="service-card__more" aria-hidden="true">{copy.home.services.linkLabel}</p>
+</article>
+
+<style>
+  .service-card {
+    position: relative;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    gap: var(--space-sm);
+    height: 100%;
+    transition: border-color var(--duration-quick) var(--ease-out);
+  }
+
+  .service-card:hover {
+    border-color: var(--color-ink);
+  }
+
+  .service-card__link {
+    text-decoration: none;
+  }
+
+  /* The whole tile is the tap target, while screen readers hear only the service name as the link. */
+  .service-card__link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius-tile);
+  }
+
+  .service-card__link:focus-visible {
+    outline: none;
+  }
+
+  .service-card__link:focus-visible::after {
+    outline: var(--focus-width) solid var(--color-focus);
+    outline-offset: var(--line-strong);
+  }
+
+  .service-card__summary {
+    color: var(--color-muted);
+  }
+
+  .service-card__more {
+    font-weight: var(--weight-strong);
+    text-decoration: underline;
+    text-decoration-color: var(--color-accent);
+    text-decoration-thickness: var(--line-strong);
+    text-underline-offset: var(--underline-offset);
+  }
+</style>

@@ -1,0 +1,35 @@
+{
+  "name": "aldo-tile",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "node scripts/launch-guard.mjs && astro build",
+    "preview": "astro preview",
+    "check": "node scripts/check.mjs",
+    "audit": "node scripts/audit-site.mjs",
+    "launch:check": "node scripts/launch-check.mjs",
+    "launch:rehearsal": "node scripts/launch-rehearsal.mjs",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "~3.7.4",
+    "@fontsource/brygada-1918": "^5.3.0",
+    "@fontsource/hanken-grotesk": "^5.3.0",
+    "astro": "7.4.5",
+    "sharp": "^0.35.5"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "@axe-core/playwright": "^4.14.0",
+    "@lhci/cli": "^0.16.0",
+    "@playwright/test": "~1.64.1",
+    "cheerio": "^1.2.0",
+    "typescript": "~6.0.3",
+    "vitest": "^5.1.0"
+  }
+}
