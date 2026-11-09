@@ -1,6 +1,6 @@
 # Rules for Codex
 
-This is the website of Aldo Tile, a tile installer in Mississauga, Ontario: a static Astro site with plain CSS, hosted on Netlify, with a Netlify Forms contact form. It must work on Windows (her computer) and Linux (the owner's and GitHub's). Rules come first. The tips at the end say how to carry them out.
+This is the website of Aldo Tile, a tile installer in Mississauga, Ontario: a static Astro site with plain CSS, hosted on Cloudflare Pages, with a FormSubmit contact form (Netlify remains a supported legacy delivery option). It must work on Windows (her computer) and Linux (the owner's and GitHub's). Rules come first. The tips at the end say how to carry them out.
 
 ## 1. Who you're helping
 
@@ -43,11 +43,11 @@ This is the website of Aldo Tile, a tile installer in Mississauga, Ontario: a st
 
 - **SEO:** `src/lib/seo.ts` and `src/components/seo/Seo.astro` make the titles, descriptions, canonical links, robots tag, sharing tags and structured data. Every page uses `src/layouts/BaseLayout.astro`, which uses them. Restyle around them; don't edit or bypass them. Each page keeps one `h1` and its own title and description.
 - **Structured data:** no `aggregateRating` or `Review` data, ever. No street address anywhere; the business is Mississauga, ON, CA only.
-- **Form delivery:** in `src/components/ContactForm.astro`, keep `name="contact"`, `method="POST"`, `action="/thank-you/"`, `data-netlify="true"`, `netlify-honeypot="bot-field"`, the hidden `bot-field` trap and every field's `name`. Restyle freely. Netlify adds a hidden `form-name` field when it publishes; that's expected.
+- **Form delivery:** in `src/components/ContactForm.astro`, keep `name="contact"`, `method="POST"`, every existing field name and the hidden `bot-field` trap. Delivery is selected by `formProvider` in `src/data/site-settings.json`. FormSubmit uses the email in `src/data/business.json`, `_subject` matching `subject`, `_next` pointing to the real `/thank-you/` URL, and the `_honey` trap outside keyboard navigation. Never disable its spam challenge. Netlify attributes remain for legacy compatibility; Netlify delivery uses `/thank-you/` directly. Restyle freely without breaking the selected provider.
 - **Sample flags:** every `"sample": true` and `sample: true`. See rule 6.
 - **URLs:** `/`, `/services/bathroom-shower-tile-installation/`, `/services/floor-tile-installation/`, `/services/kitchen-backsplash-installation/`, `/services/commercial-tile-installation/`, `/projects/`, `/projects/<folder-name>/`, `/about/`, `/contact/`, `/thank-you/`, `/privacy/`. Never rename or remove a page. A project's address is its folder name, so don't rename a project folder.
 - **Checks:** `npm run check`, `npm run launch:check`, `npm run launch:rehearsal`, and everything in `scripts/`, `tests/`, `.github/workflows/check.yml` and `lighthouserc.json`. Never edit, weaken, skip or delete a check to get past it; if one blocks her request, follow rule 7.
-- **`launchReady`** in `src/data/business.json`: while it's `false`, every page tells Google not to list it (`noindex`) and shows the "Preview: sample content" banner. The banner is `src/components/PreviewBanner.astro`, put on every page by the `<PreviewBanner />` line in `src/layouts/BaseLayout.astro`: keep both and the wording, and restyle the banner freely. When it's `true`, `npm run build` runs the launch check first and refuses to build while any sample remains. Only Halil turns it on, at launch. Never change it yourself.
+- **`launchReady`** in `src/data/business.json`: while false, every page must remain `noindex`, even if the owner hides the preview banner. Banner visibility is controlled by `showPreviewBanner` in `src/data/site-settings.json`; Halil explicitly approved false for the Cloudflare site in November 2026. Keep `src/components/PreviewBanner.astro`, its wording and the `<PreviewBanner />` line in `src/layouts/BaseLayout.astro` for future previews. Do not clear sample flags or change `launchReady` just to hide the banner. When true, build runs the launch check and refuses remaining samples. Only Halil turns it on at launch; never change it yourself.
 - Leave `astro.config.mjs`, `netlify.toml` and the `scripts` in `package.json` alone too.
 - Only Halil may ask for changes to anything in this rule, and they must still pass `npm run check`.
 

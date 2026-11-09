@@ -699,3 +699,19 @@
 }
 
 :root { --home-hero-media-start: 48%; }
+
+:root {
+  --sent-outer-space: clamp(1.5rem,4vw,3.5rem);
+  --sent-radius: 1.5rem;
+  --sent-padding: min(clamp(1rem,2.2vw,2rem),5vw);
+  --sent-check-size: clamp(2.5rem,5vw,4rem);
+  --sent-button-icon: 1.5rem;
+  --sent-photo-height: 21rem;
+  --sent-phone-photo-height: 12rem;
+  --sent-call-icon: 2.5rem;
+  --sent-call-radius: 4rem;
+  --sent-corner: 4rem;
+  --sent-corner-clearance: 5rem;
+}
+
+:root { --sent-mobile-clearance: min(3rem,12vw); --sent-call-copy-basis: 14rem; }

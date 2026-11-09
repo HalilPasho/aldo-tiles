@@ -47,8 +47,8 @@ const previewIndexFor = (project: (typeof projects)[number]) =>
   <HomeServices />
   {projects.length > 0 && <section class="wrap home-projects" id="projects">
     <div class="home-projects__heading"><p class="home-eyebrow">{home.reference.eyebrowProjects}</p><h2>{home.projects.heading}</h2></div>
-    <ProjectFilter options={filterOptions} allLabel={home.reference.filters[0]} />
     <a class="home-projects__more button-look" href="/projects/">{home.projects.linkLabel}<span aria-hidden="true"> &rarr;</span></a>
+    <ProjectFilter options={filterOptions} allLabel={home.reference.filters[0]} />
     <ul class="home-projects__grid" data-project-grid>
       {projects.map((project) => <li data-project-service={categoryFor(project)}><ProjectCard {project} previewPhoto={project.data.sample ? previews[previewIndexFor(project)] : undefined} previewAlt={project.data.sample ? home.reference.projectAlts[previewIndexFor(project)] : undefined} categoryLabel={filterOptions.find((option) => option.id === categoryFor(project))?.label} sizes="(min-width: 900px) calc((100vw - 5rem) / 4), (min-width: 640px) calc((100vw - 3rem) / 2), 100vw" /></li>)}
     </ul>
@@ -149,6 +149,12 @@ const previewIndexFor = (project: (typeof projects)[number]) =>
   .home-projects :global(.project-filter__tile::before) { display: none; }
   .home-projects :global(.project-filter__radio:checked + .project-filter__tile) { background: linear-gradient(115deg,var(--color-gold-button-start),var(--color-gold-button-end)); color: var(--color-gold-button-text); text-decoration: underline; }
   .button-look { display: inline-flex; align-items: center; justify-content: center; min-height: var(--button-height); padding: var(--space-xs) var(--space-md); border: var(--line-thin) solid var(--color-ink); border-radius: var(--radius-tile); font-size: var(--home-button-size); font-weight: var(--weight-strong); text-decoration: none; justify-self: center; }
+  @media (max-width: 760px) {
+    .home-projects__more { justify-self: start; }
+    .home-projects :global(.project-filter) { justify-self: stretch; }
+    .home-projects :global(.project-filter__options) { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); }
+    .home-projects :global(.project-filter__tile) { justify-content: center; padding-inline: var(--space-xs); }
+  }
   .home-projects__more:hover,
   .home-projects__more:focus-visible,
   .home-projects__more:active {

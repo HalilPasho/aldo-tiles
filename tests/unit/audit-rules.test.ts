@@ -206,6 +206,15 @@ describe('auditPage: robots', () => {
 });
 
 describe('auditPage: preview banner', () => {
+  it('allows the explicit owner setting to hide the banner while still enforcing noindex', () => {
+    const html = edit(pageHtml('/about/'), $ => { $('.preview-banner').remove(); });
+    const options = { ...PREVIEW, showPreviewBanner: false };
+    expect(auditPage(html, '/about/', options)).toEqual([]);
+    const indexed = edit(html, $ => { $('meta[name="robots"]').attr('content', 'index,follow'); });
+    expect(messages(auditPage(indexed, '/about/', options))).toEqual(onlyProblem(/listed on Google before launch/));
+    expect(messages(auditPage(pageHtml('/about/'), '/about/', options))).toEqual(onlyProblem(/still shows the preview banner/));
+  });
+
   it.each([...REQUIRED_ROUTES, '/404.html'])('reports %s without the banner before launch', (route) => {
     const html = edit(pageHtml(route), ($) => { $('.preview-banner').remove(); });
     expect(messages(auditPage(html, route, PREVIEW))).toEqual(
@@ -834,6 +843,20 @@ describe('audit-site command', () => {
     const business: Business = JSON.parse(await readFile(join(project, 'src/data/business.json'), 'utf8'));
     const copy = JSON.parse(await readFile(join(project, 'src/data/copy.json'), 'utf8'));
     const files = siteFiles(business, copy.site.previewBanner);
+    const settings = JSON.parse(await readFile(join(project, 'src/data/site-settings.json'), 'utf8'));
+    const realEmail = JSON.parse(await readFile(join(project, 'src/data/business.json'), 'utf8')).email.value;
+    for (const [file, content] of files) {
+      if (!file.endsWith('.html')) continue;
+      files.set(file, edit(content, $ => {
+        if (!settings.showPreviewBanner) $('.preview-banner').remove();
+        if (settings.formProvider === 'formsubmit') {
+          const form = $('form[name="contact"]');
+          form.attr('action', `https://formsubmit.co/${realEmail}`);
+          form.find('[name="subject"]').attr('value', copy.contact.form.subject);
+          form.append(`<input type="hidden" name="_subject" value="${copy.contact.form.subject}"><input type="hidden" name="_next" value="${new URL('/thank-you/',business.siteUrl.value).href}"><input type="text" name="_honey" tabindex="-1">`);
+        }
+      }));
+    }
     change?.(files);
     for (const [file, content] of files) {
       const path = join(dist, file);

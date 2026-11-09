@@ -1,10 +1,11 @@
 ---
 import business from '../data/business.json';
 import copy from '../data/copy.json';
+import settings from '../data/site-settings.json';
 ---
 
 {
-  !business.launchReady && (
+  !business.launchReady && settings.showPreviewBanner && (
     <aside class="preview-banner" aria-label={copy.site.previewBannerLabel}>
       <p>{copy.site.previewBanner}</p>
     </aside>

@@ -276,7 +276,10 @@ test.describe('on a phone', () => {
 
       const bar = page.locator(CALL_BAR);
       await expect(bar).not.toBeInViewport();
-      await expect(page.locator('.site-header a[href^="tel:"]').locator('visible=true')).toBeInViewport();
+      await expect(page.locator('.site-header a[href^="tel:"]').locator('visible=true')).toHaveCount(0);
+      const call = bar.locator('a[href^="tel:"]');
+      await call.scrollIntoViewIfNeeded();
+      await expect(call).toBeInViewport();
       const { barTop, footerBottom } = await bar.evaluate((element) => ({
         barTop: element.getBoundingClientRect().top,
         footerBottom: document.querySelector('.site-footer')!.getBoundingClientRect().bottom,

@@ -511,3 +511,40 @@ The user requested a slightly smaller logo at the top. Header logo widths were r
 ## Smaller regular-weight footer phone - November 2026
 
 The user requested reducing the footer contact-panel telephone and removing its bold weight. It now uses the same 15px size as footer links/email and Arimo 400, with the existing 44px tap height, gold icon, focus ring and shared business number retained. Other call links retain their existing styling.
+
+
+## Cloudflare form delivery and reference thank-you page - November 2026
+
+Halil approved the combined plan: use FormSubmit for the GitHub-connected Cloudflare Pages site, remove the visible preview banner while retaining noindex/sample protections, redesign the thank-you page from the supplied banner and adapt the related protected checks, including the earlier removed Commercial home link.
+
+The real site URL is now https://em-tile.pages.dev, supplied by the owner, with its URL sample flag cleared. launchReady remains false and every other unconfirmed sample flag remains. site-settings.json controls explicit banner visibility and form provider. PreviewBanner and its wording remain available; the owner has selected hidden. SEO helpers and BaseLayout remain intact. The audit continues enforcing noindex while not launch-ready and tests cover the owner-disabled banner state.
+
+Both forms submit HTML POST requests directly to FormSubmit using the canonical business email. All original field names, subject and bot-field remain. Provider _subject, absolute _next, default spam challenge and an additional hidden-from-keyboard _honey trap support Cloudflare without a Worker, API key or JavaScript. Legacy Netlify attributes and a Netlify settings option remain for compatibility. Privacy wording now identifies Cloudflare hosting and FormSubmit delivery. Actual delivery requires the owner to confirm FormSubmit's activation email, then verify a real follow-up test; automated tests mock the provider and do not send email.
+
+The thank-you card uses a gold circled check and divider, Gelasio title in the supplied two-line wording, solid white copy area, gold diagonal and a new beige/gold shower illustration. Home and project buttons use matching outline icons. A navy call band has a large phone outline, source-copy prompt, current business number and gold-edged marble corner. The unified 30-40px page-title scale is retained. On phones the heading stacks to keep whole words readable at 200%, the photograph sits below copy, and the call prompt wraps naturally. Existing thank-you SEO remains noindex.
+
+Generated illustration: src/assets/sample-thank-you-shower.png. Imagegen prompt: photorealistic warm beige stone-look shower with large rectangular tiles, gold rainfall head and handshower rail, illuminated recessed niche with two black soap bottles, glass screen, pale oak vanity with white top, white pot and fresh green leaves beside a curved mirror; photo only, no text, logos, UI, collage or people. It is a design illustration, not a real completed job photo.
+
+The externally commented-out pages.spec.ts was restored, with a temporary backup kept outside the repository. Existing checks remain active. Home still verifies all six residential service destinations in main, and Commercial through existing header/footer navigation. New form tests cover POST fields, optional email, provider acceptance/redirect and failure without falsely showing success, including JavaScript off. Audit tests retain legacy Netlify coverage and add strict recipient, redirect, subject and spam-trap checks for FormSubmit. Documentation validation now recognises the settings data file.
+
+
+## Mobile header and home actions - November 2026
+
+At phone widths up to 760px the header hides its compact telephone, leaving the logo and Menu. Footer and bottom call-bar phone links remain. The two hero action buttons share a single horizontal row with equal flexible widths and compact horizontal padding; text may wrap within each button when enlarged. Tablet and desktop layouts retain their existing telephone and button presentation.
+
+Halil explicitly approved adapting the header telephone checks to this mobile change. They now assert no visible header phone on mobile, a working bottom call link, horizontal hero actions, and unchanged visible desktop calling. The enlarged-text in-flow bar cases still check footer placement and verify the phone link can be scrolled into view.
+
+
+## Mobile Get in Touch actions - November 2026
+
+The shared HomeCta phone and message buttons remain side by side through 760px, including the compact About version. Each shares the row, with the established 14px button type, compact padding and 16px icons. Buttons retain at least 48px height; enlarged text can wrap within its own button without stacking the two buttons. Desktop styling is unchanged.
+
+
+## Mobile Recent Projects heading actions - November 2026
+
+View More Projects follows the heading before the service filters in reading and visual order. Through 760px it aligns with the left edge of the title. Filters use a regular three-column grid with centered labels and equal widths, keeping the final options aligned rather than floating in the center. Desktop retains its title/filter/link header row.
+
+
+## Project filter contrast during state changes - November 2026
+
+GitHub Windows check exposed white text on the light Projects background immediately after deselecting a gradient filter. Frame sampling reproduced the transient contrast loss: background-image disappeared while text and background-color were still fading. Filter text and fill now change together without color/background transitions, with an explicit ink default. Border feedback retains its short transition. Existing accessibility tests stay intact; no thresholds or checks are weakened.
