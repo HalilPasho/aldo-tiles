@@ -1,45 +1,54 @@
----
+﻿---
 import type { CollectionEntry } from 'astro:content';
 import copy from '../data/copy.json';
 import ReviewCard from './ReviewCard.astro';
-
-interface Props {
-  reviews: CollectionEntry<'reviews'>[];
-}
-
+interface Props { reviews: CollectionEntry<'reviews'>[]; }
 const { reviews } = Astro.props;
+const words = copy.home.reviews;
 ---
-
-{
-  reviews.length > 0 && (
-    <section class="wrap reviews">
-      <h2>{copy.home.reviews.heading}</h2>
-      <ul class="reviews__list">
-        {reviews.map((review) => (
-          <li>
-            <ReviewCard {review} />
-          </li>
-        ))}
-      </ul>
-    </section>
-  )
-}
-
+{reviews.length > 0 && (
+  <section class="wrap reviews" id="client-reviews" data-reviews data-review-position={words.positionLabel}>
+    <div class="reviews__header">
+      <div class="reviews__titles"><p class="reviews__eyebrow">{words.eyebrow}</p><h2>{words.heading}</h2></div>
+      {reviews.length > 1 && <div class="reviews__controls" data-review-controls hidden>
+        <button class="reviews__control" type="button" aria-label={words.previousLabel} data-review-previous><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7" /></svg></button>
+        <button class="reviews__control reviews__control--next" type="button" aria-label={words.nextLabel} data-review-next><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7" /></svg></button>
+      </div>}
+    </div>
+    <ul class="reviews__list" data-review-list>{reviews.map((review) => <li><ReviewCard {review} /></li>)}</ul>
+    <p class="visually-hidden" aria-live="polite" aria-atomic="true" data-review-status>{words.positionLabel.replace('{current}', '1').replace('{total}', String(reviews.length))}</p>
+    <script is:inline>
+      {
+        const section = document.currentScript.closest('[data-reviews]');
+        const controls = section.querySelector('[data-review-controls]');
+        const list = section.querySelector('[data-review-list]');
+        const status = section.querySelector('[data-review-status]');
+        if (controls && list.children.length > 1) {
+          const original = Array.from(list.children);
+          controls.hidden = false;
+          const announce = () => {
+            status.textContent = section.dataset.reviewPosition.replace('{current}', String(original.indexOf(list.firstElementChild) + 1)).replace('{total}', String(original.length));
+          };
+          controls.querySelector('[data-review-next]').addEventListener('click', () => { list.append(list.firstElementChild); announce(); });
+          controls.querySelector('[data-review-previous]').addEventListener('click', () => { list.prepend(list.lastElementChild); announce(); });
+        }
+      }
+    </script>
+  </section>
+)}
 <style>
-  .reviews {
-    display: grid;
-    gap: var(--space-lg);
-    padding-block-end: var(--space-2xl);
-  }
-
-  .reviews__list {
-    display: grid;
-    gap: var(--space-xl);
-  }
-
-  @media (min-width: 900px) {
-    .reviews__list {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-  }
+  .reviews { display: grid; gap: var(--trust-section-gap); max-width: var(--home-wrap-width); padding-inline: 5%; padding-block: var(--trust-section-gap) var(--space-xl); }
+  .reviews__header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: var(--space-lg); }
+  .reviews__titles { flex: 1 1 var(--trust-review-heading-min); min-width: 0; }
+  .reviews__eyebrow { font-size: var(--home-eyebrow-size); letter-spacing: var(--home-eyebrow-tracking); font-weight: var(--weight-strong); text-transform: uppercase; margin-block-end: var(--space-xs); }
+  .reviews__eyebrow::before { content: ''; display: inline-block; width: var(--home-eyebrow-line); height: var(--line-strong); margin-inline-end: var(--space-sm); vertical-align: middle; background: var(--color-accent); }
+  h2 { font-family: var(--font-reference-display); font-weight: var(--weight-body); font-size: var(--trust-heading-size); letter-spacing: var(--home-heading-tracking); }
+  .reviews__controls { display: flex; flex: none; gap: var(--space-sm); }
+  .reviews__controls[hidden] { display: none; }
+  .reviews__control { display: grid; place-items: center; width: var(--button-height); height: var(--button-height); padding: 0; border: var(--line-thin) solid var(--color-accent-text); border-radius: var(--radius-tile); color: var(--color-accent-text); background: var(--color-surface-raised); cursor: pointer; }
+  .reviews__control--next, .reviews__control:hover { background: linear-gradient(115deg,var(--color-gold-button-start),var(--color-gold-button-end)); color: var(--color-gold-button-text); border-color: var(--color-accent); }
+  .reviews__control svg { width: var(--space-lg); height: var(--space-lg); fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .reviews__list { display: grid; gap: var(--trust-card-gap); }
+  .reviews__list > li { min-width: 0; }
+  @media(min-width: 900px) { .reviews__list { grid-template-columns: repeat(3,minmax(0,1fr)); } }
 </style>

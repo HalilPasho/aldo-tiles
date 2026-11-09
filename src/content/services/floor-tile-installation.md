@@ -1,6 +1,6 @@
 ---
 title: "Floor Tile Installation"
-metaTitle: "Floor Tile Installation in Mississauga | Aldo Tile"
+metaTitle: "Floor Tile Installation in Mississauga | EM Tile"
 metaDescription: "Floor tile installation in Mississauga for entries, kitchens, basements and halls. Flat, solid preparation and clean layouts, including large-format tile."
 h1: "Floor Tile Installation in Mississauga"
 summary: "Porcelain and stone floors for entries, kitchens, halls and basements, installed over a flat, stiff base and built to resist cracking."

@@ -1,0 +1,47 @@
+---
+
+import copy from '../data/copy.json';
+
+const paths = ['/services/bathroom-shower-tile-installation/', '/services/floor-tile-installation/', '/services/kitchen-backsplash-installation/', '/services/wall-tiling/', '/services/premium-tile-finishing/', '/services/custom-tile-layouts/'];
+
+---
+
+<section class="home-services" id="services">
+
+  <h2 class="visually-hidden">{copy.home.services.heading}</h2>
+
+  <ul class="home-services__grid">
+
+    {copy.home.reference.services.map((service, i) => <li><a href={paths[i]}><svg viewBox="0 0 48 48" aria-hidden="true" set:html={service.icon} /><span>{service.label}</span></a></li>)}
+
+  </ul>
+
+
+
+</section>
+
+<style>
+
+
+  .home-services { background: var(--color-home-soft); border-block: var(--line-thin) solid var(--color-line); }
+
+  .home-services__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-lg) 0; max-width: var(--home-wrap-width); margin: auto; padding: var(--space-lg) 3%; }
+
+  .home-services li { padding-inline: var(--space-sm); }
+
+  .home-services li:nth-child(odd) { border-inline-end: var(--line-thin) solid var(--color-line); }
+
+  a { display: flex; flex-direction: column; align-items: center; gap: var(--space-xs); padding-block: var(--space-xs); height: 100%; min-height: var(--tap-target); font-size: var(--home-button-size); font-weight: var(--weight-strong); line-height: var(--leading-tight); text-align: center; text-decoration: none; }
+
+  svg { width: var(--tap-target); height: var(--tap-target); stroke: var(--color-accent-text); fill: none; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+
+  span { max-width: var(--home-service-min-width); }
+
+  a:hover span, a:focus-visible span { color: var(--color-accent-text); }
+
+  @media(min-width: 30rem) { .home-services__grid { grid-template-columns: repeat(3,minmax(0,1fr)); } .home-services li:nth-child(n) { border-inline-end: var(--line-thin) solid var(--color-line); } .home-services li:nth-child(3n) { border: 0; } }
+
+  @media(min-width: 58rem) { .home-services__grid { grid-template-columns: repeat(6,minmax(0,1fr)); } .home-services li:nth-child(n) { border-inline-end: var(--line-thin) solid var(--color-line); } .home-services li:last-child { border: 0; } }
+
+</style>
+

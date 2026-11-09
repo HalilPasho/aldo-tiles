@@ -1,158 +1,96 @@
----
+﻿---
+import { Image } from 'astro:assets';
 import business from '../data/business.json';
 import copy from '../data/copy.json';
 import CallLink from './CallLink.astro';
 import Logo from './Logo.astro';
-
+import FooterIcon from './FooterIcon.astro';
+import marble from '../assets/sample-footer-navy-marble.png';
+import whiteMarble from '../assets/sample-marble-tile-stack.png';
 const { footer, nav, homeLinkLabel } = copy.site;
 const year = new Date().getFullYear();
+const serviceIcons: Record<string,string> = {
+  '/services/bathroom-shower-tile-installation/': 'bath',
+  '/services/floor-tile-installation/': 'layers',
+  '/services/kitchen-backsplash-installation/': 'bricks',
+  '/services/commercial-tile-installation/': 'building',
+};
+const pageIcons: Record<string,string> = { '/projects/':'home', '/about/':'people', '/contact/':'mail' };
 ---
-
 <footer class="site-footer on-ink">
+  <Image class="site-footer__marble" src={marble} alt="" aria-hidden="true" widths={[640,1280,1920]} sizes="100vw" format="webp" loading="lazy" />
+  <div class="site-footer__corner" aria-hidden="true"><div class="site-footer__stone"><Image src={whiteMarble} alt="" width={480} format="webp" loading="lazy" /></div></div>
   <div class="wrap site-footer__grid">
     <div class="site-footer__brand">
-      <a class="site-footer__logo" href="/" aria-label={`${business.name} ${homeLinkLabel}`}>
-        <Logo tone="dark" />
-      </a>
+      <a class="site-footer__logo" href="/" aria-label={`${business.name} ${homeLinkLabel}`}><Logo tone="dark" /></a>
       <p class="site-footer__muted">{footer.blurb}</p>
-      <p class="site-footer__muted">{footer.basedIn} {business.baseCity}, {business.province}</p>
+      <p class="site-footer__location"><FooterIcon name="pin" /><span>{footer.basedIn} <strong>{business.baseCity}, {business.province}</strong></span></p>
     </div>
-
-    <nav aria-labelledby="footer-services">
-      <h2 class="site-footer__heading" id="footer-services">{footer.servicesHeading}</h2>
-      <ul>
-        {
-          nav.services.map(({ label, path }) => (
-            <li>
-              <a class="site-footer__link" href={path}>
-                {label}
-              </a>
-            </li>
-          ))
-        }
-      </ul>
-    </nav>
-
-    <nav aria-labelledby="footer-pages">
-      <h2 class="site-footer__heading" id="footer-pages">{footer.pagesHeading}</h2>
-      <ul>
-        {
-          nav.pages.map(({ label, path }) => (
-            <li>
-              <a class="site-footer__link" href={path}>
-                {label}
-              </a>
-            </li>
-          ))
-        }
-        <li>
-          <a class="site-footer__link" href={footer.privacyPath}>{footer.privacyLabel}</a>
-        </li>
-      </ul>
-    </nav>
-
+    <div class="site-footer__navigation">
+      <nav aria-labelledby="footer-services">
+        <h2 class="site-footer__heading" id="footer-services">{footer.servicesHeading}</h2>
+        <ul>{nav.services.map(({ label, path }) => <li><a class="site-footer__link" href={path}><FooterIcon name={serviceIcons[path] ?? 'layers'} /><span>{label}</span></a></li>)}</ul>
+      </nav>
+      <nav aria-labelledby="footer-pages">
+        <h2 class="site-footer__heading" id="footer-pages">{footer.pagesHeading}</h2>
+        <ul>{nav.pages.map(({ label, path }) => <li><a class="site-footer__link" href={path}><FooterIcon name={pageIcons[path] ?? 'home'} /><span>{label}</span><FooterIcon name="chevron" /></a></li>)}</ul>
+      </nav>
+    </div>
     <div class="site-footer__contact">
       <h2 class="site-footer__heading">{footer.contactHeading}</h2>
-      <ul>
-        <li><CallLink /></li>
-        <li>
-          <a class="site-footer__link" href={`mailto:${business.email.value}`}>{business.email.value}</a>
-        </li>
-      </ul>
-      <h2 class="site-footer__heading site-footer__heading--spaced">{footer.areasHeading}</h2>
-      <p class="site-footer__muted">{business.areasServed.value.join(', ')}</p>
+      <div class="site-footer__phone"><CallLink /></div>
+      <a class="site-footer__link site-footer__email" href={`mailto:${business.email.value}`}><FooterIcon name="mail" /><span>{business.email.value}</span></a>
+      {business.areasServed.value.length > 0 && <div class="site-footer__areas"><FooterIcon name="pin" /><div><h2 class="site-footer__areas-heading">{footer.areasHeading}</h2><p class="site-footer__muted">{business.areasServed.value.join(' / ')}</p></div></div>}
     </div>
   </div>
-
-  <div class="wrap">
+  <div class="wrap site-footer__bottom">
     <p class="site-footer__legal">&copy; {year} {business.name}. {footer.rights}</p>
+    <p class="site-footer__credit">{footer.designCredit}</p>
+    <a class="site-footer__link" href={footer.privacyPath}>{footer.privacyLabel}</a>
   </div>
 </footer>
-
 <style>
-  .site-footer {
-    padding-block-start: var(--space-2xl);
+  .site-footer { position: relative; isolation: isolate; overflow: clip; padding-block: var(--footer-padding-block); }
+  .site-footer__marble { position: absolute; z-index: -2; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: var(--footer-marble-opacity); }
+  .site-footer__grid, .site-footer__bottom { max-width: var(--home-wrap-width); padding-inline: var(--footer-gutter); }
+  .site-footer__grid { display: grid; gap: var(--space-xl); padding-block-end: var(--footer-grid-bottom); }
+  .site-footer__brand { order: -2; display: grid; grid-template-columns: minmax(0,1fr); align-content: start; justify-items: start; gap: var(--space-md); min-width: 0; }
+  .site-footer__logo { display: block; width: var(--footer-logo-width); max-width: 100%; min-height: var(--tap-target); }
+  .site-footer__brand > p { min-width: 0; max-width: var(--footer-brand-measure); background: var(--color-ink); }
+  .site-footer__muted, .site-footer__location { color: var(--color-on-ink); font-size: var(--footer-copy-size); line-height: var(--leading-lead); }
+  .site-footer__location span { min-width: 0; }
+  .site-footer__location { display: flex; align-items: center; gap: var(--space-sm); }
+  .site-footer__navigation { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(100%,var(--footer-nav-min)),1fr)); gap: var(--space-lg); min-width: 0; }
+  .site-footer__navigation nav { min-width: 0; background: var(--color-ink); }
+  .site-footer__heading { margin-block-end: var(--space-xs); color: var(--color-on-ink); font-family: var(--font-reference-display); font-size: var(--footer-heading-size); font-weight: var(--weight-body); letter-spacing: var(--tracking-heading); line-height: var(--leading-tight); }
+  .site-footer__navigation .site-footer__heading::after { content: ''; display: block; width: var(--footer-heading-line); height: var(--line-strong); background: var(--color-accent-on-ink); margin-block-start: var(--space-sm); }
+  .site-footer__link { display: flex; align-items: center; gap: var(--space-sm); min-height: var(--tap-target); padding-block: var(--space-xs); font-size: var(--footer-link-size); line-height: var(--leading-tight); text-decoration: none; overflow-wrap: anywhere; }
+  .site-footer__link span { min-width: 0; }
+  .site-footer__link:hover { text-decoration: underline; text-decoration-color: var(--color-accent-on-ink); }
+  .site-footer__navigation ul { display: grid; gap: 0; }
+  .site-footer__contact { order: -1; min-width: 0; padding: var(--footer-contact-padding); border: var(--line-thin) solid var(--color-accent-on-ink); border-radius: var(--footer-contact-radius); background: var(--color-footer-panel); }
+  .site-footer__phone { font-size: var(--footer-phone-size); }
+  .site-footer__phone :global(.call-plain) { font-weight: var(--weight-body); max-width: 100%; background: var(--color-footer-panel); gap: var(--space-sm); }
+  .site-footer__phone :global(.call-icon) { width: var(--footer-icon-size); height: var(--footer-icon-size); stroke: var(--color-accent-on-ink); }
+  .site-footer__email { color: var(--color-on-ink); }
+  .site-footer__areas { display: flex; align-items: start; gap: var(--space-sm); margin-block-start: var(--space-sm); padding-block-start: var(--space-sm); border-block-start: var(--line-thin) solid var(--color-on-ink-muted); }
+  .site-footer__areas-heading { font-family: var(--font-display); font-size: var(--footer-copy-size); font-weight: var(--weight-display); color: var(--color-accent-on-ink); letter-spacing: 0; margin-block-end: var(--space-xs); }
+  .site-footer__bottom { display: grid; grid-template-columns: minmax(0,1fr); align-items: center; justify-items: center; gap: var(--space-xs) var(--space-lg); padding-block-start: var(--space-xs); position: relative; text-align: center; }
+  .site-footer__bottom::before { content: ''; position: absolute; inset-inline: var(--footer-gutter); inset-block-start: 0; height: var(--line-thin); background: linear-gradient(90deg,transparent,var(--color-accent-on-ink),transparent); }
+  .site-footer__legal, .site-footer__credit, .site-footer__bottom > a { min-width: 0; background: var(--color-ink); color: var(--color-on-ink); font-size: var(--footer-copy-size); }
+  .site-footer__corner { display: none; }
+  @media(min-width: 900px) {
+    .site-footer__bottom { grid-template-columns: minmax(0,1fr) auto minmax(0,1fr); }
+    .site-footer__legal { justify-self: start; text-align: start; }
+    .site-footer__bottom > a { justify-self: end; }
   }
-
-  .site-footer__grid {
-    display: grid;
-    gap: var(--space-xl) var(--space-lg);
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--footer-column-min)), 1fr));
-  }
-
-  .site-footer__contact {
-    grid-column: 1 / -1;
-  }
-
-  .site-footer__brand {
-    grid-column: 1 / -1;
-    display: grid;
-    gap: var(--space-sm);
-  }
-
-  .site-footer__logo {
-    display: block;
-    width: var(--logo-width-footer);
-    margin-block-end: var(--space-xs);
-  }
-
-  .site-footer__heading {
-    margin-block-end: var(--space-xs);
-    color: var(--color-accent-on-ink);
-    font-family: var(--font-body);
-    font-size: var(--text-sm);
-    font-weight: var(--weight-strong);
-    letter-spacing: 0;
-    line-height: var(--leading-body);
-  }
-
-  .site-footer__heading--spaced {
-    margin-block-start: var(--space-lg);
-  }
-
-  .site-footer__muted {
-    color: var(--color-on-ink-muted);
-  }
-
-  .site-footer__link {
-    display: flex;
-    align-items: center;
-    min-height: var(--tap-target);
-    overflow-wrap: anywhere;
-    text-decoration: none;
-  }
-
-  .site-footer__link:hover {
-    text-decoration: underline;
-    text-decoration-color: var(--color-accent-on-ink);
-  }
-
-  .site-footer__legal {
-    margin-block-start: var(--space-xl);
-    padding-block: var(--space-md);
-    border-block-start: var(--line-thin) solid var(--color-line-on-ink);
-    max-width: none;
-    color: var(--color-on-ink-muted);
-    font-size: var(--text-sm);
-  }
-
-  @media (min-width: 900px) {
-    .site-footer__grid {
-      grid-template-columns: 1.5fr 1fr 1fr 1.2fr;
-    }
-
-    .site-footer__contact {
-      grid-column: auto;
-    }
-
-    .site-footer__brand {
-      grid-column: auto;
-      align-content: start;
-      padding-inline-end: var(--space-xl);
-    }
-
-    .site-footer__logo {
-      width: var(--logo-width-footer-wide);
-    }
+  @media(min-width: 1100px) {
+    .site-footer__grid { grid-template-columns: minmax(0,1.1fr) minmax(0,1.65fr) minmax(0,1.15fr); gap: var(--footer-desktop-gap); align-items: start; }
+    .site-footer__navigation { grid-template-columns: minmax(0,1.45fr) minmax(0,1fr); }
+    .site-footer__navigation nav { border-inline-start: var(--line-thin) solid var(--color-line-on-ink); padding-inline-start: var(--space-lg); }
+    .site-footer__contact { order: 0; }
+    .site-footer__corner { display: block; position: absolute; z-index: -1; inset-inline-end: 0; inset-block-end: 0; width: var(--footer-corner-width); height: var(--footer-corner-height); background: var(--color-accent-on-ink); clip-path: polygon(100% 0,100% 100%,0 100%); }
+    .site-footer__stone { position: absolute; inset: 0; clip-path: polygon(100% 8%,100% 100%,8% 100%); overflow: hidden; }
+    .site-footer__corner img { position: absolute; inset-block-start: 0; inset-inline-end: 0; width: var(--footer-marble-zoom); max-width: none; height: var(--footer-marble-zoom); object-fit: cover; object-position: right top; }
   }
 </style>

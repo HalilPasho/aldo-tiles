@@ -11,8 +11,8 @@ sample: true
 photos:
   - src: ./sample-stone-look-shower-wall.jpg
     alt: "Sample placeholder image: greige stone-look porcelain wall tile laid in a stacked pattern"
-  - src: ./sample-stone-look-shower-niche-wall.jpg
-    alt: "Sample placeholder image: mushroom-toned stone-look tile set vertically on a shower wall"
+  - src: ./sample-service-bathroom.jpg
+    alt: "Sample design illustration: greige porcelain walk-in shower with a lit niche and black fixtures"
   - src: ./sample-stone-look-shower-floor-mosaic.jpg
     alt: "Sample placeholder image: small taupe hexagon mosaic tile for a shower floor"
 ---

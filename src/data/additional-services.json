@@ -1,0 +1,89 @@
+{
+  "wall-tiling": {
+    "title": "Wall Tiling",
+    "metaTitle": "Wall Tiling in Mississauga | EM Tile",
+    "metaDescription": "Professional wall tile installation for bathrooms, kitchens and other spaces, with a focus on a clean, modern and durable finish.",
+    "h1": "Wall Tiling",
+    "summary": "Professional wall tile installation for bathrooms, kitchens and other spaces, with a focus on a clean, modern and durable finish.",
+    "order": 5,
+    "sample": true,
+    "highlights": [
+      "Surface preparation",
+      "Wall tile installation",
+      "Clean edges & corners",
+      "Grouting & sealing",
+      "Various tile styles & sizes",
+      "Durable & easy to clean"
+    ],
+    "faqs": [],
+    "detailHeading": "Choosing tile for your walls",
+    "paragraphs": [
+      "Wall tiles change how a room catches the light. A glossy ceramic surface reflects lamps and daylight, while a matte porcelain finish gives a quieter appearance. Large rectangles create broad uninterrupted planes; smaller pieces bring more grout lines into the composition. Compare a few samples in the room itself, because a tile can look warmer beside timber cabinetry and cooler beside a white painted wall.",
+      "Think about where the tiled area should begin and end. A full-height feature wall has a different effect from a short splashback behind a basin. Corners, window reveals, shelves and electrical outlets all influence the arrangement. Marking these positions on a drawing helps show where full pieces can sit and where a cut will be visible. An edge profile also deserves consideration alongside the tile rather than after the layout has been chosen.",
+      "For a shower, the decorative surface is only one part of the wall. The backing and waterproofing underneath need to suit a wet area. Outside the shower, a kitchen or feature wall has its own surface conditions to consider. When you send a message, include a photograph of the wall, its approximate height and width, and any tile samples you already have. These details make the first conversation about the space more useful."
+    ],
+    "inspirationLabels": [
+      "Illustrative grey tiled shower with a lit niche",
+      "Illustrative stone-look wall with a white vase",
+      "Illustrative ivory subway-tile backsplash"
+    ]
+  },
+  "custom-tile-layouts": {
+    "title": "Custom Tile Layouts",
+    "metaTitle": "Custom Tile Layouts in Mississauga | EM Tile",
+    "metaDescription": "Unique and tailored tile layouts that match your style, space and vision, from classic patterns to modern designs.",
+    "h1": "Custom Tile Layouts",
+    "summary": "Unique and tailored tile layouts that match your style, space and vision, from classic patterns to modern designs.",
+    "order": 6,
+    "sample": true,
+    "highlights": [
+      "Custom design & patterns",
+      "Layout planning",
+      "Pattern combinations",
+      "Precise cuts & fitting",
+      "All tile types & sizes",
+      "Clean & polished finish"
+    ],
+    "faqs": [],
+    "detailHeading": "Finding a pattern for your space",
+    "paragraphs": [
+      "A custom arrangement starts with the shape of the room and the effect you want to create. Herringbone brings movement to a narrow backsplash, a stacked grid gives a calm architectural rhythm, and a contrasting border can frame a floor. Looking at the pattern from the doorway is useful: this is often the first view of the finished surface, and it can reveal which lines should feel central.",
+      "Tile dimensions affect a pattern as much as colour does. A long narrow rectangle produces a different herringbone rhythm from a short wide piece. Mixing sizes requires a compatible module so the joints can meet consistently. Before settling on a design, place several pieces together with a gap between them. This gives a clearer impression of the repeat than a single sample held against a wall.",
+      "Balance decorative detail with the surrounding finishes. A busy patterned floor may work best beside simple cabinetry, while a quiet stone-look tile can support an interesting change of direction. Consider thresholds and adjoining rooms as part of the same composition. Share an inspiration picture, rough room measurements and photographs of the surrounding surfaces when you enquire. If you have a preferred pattern, describe what you like about it: the geometry, the contrast, the direction or the material. That makes the design discussion more specific."
+    ],
+    "inspirationLabels": [
+      "Illustrative stone-look wall tile arrangement",
+      "Illustrative herringbone backsplash with gold fittings",
+      "Illustrative large-format grey tiled floor"
+    ]
+  },
+  "premium-tile-finishing": {
+    "title": "Premium Tile Finishing",
+    "metaTitle": "Premium Tile Finishing in Mississauga | EM Tile",
+    "metaDescription": "High-end tile installation with extra attention to detail, precise cuts and an elegant finish.",
+    "h1": "Premium Tile Finishing",
+    "summary": "High-end tile installation with extra attention to detail, precise cuts and an elegant finish.",
+    "order": 7,
+    "sample": true,
+    "highlights": [
+      "Precision cuts & detailing",
+      "Custom edges & profiles",
+      "Premium grout & sealing",
+      "Pattern & layout alignment",
+      "High-end materials",
+      "Flawless final finish"
+    ],
+    "faqs": [],
+    "detailHeading": "The details that shape the finish",
+    "paragraphs": [
+      "A refined tiled surface depends on the relationship between small details. Look along the edges of a niche, around an outside corner and across the joints where adjoining surfaces meet. These junctions draw the eye even when the main tile is understated. Choosing an edge treatment early helps it feel like part of the design rather than a separate strip added at the end.",
+      "Metal profiles can introduce a subtle line around a tiled edge. Brushed gold, silver-toned and dark finishes each create a different relationship with taps, handles and lighting. Their shape and depth need to suit the thickness of the tile. Stone and porcelain also have different edge characteristics, so a sample is helpful when discussing a corner, a shelf or an exposed end. A drawing can show how those details meet before the pieces are cut.",
+      "Grout colour changes the final impression too. A close match lets the material read as a continuous plane, while a stronger contrast brings the layout forward. Veined surfaces need particular attention when neighbouring pieces are placed together: their direction can either create a gentle flow or make a visible break. Bring photographs of the room and the actual tile or product information to the discussion. Point out the details you care most about, such as the trim around a niche, the line beside a vanity or the transition at a doorway."
+    ],
+    "inspirationLabels": [
+      "Illustrative shower with neatly finished tile edges",
+      "Illustrative herringbone tile and gold basin fittings",
+      "Illustrative marble corner with gold edge profiles"
+    ]
+  }
+}

@@ -1,10 +1,10 @@
 {
   "launchReady": false,
-  "name": "Aldo Tile",
+  "name": "EM Tile",
   "baseCity": "Mississauga", "province": "ON", "country": "CA",
   "siteUrl": { "value": "https://aldotile.example", "sample": true },
-  "phone": { "display": "(647) 555-0100", "e164": "+16475550100", "sample": true },
-  "email": { "value": "hello@example.com", "sample": true },
+  "phone": { "display": "+905 904 5116", "e164": "+9059045116", "sample": false },
+  "email": { "value": "meco.erald90@gmail.com", "sample": false },
   "areasServed": { "value": ["Mississauga", "Brampton", "Oakville", "Etobicoke"], "sample": true },
   "yearsExperience": { "value": 15, "sample": true },
   "credentials": { "value": ["Fully insured", "WSIB coverage"], "sample": true }

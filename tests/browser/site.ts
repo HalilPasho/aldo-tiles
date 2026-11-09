@@ -32,6 +32,9 @@ const projectIds = existsSync(PROJECTS_DIR)
 export const ROUTES: string[] = [
   ...REQUIRED_ROUTES.filter((route: string) => !route.startsWith('/services/')),
   ...services.map(({ id }) => `/services/${id}/`),
+  '/services/wall-tiling/',
+  '/services/custom-tile-layouts/',
+  '/services/premium-tile-finishing/',
   ...projectIds.map((id) => `/projects/${id}/`),
   '/404.html',
 ];

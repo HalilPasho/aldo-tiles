@@ -1,6 +1,6 @@
 ---
 title: "Kitchen Backsplash Installation"
-metaTitle: "Kitchen Backsplash Installation in Mississauga | Aldo Tile"
+metaTitle: "Kitchen Backsplash Installation in Mississauga | EM Tile"
 metaDescription: "Kitchen backsplash installation in Mississauga. Subway, mosaic, herringbone and handmade-look tile, with tidy edges and neat cuts around every outlet."
 h1: "Kitchen Backsplash Installation in Mississauga"
 summary: "A small area that gets looked at every day. We plan backsplashes around your cabinets, outlets and counters, and keep your kitchen usable while we work."

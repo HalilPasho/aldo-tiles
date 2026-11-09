@@ -1,6 +1,6 @@
 ---
 title: "Bathroom & Shower Tile Installation"
-metaTitle: "Bathroom & Shower Tile Installation in Mississauga | Aldo Tile"
+metaTitle: "Bathroom & Shower Tile Installation in Mississauga | EM Tile"
 metaDescription: "Waterproofed, carefully laid shower and bathroom tile in Mississauga. Walk-in showers, tub surrounds, niches and floors, quoted in writing."
 h1: "Bathroom and Shower Tile Installation in Mississauga"
 summary: "Walk-in showers, tub surrounds and bathroom floors, built on a proper waterproofing system and laid out so every line looks intentional."

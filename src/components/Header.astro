@@ -3,24 +3,29 @@ import business from '../data/business.json';
 import copy from '../data/copy.json';
 import CallLink from './CallLink.astro';
 import Logo from './Logo.astro';
+import Button from './Button.astro';
 
 const { nav, homeLinkLabel } = copy.site;
 const here = Astro.url.pathname;
 
 function currentState(path: string) {
   if (here === path) return 'page';
+  if (path === '/') return undefined;
   return here.startsWith(path) ? 'true' : undefined;
 }
 ---
 
-<header class="site-header">
+<header class:list={['site-header', {'site-header--home': here === '/'}]} data-site-header>
   <div class="wrap site-header__row">
     <a class="site-header__logo" href="/" aria-label={`${business.name} ${homeLinkLabel}`}>
       <Logo />
     </a>
 
     <nav class="nav-full" aria-label={nav.label}>
-      <ul class="nav-full__list">
+      <template data-primary-nav><ul class="nav-full__list nav-full__list--primary">
+        {nav.primary.map(({ label, path }) => <li><a class="nav-full__link" href={path} aria-current={currentState(path)}>{label}</a></li>)}
+      </ul></template>
+      <ul class="nav-full__list nav-full__list--fallback" data-fallback-nav>
         {
           nav.services.map(({ label, path }) => (
             <li>
@@ -44,8 +49,9 @@ function currentState(path: string) {
     </nav>
 
     <div class="site-header__call site-header__call--full">
-      <CallLink variant="button" />
+      <CallLink variant="button" text={copy.site.nav.contactButtonLabel} />
     </div>
+    <div class="site-header__quote"><Button href="/contact/">{copy.home.reference.quoteLabel}<span aria-hidden="true"> →</span></Button></div>
     <div class="site-header__call site-header__call--compact">
       <CallLink />
     </div>
@@ -57,7 +63,7 @@ function currentState(path: string) {
         <span class="nav-menu__word--open">{nav.closeLabel}</span>
       </summary>
       <nav class="nav-menu__panel" aria-label={nav.label}>
-        <ul class="nav-menu__services">
+        <ul class="nav-menu__services" data-fallback-nav>
           {
             nav.services.map(({ label, path }) => (
               <li>
@@ -68,7 +74,10 @@ function currentState(path: string) {
             ))
           }
         </ul>
-        <ul class="nav-menu__pages">
+        <template data-primary-nav><ul class="nav-menu__pages nav-menu__pages--primary">
+          {nav.primary.map(({ label, path }) => <li><a class="nav-menu__link" href={path} aria-current={currentState(path)}>{label}</a></li>)}
+        </ul></template>
+        <ul class="nav-menu__pages nav-menu__pages--fallback" data-fallback-nav>
           {
             nav.pages.map(({ label, path }) => (
               <li>
@@ -84,7 +93,23 @@ function currentState(path: string) {
   </div>
 </header>
 
+<script>
+  // Keep direct service links as the static fallback; enhance to the simpler main menu after loading.
+  document.querySelectorAll('[data-site-header]').forEach((header) => {
+    header.querySelectorAll<HTMLTemplateElement>('template[data-primary-nav]').forEach((template) => {
+      template.replaceWith(template.content.cloneNode(true));
+    });
+    header.querySelectorAll('[data-fallback-nav]').forEach((fallback) => fallback.remove());
+    header.classList.add('is-enhanced');
+  });
+</script>
+
 <style>
+  .nav-full__list--primary,
+  .nav-menu__pages--primary { display: none; }
+  .is-enhanced .nav-menu__services,
+  .is-enhanced .nav-menu__pages--fallback { display: none; }
+  .is-enhanced .nav-menu__pages--primary { display: block; }
   .site-header {
     position: relative;
     z-index: var(--layer-header);
@@ -100,17 +125,21 @@ function currentState(path: string) {
     justify-content: space-between;
     gap: var(--space-2xs) var(--space-xs);
     min-height: var(--header-height);
+    padding-block: var(--space-xs);
   }
 
   .site-header__logo {
-    display: block;
+    display: flex;
+    align-items: center;
+    min-height: var(--tap-target);
     flex: none;
     width: var(--logo-width-header);
     margin-inline-end: auto;
   }
 
   .nav-full,
-  .site-header__call--full {
+  .site-header__call--full,
+  .site-header__quote {
     display: none;
   }
 
@@ -251,9 +280,9 @@ function currentState(path: string) {
     border-radius: var(--radius-tile);
     background: var(--color-ink);
     color: var(--color-on-ink);
-    font-family: var(--font-display);
-    font-size: var(--text-lg);
-    font-weight: var(--weight-display);
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    font-weight: var(--weight-strong);
     line-height: var(--leading-tight);
     text-decoration: none;
   }
@@ -312,6 +341,7 @@ function currentState(path: string) {
     .site-header__row {
       gap: var(--space-lg);
       min-height: var(--header-sticky-height);
+      max-width: var(--home-wrap-width);
     }
 
     .site-header__logo {
@@ -325,24 +355,41 @@ function currentState(path: string) {
     }
 
     .site-header__call--full {
-      display: block;
+      display: none;
     }
+    .is-enhanced .site-header__call--full { display: block; }
+    .site-header__quote { display: block; }
+    .site-header__call--full :global(.button) { background: var(--color-ink); color: var(--color-on-ink); font-size: var(--home-button-size); }
+    .site-header__quote :global(.button) { font-size: var(--home-button-size); }
 
     .site-header__call--compact,
     .nav-menu {
       display: none;
     }
 
+    .site-header--home.is-enhanced .site-header__row { position: relative; max-width: none; min-height: var(--home-header-height); padding: var(--home-header-padding); }
+    .site-header--home.is-enhanced .site-header__logo { width: var(--home-header-logo-width); }
+    .site-header--home.is-enhanced .nav-full__list--primary { font-size: var(--home-header-nav-size); gap: var(--home-header-nav-gap); }
+    .site-header--home.is-enhanced .site-header__call--full :global(.button), .site-header--home.is-enhanced .site-header__quote :global(.button) { font-size: var(--home-header-button-size); }
+    .site-header--home.is-enhanced .site-header__quote :global(.button) { background: linear-gradient(115deg,var(--color-home-header-gold-start),var(--color-home-header-gold-end)); color: var(--color-surface-raised); }
+    .site-header--home.is-enhanced .site-header__quote :global(.button:hover) { background: var(--color-ink); }
+    .site-header--home.is-enhanced .nav-full { position: absolute; inset-inline-start: calc(50% - var(--home-header-nav-offset)); inset-block-start: 50%; translate: -50% -50%; margin-inline: 0; }
+    .site-header--home.is-enhanced .site-header__call--full { margin-inline-start: auto; }
+
     .nav-full__list {
       display: flex;
       align-items: center;
-      gap: var(--space-lg);
+      gap: var(--header-nav-gap);
+      font-size: var(--header-nav-text);
+      font-weight: var(--weight-strong);
     }
+    .nav-full__list--fallback { gap: var(--space-md); }
+    .nav-full__list--primary { display: none; }
+    .is-enhanced .nav-full__list--primary { display: flex; }
+    .is-enhanced .nav-full__list--fallback { display: none; }
 
     .nav-full__divider {
-      width: var(--line-thin);
-      height: var(--nav-divider-height);
-      background: var(--color-line);
+      display: none;
     }
 
     .nav-full__link {
@@ -359,5 +406,6 @@ function currentState(path: string) {
     .nav-full__link[aria-current] {
       border-block-end-color: var(--color-accent);
     }
+    .nav-full__link[aria-current="page"] { color: var(--color-accent-text); }
   }
 </style>
