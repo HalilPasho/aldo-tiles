@@ -83,11 +83,10 @@ const choices = [{ id: 'all', label: allLabel ?? filterAll }, ...options];
     border: var(--line-thin) solid var(--color-line);
     border-radius: var(--radius-tile);
     background: var(--color-surface-raised);
+    color: var(--color-ink);
     line-height: var(--leading-tight);
-    transition:
-      background-color var(--duration-quick) var(--ease-out),
-      border-color var(--duration-quick) var(--ease-out),
-      color var(--duration-quick) var(--ease-out);
+    /* Change text and background together: fading away a selected gradient briefly leaves white text on white. */
+    transition: border-color var(--duration-quick) var(--ease-out);
   }
 
   /* The logo's raked tile stands in for the radio's dot. It stays empty until chosen, so colour isn't the only signal. */

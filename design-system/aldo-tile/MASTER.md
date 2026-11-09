@@ -543,3 +543,8 @@ The shared HomeCta phone and message buttons remain side by side through 760px, 
 ## Mobile Recent Projects heading actions - November 2026
 
 View More Projects follows the heading before the service filters in reading and visual order. Through 760px it aligns with the left edge of the title. Filters use a regular three-column grid with centered labels and equal widths, keeping the final options aligned rather than floating in the center. Desktop retains its title/filter/link header row.
+
+
+## Project filter contrast during state changes - November 2026
+
+GitHub Windows check exposed white text on the light Projects background immediately after deselecting a gradient filter. Frame sampling reproduced the transient contrast loss: background-image disappeared while text and background-color were still fading. Filter text and fill now change together without color/background transitions, with an explicit ink default. Border feedback retains its short transition. Existing accessibility tests stay intact; no thresholds or checks are weakened.
