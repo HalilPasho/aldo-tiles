@@ -3,9 +3,10 @@ import copy from '../data/copy.json';
 
 interface Props {
   items: { name: string; path: string }[];
+  showHomeIcon?: boolean;
 }
 
-const { items } = Astro.props;
+const { items, showHomeIcon = false } = Astro.props;
 ---
 
 <nav class="breadcrumbs" aria-label={copy.site.breadcrumbLabel}>
@@ -19,7 +20,7 @@ const { items } = Astro.props;
             </span>
           ) : (
             <a class="breadcrumbs__link" href={path}>
-              {name}
+              {showHomeIcon && index === 0 && <svg class="breadcrumbs__home-icon" viewBox="0 0 48 48" aria-hidden="true"><path d="m4 23 20-18 20 18M10 20v23h10V31h8v12h10V20M33 12V6h7v12" /></svg>}{name}
             </a>
           )}
         </li>
@@ -29,6 +30,7 @@ const { items } = Astro.props;
 </nav>
 
 <style>
+  .breadcrumbs__home-icon { width: var(--icon-size); height: var(--icon-size); margin-inline-end: var(--space-xs); fill: none; stroke: var(--color-accent-text); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
   .breadcrumbs__list {
     display: flex;
     flex-wrap: wrap;

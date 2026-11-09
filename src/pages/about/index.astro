@@ -1,214 +1,135 @@
----
+﻿---
+import { Image, getImage } from 'astro:assets';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
-import CtaBand from '../../components/CtaBand.astro';
+import HomeCta from '../../components/HomeCta.astro';
+import AboutIcon from '../../components/AboutIcon.astro';
+import bathroom from '../../assets/sample-about-shower-illustration.png';
+import marble from '../../assets/sample-marble-tile-stack.png';
 import business from '../../data/business.json';
 import copy from '../../data/copy.json';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { breadcrumbSchema, localBusinessSchema } from '../../lib/seo';
-
 const { about } = copy;
 const path = '/about/';
-const breadcrumbs = [
-  { name: copy.site.breadcrumbHome, path: '/' },
-  { name: about.breadcrumb, path },
-];
-
+const breadcrumbs = [{ name: copy.site.breadcrumbHome, path: '/' }, { name: about.breadcrumb, path }];
 const years = business.yearsExperience.value;
 const credentials = business.credentials.value;
 const areas = business.areasServed.value;
 const hasExperience = Boolean(years) || credentials.length > 0;
 const hasAreas = areas.length > 0;
+const stepIcons = ['chat','quote','plan','layers','check'];
+const corner = await getImage({src:marble,width:480,format:'webp'});
 ---
-
-<BaseLayout
-  title={about.metaTitle}
-  description={about.metaDescription}
-  {path}
-  schema={[localBusinessSchema(business), breadcrumbSchema(business.siteUrl.value, breadcrumbs)]}
->
-  <div class="wrap page-head">
-    <Breadcrumbs items={breadcrumbs} />
-    <h1>{about.h1}</h1>
-    <p class="page-head__lead">{about.lead}</p>
-  </div>
-
-  <div class="wrap">
-    <section class="text-row">
-      <h2>{about.story.heading}</h2>
-      <div class="text-row__body">
-        {about.story.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+<BaseLayout title={about.metaTitle} description={about.metaDescription} {path} schema={[localBusinessSchema(business), breadcrumbSchema(business.siteUrl.value, breadcrumbs)]}>
+  <section class="about-hero">
+    <div class="wrap about-hero__inner">
+      <Breadcrumbs items={breadcrumbs} showHomeIcon />
+      <div class="about-hero__copy">
+        <p class="about-eyebrow">{about.eyebrow}</p>
+        <h1>{about.headingPrefix}{' '}<span>{business.name}</span></h1>
+        <p class="about-hero__lead">{about.lead}</p>
       </div>
+    </div>
+    <div class="about-hero__photo"><Image src={bathroom} alt={about.imageAlt} widths={[640,1024,1536]} sizes="(min-width: 900px) 55vw, 100vw" format="webp" loading="eager" fetchpriority="high" /></div>
+  </section>
+  <div class="about-belief">
+    <section class="wrap about-belief__inner">
+      <h2 class="about-ruled">{about.story.heading}</h2>
+      <div class="about-belief__body">{about.story.paragraphs.map((paragraph)=><p>{paragraph}</p>)}</div>
     </section>
   </div>
-
   <section class="wrap about-work">
-    <div class="about-work__intro">
-      <h2>{about.wayOfWorking.heading}</h2>
-      <p class="about-muted">{about.wayOfWorking.intro}</p>
-    </div>
-    <ol class="tile-grid about-steps">
-      {
-        about.wayOfWorking.steps.map(({ title, text }) => (
-          <li class="panel about-step">
-            <h3>{title}</h3>
-            <p class="about-muted">{text}</p>
-          </li>
-        ))
-      }
+    <div class="about-work__intro"><h2 class="about-ruled">{about.wayOfWorking.heading}</h2><p>{about.wayOfWorking.intro}</p></div>
+    <ol class="about-steps">
+      {about.wayOfWorking.steps.map(({title,text},index)=><li class="about-step">
+        <span class="about-step__icon"><AboutIcon name={stepIcons[index] ?? 'check'} /></span>
+        <h3>{title}</h3><p>{text}</p>
+      </li>)}
     </ol>
   </section>
-
-  {
-    (hasExperience || hasAreas) && (
-      <div class:list={['wrap about-facts tile-grid', { 'tile-grid--split': hasExperience && hasAreas }]}>
-        {hasExperience && (
-          <section class="panel on-ink about-experience">
-            <h2>{about.experience.heading}</h2>
-            <div class="about-experience__facts">
-              {years ? (
-                <p class="about-years">
-                  <span class="about-years__number">{years}</span>
-                  <span class="about-years__label">{about.experience.yearsLabel}</span>
-                </p>
-              ) : null}
-              {credentials.length > 0 && (
-                <ul class="about-credentials">
-                  {credentials.map((credential) => (
-                    <li>{credential}</li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          </section>
-        )}
-
-        {hasAreas && (
-          <section class="panel about-areas">
-            <h2>{about.areas.heading}</h2>
-            <p class="about-muted">{about.areas.intro}</p>
-            <ul class="about-areas__list">
-              {areas.map((area) => (
-                <li>{area}</li>
-              ))}
-            </ul>
-          </section>
-        )}
+  {(hasExperience || hasAreas) && <div class="wrap about-facts-frame"><div class:list={['about-facts','on-ink',{'about-facts--split':hasExperience && hasAreas}]}>
+    <div class="about-facts__corner" aria-hidden="true"><span style={{backgroundImage:`url(${corner.src})`}}></span></div>
+    {hasExperience && <section class="about-experience">
+      <h2 class="about-ruled">{about.experience.heading}</h2>
+      <div class="about-experience__facts">
+        {years ? <p class="about-years"><AboutIcon name="calendar" /><span class="about-years__copy"><span class="about-years__number">{years}</span><span class="about-years__label">{about.experience.yearsLabel}</span></span></p> : null}
+        {hasAreas && <p class="about-count"><AboutIcon name="pin" /><span class="about-years__copy"><span class="about-years__number">{areas.length}</span><span class="about-years__label">{about.experience.areasLabel}</span></span></p>}
+        {credentials.length > 0 && <div class="about-credentials-wrap"><AboutIcon name="shield" /><ul class="about-credentials">{credentials.map(credential=><li>{credential}</li>)}</ul></div>}
       </div>
-    )
-  }
-
-  <CtaBand heading={about.cta.heading} text={about.cta.text} />
+      <div class="about-experience__rule" aria-hidden="true"></div>
+    </section>}
+    {hasAreas && <section class="about-areas"><h2>{about.areas.heading}</h2><p>{about.areas.intro}</p><ul class="about-areas__list">{areas.map(area=><li><AboutIcon name="pin" /><span>{area}</span></li>)}</ul></section>}
+  </div></div>}
+  <HomeCta content={about.cta} compactTypography />
 </BaseLayout>
-
 <style>
-  .about-muted {
-    color: var(--color-muted);
+  :global(body:has(.about-hero)) { background: var(--color-portfolio-surface); }
+  .wrap { padding-inline: var(--portfolio-gutter); }
+  h1,h2 { font-family: var(--font-reference-display); font-weight: var(--weight-body); letter-spacing: var(--home-heading-tracking); }
+  h1 { font-size: var(--about-title-size); text-wrap: initial; }
+  h1 span { color: var(--color-accent-text); }
+  h2 { font-size: var(--about-heading-size); text-wrap: initial; }
+  .about-hero { position: relative; isolation: isolate; overflow: clip; background: var(--color-surface-raised); }
+  .about-hero__inner { display: grid; align-content: start; gap: var(--space-md); padding-block: var(--space-md) var(--about-section-gap); }
+  .about-hero__inner :global(.breadcrumbs__link) { text-decoration: underline; }
+  .about-hero__inner :global(.breadcrumbs__current) { color: var(--color-ink); font-weight: var(--weight-strong); }
+  .about-hero__copy { display: grid; align-content: start; gap: var(--space-sm); min-width: 0; background: var(--color-surface-raised); }
+  .about-eyebrow { font-size: var(--about-eyebrow-size); font-weight: var(--weight-strong); text-transform: uppercase; }
+  .about-eyebrow::before { content: ''; display: inline-block; width: var(--home-eyebrow-line); height: var(--line-strong); margin-inline-end: var(--space-sm); vertical-align: middle; background: var(--color-accent); }
+  .about-hero__lead { font-size: var(--about-lead-size); line-height: var(--leading-body); color: var(--color-muted); }
+  .about-hero__photo { position: relative; height: var(--about-hero-phone-height); background: linear-gradient(115deg,var(--color-gold-button-start),var(--color-gold-button-end)); padding-block-start: var(--line-strong); }
+  .about-hero__photo img { width: 100%; height: 100%; object-fit: cover; }
+  .about-belief { background: var(--color-surface-raised); }
+  .about-belief__inner { display: grid; gap: var(--space-md); padding-block: var(--about-section-gap); }
+  .about-belief__body { display: grid; gap: var(--space-md); font-size: var(--about-body-size); line-height: var(--leading-lead); }
+  .about-ruled::after { content: ''; display: block; width: var(--home-eyebrow-line); height: var(--line-strong); margin-block-start: var(--space-sm); background: var(--color-accent); }
+  .about-work { display: grid; gap: var(--space-md); padding-block: var(--about-section-gap); }
+  .about-work__intro { display: grid; gap: var(--space-sm); }
+  .about-work__intro p { color: var(--color-muted); font-size: var(--about-body-size); }
+  .about-steps { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(100%,var(--about-step-min)),1fr)); gap: var(--about-step-gap); grid-auto-rows: 1fr; align-items: stretch; counter-reset: step; }
+  .about-step { position: relative; display: grid; grid-template-rows: var(--about-icon-circle) auto 1fr; align-content: start; gap: var(--space-xs); height: 100%; min-width: 0; padding: var(--about-step-padding); border: var(--line-thin) solid var(--color-line); border-radius: var(--about-card-radius); background: var(--color-surface-raised); box-shadow: var(--shadow-home-project-card); counter-increment: step; }
+  .about-step__icon { display: grid; place-items: center; justify-self: center; width: var(--about-icon-circle); height: var(--about-icon-circle); border-radius: 50%; background: var(--color-trust-icon-surface); color: var(--color-accent-text); }
+  .about-step h3 { min-height: calc(var(--about-step-title-size) * var(--leading-tight) * 2); font-family: var(--font-display); font-size: var(--about-step-title-size); font-weight: var(--weight-display); line-height: var(--leading-tight); letter-spacing: 0; text-wrap: initial; }
+  .about-step h3::before { content: counter(step) '. '; }
+  .about-step p { font-size: var(--about-step-copy-size); line-height: var(--leading-body); }
+  .about-facts { position: relative; isolation: isolate; display: grid; gap: var(--space-lg); width: 100%; margin-inline: auto; margin-block-end: var(--about-section-gap); padding: var(--about-facts-padding); border-radius: var(--about-card-radius); overflow: clip; }
+  .about-experience,.about-areas { position: relative; display: grid; align-content: start; gap: var(--space-sm); min-width: 0; }
+  .about-experience > h2 { font-size: var(--about-facts-title); }
+  .about-experience > h2, .about-years, .about-count, .about-credentials-wrap, .about-areas > h2, .about-areas > p, .about-areas__list { background: var(--color-ink); }
+  .about-areas > h2, .about-areas > p, .about-areas__list { width: fit-content; max-width: 100%; }
+  .about-experience__facts { display: flex; flex-wrap: wrap; gap: var(--space-md); margin-block-start: 0; }
+  .about-years,.about-count { flex: 1 1 var(--about-fact-min); display: flex; align-items: start; gap: var(--space-sm); min-width: 0; }
+  .about-facts :global(.about-icon) { width: var(--about-facts-icon); height: var(--about-facts-icon); color: var(--color-accent-on-ink); }
+  .about-years__copy { display: grid; gap: var(--space-2xs); min-width: 0; }
+  .about-years__number { font-family: var(--font-reference-display); font-size: var(--about-fact-number); line-height: 1; }
+  .about-years__label { font-size: var(--about-facts-copy); line-height: var(--leading-lead); }
+  .about-credentials-wrap { flex: 1 1 var(--about-fact-min); display: grid; align-content: start; gap: var(--space-xs); min-width: 0; }
+  .about-credentials { font-size: var(--about-facts-copy); font-weight: var(--weight-strong); line-height: var(--leading-lead); }
+  .about-experience__rule { height: var(--line-thin); margin-block-start: var(--space-xs); background: linear-gradient(90deg,transparent,var(--color-accent-on-ink),transparent); }
+  .about-areas { gap: var(--space-xs); }
+  .about-areas h2 { font-size: var(--about-facts-subheading); }
+  .about-areas p { font-size: var(--about-facts-copy); line-height: var(--leading-lead); }
+  .about-areas__list { display: grid; gap: var(--space-xs); font-size: var(--about-facts-copy); font-weight: var(--weight-strong); }
+  .about-areas__list li { display: flex; align-items: center; gap: var(--space-sm); min-width: 0; }
+  .about-areas__list :global(.about-icon) { width: var(--icon-size); height: var(--icon-size); }
+  .about-facts__corner { position: absolute; z-index: -1; inset-inline-end: 0; inset-block-end: 0; width: var(--about-facts-corner-width); height: var(--about-facts-corner-height); background: var(--color-accent-on-ink); clip-path: polygon(100% 0,100% 100%,0 100%); }
+  .about-facts__corner span { position: absolute; inset: 0; background-size: auto var(--footer-marble-zoom); background-position: right top; clip-path: polygon(100% 8%,100% 100%,8% 100%); }
+  @media(min-width: 900px) {
+    .about-hero__inner { min-height: var(--about-hero-height); }
+    .about-hero__copy { width: var(--about-hero-copy-width); }
+    .about-hero__photo { position: absolute; z-index: -1; inset-block: 0; inset-inline-end: 0; width: var(--about-hero-photo-width); height: auto; padding: 0; clip-path: polygon(var(--about-hero-diagonal) 0,100% 0,100% 100%,0 100%); }
+    .about-hero__photo img { clip-path: polygon(calc(var(--about-hero-diagonal) + var(--about-hero-gold-edge)) 0,100% 0,100% 100%,var(--about-hero-gold-edge) 100%); }
+    .about-belief__inner { grid-template-columns: minmax(0,1fr) minmax(0,1.8fr); }
+    .about-belief__body { border-inline-start: var(--line-thin) solid var(--color-muted); padding-inline-start: var(--space-xl); }
+    .about-facts--split { grid-template-columns: var(--about-facts-columns); }
+    .about-facts--split .about-areas { border-inline-start: var(--line-thin) solid var(--color-on-ink-muted); padding-inline-start: var(--space-lg); }
+    .about-areas { padding-inline-end: var(--about-facts-corner-desktop); }
+    .about-facts__corner { width: var(--about-facts-corner-desktop); }
+    .about-areas__list { width: 100%; grid-template-columns: repeat(auto-fit,minmax(min(100%,var(--about-area-min)),1fr)); }
+    .about-experience__facts > :not(:first-child) { border-inline-start: var(--line-thin) solid var(--color-on-ink-muted); padding-inline-start: var(--space-md); }
   }
-
-  .about-work {
-    display: grid;
-    gap: var(--space-lg);
-    padding-block: var(--space-xl) var(--space-2xl);
-  }
-
-  .about-work__intro {
-    display: grid;
-    gap: var(--space-xs);
-  }
-
-  .about-steps {
-    counter-reset: step;
-  }
-
-  .about-step {
-    display: grid;
-    align-content: start;
-    gap: var(--space-xs);
-    counter-increment: step;
-  }
-
-  .about-step::before {
-    content: counter(step);
-    color: var(--color-accent-text);
-    font-family: var(--font-display);
-    font-size: var(--text-2xl);
-    font-weight: var(--weight-display);
-    line-height: var(--leading-tight);
-  }
-
-  .about-facts {
-    padding-block-end: var(--space-2xl);
-  }
-
-  .about-experience,
-  .about-areas {
-    display: grid;
-    align-content: start;
-    gap: var(--space-md);
-  }
-
-  .about-experience__facts {
-    display: grid;
-    gap: var(--space-lg);
-    align-items: end;
-  }
-
-  .about-years {
-    display: grid;
-    gap: var(--space-2xs);
-  }
-
-  .about-years__number {
-    color: var(--color-accent-on-ink);
-    font-family: var(--font-display);
-    font-size: var(--text-3xl);
-    font-weight: var(--weight-display);
-    line-height: 1;
-  }
-
-  .about-years__label {
-    color: var(--color-on-ink-muted);
-  }
-
-  .about-credentials {
-    display: grid;
-    gap: var(--space-xs);
-    font-weight: var(--weight-strong);
-  }
-
-  .about-areas h2 {
-    font-size: var(--text-xl);
-  }
-
-  .about-areas__list {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--space-2xs) var(--space-md);
-    font-weight: var(--weight-strong);
-  }
-
-  @media (min-width: 640px) {
-    .about-steps {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .about-step:last-child {
-      grid-column: 1 / -1;
-    }
-
-    .about-experience__facts {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      column-gap: var(--space-xl);
-    }
-  }
-
-  @media (min-width: 1100px) {
-    .about-steps {
-      grid-template-columns: repeat(5, minmax(0, 1fr));
-    }
-
-    .about-step:last-child {
-      grid-column: auto;
-    }
+  @media(min-width: 1100px) {
+    .about-steps { grid-template-columns: repeat(5,minmax(0,1fr)); }
+    .about-step:not(:last-child)::after { content: ''; position: absolute; inset-inline-end: calc(var(--space-sm) * -1); inset-block-start: 48%; width: var(--select-chevron-size); height: var(--select-chevron-size); border-block-start: var(--line-strong) solid var(--color-accent-text); border-inline-end: var(--line-strong) solid var(--color-accent-text); rotate: 45deg; }
   }
 </style>

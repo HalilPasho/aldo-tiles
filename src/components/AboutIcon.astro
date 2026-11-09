@@ -1,0 +1,18 @@
+﻿---
+interface Props { name: string; }
+const { name } = Astro.props;
+const paths: Record<string,string> = {
+  chat: 'M40 29a18 18 0 1 0-29 8L5 45l13-5a18 18 0 0 0 22-11ZM15 22h1m7 0h1m7 0h1',
+  quote: 'M10 4h22l8 8v32H10Zm22 0v10h8M16 23h17M16 30h17M16 37h11M16 12h7v5h-7Z',
+  plan: 'M4 42 14 5l8 2-10 37Zm4-9 4 1m-2-9 4 1m-2-9 4 1M27 5l17 37H27Zm6 18v12h5',
+  layers: 'm4 12 20-9 20 9-20 9Zm2 11-2 2 20 9 20-9-2-2M6 35l-2 2 20 9 20-9-2-2',
+  check: 'M42 24a18 18 0 1 1-5-13M14 23l7 7L39 11',
+  calendar: 'M9 10h30a3 3 0 0 1 3 3v29H6V13a3 3 0 0 1 3-3ZM6 21h36M15 5v10M33 5v10M15 28h1m8 0h1m8 0h1m-19 8h1m8 0h1m8 0h1',
+  pin: 'M24 45S8 27 8 18a16 16 0 0 1 32 0c0 9-16 27-16 27ZM24 24a6 6 0 1 0 0-12 6 6 0 0 0 0 12Z',
+  shield: 'M24 4 7 10v13c0 11 17 21 17 21s17-10 17-21V10L24 4Zm-9 20 6 6 13-14',
+};
+---
+<svg class="about-icon" viewBox="0 0 48 48" aria-hidden="true"><path d={paths[name] ?? paths.check} /></svg>
+<style>
+  .about-icon { display: block; flex: none; width: var(--about-icon-size); height: var(--about-icon-size); fill: none; stroke: currentColor; stroke-width: 2.8; stroke-linecap: round; stroke-linejoin: round; }
+</style>

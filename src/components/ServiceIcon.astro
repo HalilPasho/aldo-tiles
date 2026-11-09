@@ -1,0 +1,24 @@
+---
+interface Props { name: string; }
+const {name}=Astro.props;
+const paths:Record<string,string>={
+  niche:'M3 7h42v34H3Zm4 4h34v26H7ZM11 30h6v7h-6Zm20 0h6v7h-6M13 27h2m18 0h2',
+  level:'M3 16h42v16H3ZM9 21a3 3 0 1 0 0 6 3 3 0 0 0 0-6Zm30 0a3 3 0 1 0 0 6 3 3 0 0 0 0-6ZM18 16v7a6 6 0 0 0 12 0v-7M22 22h4',
+  heat:'M11 4C-1 18 23 24 11 44M24 4C12 18 36 24 24 44M37 4C25 18 49 24 37 44',
+  grid:'M5 5h38v38H5ZM24 5v38M5 24h38',
+  floor:'M12 6h32l-8 36H4Zm15 0-8 36M8 24h32',
+  bricks:'M4 7h40v34H4ZM4 18h40M4 30h40M17 7v11M32 7v11M11 18v12M27 18v12M17 30v11M32 30v11',
+  diamond:'m24 4 20 20-20 20L4 24Z',
+  gem:'M13 7h22l10 12-21 25L3 19Zm0 0 11 37L35 7M3 19h42M24 7 14 19m10-12 10 12',
+  corner:'M43 6H13a7 7 0 0 0-7 7v30M43 12H16a4 4 0 0 0-4 4v27',
+  drop:'M24 3S8 23 8 31a16 16 0 0 0 32 0C40 23 24 3 24 3Z',
+  sparkle:'M23 4c0 13-6 19-19 19 13 0 19 6 19 21 0-15 6-21 19-21C29 23 23 17 23 4ZM39 3v10M34 8h10',
+  layers:'m4 11 20-9 20 9-20 9Zm0 11 20 9 20-9M4 33l20 10 20-10',
+  shield:'M24 4 7 10v13c0 11 17 21 17 21s17-10 17-21V10L24 4Zm-9 20 6 6 13-14',
+  bath:'M3 24h42l-3 11a8 8 0 0 1-8 6H14a8 8 0 0 1-8-6Zm8 17-2 4m28-4 2 4M35 24V9a6 6 0 0 0-12 0v3h8',
+  plan:'M5 42 16 5l8 3-11 36M29 5l16 37H29Zm6 19v12h4',
+  check:'M42 24a18 18 0 1 1-5-13M14 23l7 7L39 11',
+};
+---
+<svg viewBox="0 0 48 48" aria-hidden="true"><path d={paths[name] ?? paths.check}/></svg>
+<style>svg { display:block; fill:none; stroke:currentColor; stroke-width:2.3; stroke-linecap:round; stroke-linejoin:round; }</style>

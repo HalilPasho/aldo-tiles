@@ -116,15 +116,22 @@ test.describe('home page', () => {
     await expect(main.locator('a[href="/contact/"]').first()).toBeVisible();
   });
 
-  test('the hero offers a call button and a form link', async ({ page }) => {
+  test('the header offers a call link and the hero offers a quote without repeating the phone', async ({ page }) => {
     const hero = page.locator('[data-hero]');
-    await expect(hero.locator(`a[href="tel:${business.phone.e164}"]`)).toBeVisible();
+    const headerCall = page.locator(`.site-header a[href="tel:${business.phone.e164}"]:visible`);
+    await expect(headerCall).toHaveCount(1);
+    await expect(headerCall).toBeVisible();
+    const desktopCall = page.locator('.site-header__call--full a');
+    if (await desktopCall.isVisible()) {
+      await expect(desktopCall).toHaveText(copy.site.nav.contactButtonLabel);
+    }
+    await expect(hero.locator('a[href^="tel:"]')).toHaveCount(0);
     await expect(hero.locator('a[href="/contact/"]')).toHaveText(copy.home.hero.formLabel);
   });
 
-  // The order of the sections between the hero and the closing call to action is a free design choice, and so are
-  // new sections and how headings look. So only the ends are fixed here, and each expected section must appear exactly once.
-  test('the hero comes first, every section appears once, and the call to action comes last', async ({ page }) => {
+  // Halil authorized About Us and the contact form after the marble call to action.
+  // The hero remains first, every expected section appears once, and the consultation block closes the page.
+  test('the hero comes first, every section appears once, and consultation follows the call to action', async ({ page }) => {
     const areas = business.areasServed.value;
     const credentials = business.credentials.value;
     const hasProof = Boolean(business.yearsExperience.value) || areas.length > 0 || credentials.length > 0;
@@ -136,6 +143,8 @@ test.describe('home page', () => {
       ...(reviews.length > 0 ? [copy.home.reviews.heading] : []),
       ...(areas.length > 0 ? [copy.home.areas.heading] : []),
       copy.home.cta.heading,
+      copy.home.reference.aboutHeading,
+      copy.home.reference.contactHeading,
     ];
     const headings = (await page.locator('main h2').allTextContents()).map(plain);
 
@@ -146,7 +155,11 @@ test.describe('home page', () => {
       const count = headings.filter((shown) => shown === plain(heading)).length;
       expect(count, `The home section "${heading}" must appear exactly once. Section order is free, and new sections are fine.`).toBe(1);
     }
-    expect(headings.at(-1), 'The call to action band must stay last on the home page.').toBe(plain(copy.home.cta.heading));
+    expect(headings.slice(-3), 'The marble call to action must precede About Us and the closing contact form.').toEqual([copy.home.cta.heading, copy.home.reference.aboutHeading, copy.home.reference.contactHeading].map(plain));
+    const closingBlock = page.locator('main > .home-bottom');
+    await expect(closingBlock.locator('#about')).toHaveCount(1);
+    await expect(closingBlock.locator('#contact form[name="contact"]')).toHaveCount(1);
+    expect(await closingBlock.evaluate((element) => element === element.parentElement?.lastElementChild)).toBe(true);
   });
 
   test('the proof strip shows the facts from business.json', async ({ page }) => {
@@ -195,6 +208,25 @@ test.describe('home page', () => {
         await expect(label).toHaveCount(0);
       }
     }
+  });
+
+  test('review arrows rotate existing comments and keep keyboard focus', async ({ page }) => {
+    const cards = page.locator('[data-review]');
+    const comments = cards.locator('blockquote p');
+    const before = await comments.allTextContents();
+    const next = page.getByRole('button', { name: copy.home.reviews.nextLabel, exact: true });
+    const previous = page.getByRole('button', { name: copy.home.reviews.previousLabel, exact: true });
+    if (before.length < 2) {
+      await expect(next).toHaveCount(0);
+      await expect(previous).toHaveCount(0);
+      return;
+    }
+    await next.click();
+    await expect(comments).toHaveText([...before.slice(1), before[0]]);
+    await expect(next).toBeFocused();
+    await previous.click();
+    await expect(comments).toHaveText(before);
+    await expect(previous).toBeFocused();
   });
 
   test('the hero photo loads first and every other photo waits', async ({ page }) => {

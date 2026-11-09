@@ -1,0 +1,220 @@
+---
+import { Image, getImage } from 'astro:assets';
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import Button from '../components/Button.astro';
+import CallLink from '../components/CallLink.astro';
+import ServiceIcon from './ServiceIcon.astro';
+import designs from '../data/service-designs.json';
+import additionalServices from '../data/additional-services.json';
+import wallImage from '../assets/sample-service-wall.png';
+import customImage from '../assets/sample-service-custom.png';
+import premiumImage from '../assets/sample-service-premium.png';
+import bathroomImage from '../assets/sample-service-bathroom.jpg';
+import floorImage from '../assets/sample-service-floor.jpg';
+import kitchenImage from '../assets/sample-service-kitchen.jpg';
+import Faq from '../components/Faq.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import business from '../data/business.json';
+import copy from '../data/copy.json';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { byOrder } from '../lib/order';
+import { breadcrumbSchema, localBusinessSchema, serviceSchema } from '../lib/seo';
+
+interface Props {
+  service: Pick<CollectionEntry<'services'>, 'id' | 'data'>;
+  standalone?: boolean;
+}
+
+const { service, standalone = false } = Astro.props;
+const additional = additionalServices[service.id as keyof typeof additionalServices];
+const { title, metaTitle, metaDescription, h1, summary, highlights, faqs } = service.data;
+const { servicePage, serviceDesign: words } = copy;
+const design = designs[service.id as keyof typeof designs];
+const allServices = Object.entries(designs).map(([id,data]) => ({id, title:data.heading}));
+const decorativeImages = { 'wall-tiling': wallImage, 'custom-tile-layouts': customImage, 'premium-tile-finishing': premiumImage };
+const decorative = decorativeImages[service.id as keyof typeof decorativeImages];
+const decorativeSrc = decorative ? (await getImage({src:decorative,width:1200,format:'webp'})).src : undefined;
+const inspirationImages = service.id === 'custom-tile-layouts' ? [wallImage,customImage,floorImage] : service.id === 'premium-tile-finishing' ? [bathroomImage,customImage,premiumImage] : [bathroomImage,wallImage,kitchenImage];
+const inspiration = standalone ? await Promise.all(inspirationImages.map(src => getImage({src,width:640,format:'webp'}))) : [];
+const Content = standalone ? null : (await render(service as CollectionEntry<'services'>)).Content;
+
+const path = `/services/${service.id}/`;
+const breadcrumbs = [
+  { name: copy.site.breadcrumbHome, path: '/' },
+  { name: words.eyebrow, path: '/#services' },
+  { name: title, path },
+];
+
+const related = (await getCollection('projects', ({ data }) => data.service.id === service.id)).sort(byOrder);
+// Each project card shows its first photo, so the page's lead photo comes from the ones left over.
+const leadProject = service.id === 'floor-tile-installation' ? related.find(({data}) => data.tileType?.toLowerCase().includes('concrete')) : undefined;
+const leadPhoto = leadProject?.data.photos[1] ?? related.flatMap(({ data }) => data.photos.slice(1))[0];
+---
+
+<BaseLayout
+  title={metaTitle}
+  description={metaDescription}
+  {path}
+  schema={[
+    localBusinessSchema(business),
+    serviceSchema(business, { name: title, description: summary, path }),
+    breadcrumbSchema(business.siteUrl.value, breadcrumbs),
+  ]}
+>
+  <div class:list={['service-head', { 'service-head--photo': leadPhoto || decorative }]}>
+    <div class="page-head service-head__copy">
+      <Breadcrumbs items={breadcrumbs} />
+      <p class="service-eyebrow">{words.eyebrow}</p>
+      <h1>{design ? design.heroLines.map(line => <span>{line}</span>) : h1}</h1>
+      <p class="page-head__lead">{summary}</p>
+
+    </div>
+    {decorative && <div class="service-head__frame service-head__illustration" style={{ backgroundImage: `url(${decorativeSrc})` }} aria-hidden="true" />}
+    {
+      leadPhoto && (
+        <div class="service-head__frame">
+          <Image
+            class="service-head__photo"
+            src={leadPhoto.src}
+            alt={leadPhoto.alt}
+            widths={[480, 800, 1200, 1600]}
+            sizes="(min-width: 900px) max(55vw, 800px), max(100vw, 480px)"
+            loading="eager"
+            fetchpriority="high"
+          />
+        </div>
+      )
+    }
+  </div>
+
+  {design && <div class="wrap service-design">
+    <section class="service-included">
+      <div class="service-section-copy"><h2>{words.included}</h2><p>{design.intro}</p></div>
+      <ul class="service-feature-grid">{design.features.map((feature,i) => <li><ServiceIcon name={design.featureIcons[i]} /><strong>{feature.split('|').map((line,index) => <>{index > 0 && <br />}{line}</>)}</strong></li>)}</ul>
+    </section>
+    <section class="service-process">
+      <div class="service-section-copy"><h2>{words.process}</h2><p>{words.processIntro}</p></div>
+      <ol>{('steps' in design ? design.steps : words.steps).map((step,i) => <li><span>{i+1}</span><strong>{step.split('|').map((line,index) => <>{index > 0 && <br />}{line}</>)}</strong></li>)}</ol>
+    </section>
+  </div>}
+
+  {standalone && <section class="wrap service-inspiration"><h2>{words.inspiration}</h2><p>{words.inspirationNote}</p><div>{inspiration.map((image,i) => <div class="service-inspiration__image" style={{backgroundImage: `url(${image.src})`}} role="img" aria-label={additional?.inspirationLabels[i]} />)}</div></section>}
+  {related.length > 0 && <div class="wrap service-rows">
+    {
+      related.length > 0 && (
+        <section class="text-row">
+          <h2>{servicePage.projectsHeading}</h2>
+          <ul class="service-projects">
+            {related.map((project) => (
+              <li>
+                <ProjectCard
+                  {project}
+                  sizes="(min-width: 1280px) 390px, (min-width: 760px) 30vw, (min-width: 560px) 50vw, 100vw"
+                />
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+
+  </div>}
+
+  <div class="wrap service-bottom">
+    <section class="service-contact on-ink">
+      <h2>{design?.cta ?? servicePage.ctaHeading}</h2>
+      <div><p>{servicePage.ctaText}</p><div class="service-contact__actions"><CallLink variant="button" /><Button href={copy.site.cta.messagePath} variant="secondary">{copy.site.cta.messageLabel}</Button></div></div>
+    </section>
+    {design && <section class="service-other"><h2>{words.other}</h2><p>{words.otherIntro}</p><ul>{allServices.filter(other => other.id !== service.id && (service.id === 'commercial-tile-installation' || other.id !== 'commercial-tile-installation')).map(other => <li><a href={`/services/${other.id}/`}><ServiceIcon name={designs[other.id as keyof typeof designs]?.icon ?? 'layers'} /><strong>{designs[other.id as keyof typeof designs]?.heading ?? other.title}</strong><span aria-hidden="true">&rarr;</span></a></li>)}</ul></section>}
+  </div>
+  {standalone && additional && <div class="wrap"><details class="service-notes"><summary>{additional.detailHeading}</summary>{additional.paragraphs.map(paragraph => <p>{paragraph}</p>)}</details></div>}
+  {!standalone && <div class="wrap service-detail">
+    <div class="service-prose">{Content && <Content />}</div>
+    {highlights.length > 0 && <aside class="service-highlights"><h2 class="service-highlights__heading">{servicePage.highlightsHeading}</h2><ul class="service-highlights__list">{highlights.map(highlight => <li>{highlight}</li>)}</ul></aside>}
+  </div>}
+  {faqs.length > 0 && <div class="wrap service-rows"><Faq heading={servicePage.faqHeading} items={faqs} /></div>}
+</BaseLayout>
+
+<style>
+  .service-head { display: grid; position: relative; background: var(--color-surface-raised); border-block-end: var(--line-thin) solid var(--color-line); }
+  .service-head__copy { padding: var(--service-design-hero-padding) 5%; gap: var(--service-design-hero-gap); min-width: 0; position: relative; z-index: 1; background: var(--color-surface-raised); }
+  .service-head :global(.breadcrumbs) { font-size: var(--service-design-small); }
+  .service-head h1 { font-family: var(--font-reference-display); font-weight: var(--service-design-heading-weight); font-size: var(--service-design-h1); line-height: var(--leading-tight); }
+  .service-head h1 > span { display: block; }
+  .service-head .page-head__lead { font-size: var(--service-design-lead); max-width: var(--service-design-copy-width); }
+  .service-eyebrow { display: flex; align-items: center; gap: var(--space-sm); text-transform: uppercase; font-weight: var(--weight-strong); font-size: var(--service-design-small); }
+  .service-eyebrow::before { content: ''; width: var(--space-xl); height: var(--service-design-rule); border-radius: var(--radius-tile); background: var(--color-accent); }
+  
+  .service-head__frame { min-height: var(--service-design-photo-height); background-color: var(--color-accent); position: relative; overflow: clip; }
+  .service-head__photo { width: 100%; height: 100%; position: absolute; inset: 0; object-fit: cover; }
+  .service-head__illustration { background-size: cover; background-position: center; }
+  .service-design { padding-block: 0; }
+  h2 { font-family: var(--font-reference-display); font-weight: var(--service-design-heading-weight); font-size: var(--service-design-h2); line-height: var(--leading-tight); }
+  .service-section-copy h2::after, .service-other h2::after, .service-inspiration h2::after, .service-rows .text-row:has(.service-projects) h2::after { content: ''; display: block; width: var(--space-xl); height: var(--service-design-rule); border-radius: var(--radius-tile); margin-block: var(--space-sm); background: var(--color-accent); }
+  .service-included,.service-process { display: grid; gap: var(--space-lg); padding-block: var(--space-lg); }
+  .service-section-copy p { font-size: var(--service-design-body); }
+  .service-feature-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); grid-auto-rows: 1fr; gap: var(--space-sm); }
+  .service-feature-grid li { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--service-design-card-gap); border: var(--line-thin) solid var(--color-line); border-radius: var(--service-design-card-radius); padding: var(--service-design-card-padding); min-height: var(--service-design-feature-height); text-align: center; background: var(--color-surface-raised); font-size: var(--service-design-card-label); line-height: var(--leading-tight); }
+  .service-feature-grid :global(svg),.service-other :global(svg) { color: var(--color-accent); width: var(--service-design-icon); height: var(--service-design-icon); }
+  .service-feature-grid :global(svg) { width: var(--service-design-card-icon); height: var(--service-design-card-icon); }
+  .service-process { border-block-start: var(--line-thin) solid var(--color-line); }
+  .service-process ol { align-self: start; display: grid; gap: var(--space-sm); list-style: none; padding: 0; counter-reset: none; }
+  .service-process li { position: relative; border: var(--line-thin) solid var(--color-line); border-radius: var(--service-design-card-radius); padding: var(--service-design-card-padding); background: var(--color-surface-raised); display: flex; align-items: center; gap: var(--space-md); font-size: var(--service-design-card-label); line-height: var(--leading-tight); }
+  .service-process li > span { line-height: var(--leading-tight); color: var(--color-accent-text); font-family: var(--font-reference-display); font-size: var(--service-design-number); }
+  .service-bottom { padding-block: var(--space-md) var(--space-xl); }
+  .service-contact { position: relative; overflow: clip; border-radius: var(--service-design-radius); padding: var(--space-lg); padding-inline-end: var(--space-lg); padding-block-end: var(--service-design-mobile-clearance); display: grid; gap: var(--space-lg); background: var(--color-ink); }
+  .service-contact::before { content: ''; position: absolute; bottom: 0; right: 0; width: var(--service-design-corner); height: var(--service-design-corner); background: var(--color-accent-on-ink); clip-path: polygon(100% 0,100% 100%,0 100%); }
+  .service-contact::after { content: ''; position: absolute; bottom: 0; right: 0; width: calc(var(--service-design-corner) - var(--space-xs)); height: calc(var(--service-design-corner) - var(--space-xs)); background: var(--color-surface-raised) url('../assets/sample-marble-tile-stack.png') right top / 300%; clip-path: polygon(100% 0,100% 100%,0 100%); pointer-events: none; }
+  .service-contact h2 { color: var(--color-on-ink); font-size: var(--service-design-cta-heading); }
+  .service-contact h2::after { content: ''; display: block; width: var(--space-xl); height: var(--service-design-rule); background: var(--color-accent-on-ink); margin-block-start: var(--space-sm); border-radius: var(--radius-tile); }
+  .service-contact :global(.button--primary) { background: linear-gradient(110deg,var(--color-accent-on-ink),var(--color-accent)); }
+  .service-contact__actions { display: flex; flex-wrap: wrap; gap: var(--space-sm); margin-block-start: var(--space-sm); }
+  .service-contact :global(.button--secondary) { color: var(--color-on-ink); border-color: var(--color-accent-on-ink); background: var(--color-ink); }
+  .service-contact :global(a:focus-visible) { outline-color: var(--color-focus-on-ink); }
+  .service-other { margin-block-start: var(--space-lg); }
+  .service-other ul { display: grid; grid-auto-rows: 1fr; grid-template-columns: repeat(2,minmax(0,1fr)); gap: var(--space-sm); margin-block-start: var(--space-sm); }
+  .service-other a { height: 100%; min-height: var(--service-design-other-height); display: grid; grid-template-columns: minmax(0,1fr) auto; grid-template-areas: 'icon icon' 'label arrow'; align-content: center; gap: var(--service-design-card-gap); padding: var(--service-design-card-padding); border: var(--line-thin) solid var(--color-line); border-radius: var(--service-design-card-radius); text-decoration: none; background: var(--color-surface-raised); font-size: var(--service-design-card-label); line-height: var(--leading-tight); }
+  .service-other a :global(svg) { grid-area: icon; width: var(--service-design-card-icon); height: var(--service-design-card-icon); }
+  .service-other a > strong { grid-area: label; }
+  .service-other a > span { grid-area: arrow; align-self: end; justify-self: end; color: var(--color-accent-text); }
+  .service-detail { display: grid; gap: var(--space-xl); padding-block-end: var(--space-xl); }
+  .service-prose { display: grid; gap: var(--space-md); min-width: 0; }
+  .service-prose :global(h2),.service-highlights__heading { font-size: var(--text-xl); }
+  .service-prose :global(h2) { margin-block-start: var(--space-md); }
+  .service-highlights { align-self: start; border-inline-start: var(--line-thin) solid var(--color-line); padding-inline-start: var(--space-lg); }
+  .service-highlights__list { display: grid; gap: var(--space-sm); margin-block-start: var(--space-md); }
+  .service-highlights__list li { padding-inline-start: var(--space-md); border-inline-start: var(--line-strong) solid var(--color-accent); }
+  .service-notes { margin-block-end: var(--space-xl); border-block: var(--line-thin) solid var(--color-line); }
+  .service-notes summary { min-height: var(--button-height); padding-block: var(--space-sm); cursor: pointer; font-weight: var(--weight-strong); }
+  .service-notes p { margin-block: var(--space-md); }
+  .service-rows .text-row:has(.service-projects) { grid-template-columns: minmax(0,1fr); padding-block: var(--space-md); border: 0; }
+  .service-projects :global(.project-card__media) { aspect-ratio: var(--service-design-inspiration-ratio); }
+  .service-inspiration { padding-block: var(--space-md) var(--space-lg); }
+  .service-inspiration > div { display: grid; gap: var(--space-sm); margin-block-start: var(--space-sm); }
+  .service-inspiration__image { background-position: center; background-size: cover; aspect-ratio: var(--service-design-inspiration-ratio); border-radius: var(--service-design-radius); }
+  .service-rows { padding-block-end: var(--space-xl); }
+  .service-projects { display: grid; gap: var(--space-lg); }
+  @media(max-width: 899px) { .service-contact h2 { font-size: var(--service-design-cta-phone-heading); } .service-head__frame { min-height: var(--service-design-phone-photo-height); } }
+  @media(min-width: 560px) { .service-inspiration > div {grid-template-columns: repeat(3,minmax(0,1fr));} .service-projects { grid-template-columns: repeat(2,minmax(0,1fr)); } .service-feature-grid { grid-template-columns: repeat(3,minmax(0,1fr)); } }
+  @media(min-width: 900px) {
+    .service-head--photo { grid-template-columns: minmax(0, 45fr) minmax(0,55fr); }
+    .service-head__copy { padding-inline-start: max(5vw,calc((100vw - var(--wrap-width))/2)); padding-inline-end: var(--space-xl); }
+    .service-head__frame { clip-path: polygon(20% 0,100% 0,100% 100%,0 100%); }
+    .service-head__frame::after { content: ''; position: absolute; inset: 0; background: var(--color-accent); clip-path: polygon(20% 0,22% 0,2% 100%,0 100%); }
+    .service-head__copy { clip-path: polygon(0 0,100% 0,100% 100%,0 100%); }
+    .service-included { grid-template-columns: minmax(0,1fr) minmax(0,2fr); }
+    .service-process { grid-template-columns: minmax(0,1fr) minmax(0,3fr); }
+    .service-process { border-block-start: var(--line-thin) solid var(--color-line); }
+  .service-process ol { grid-template-columns: repeat(5,minmax(0,1fr)); gap: var(--service-design-process-gap); }
+    .service-process li { display: grid; gap: var(--service-design-card-gap); align-content: center; min-height: var(--service-design-step-height); }
+    .service-process li:not(:last-child)::after { content: ''; position: absolute; left: calc(100% + var(--service-design-process-gap) / 2 + var(--line-thin)); top: 50%; width: var(--service-design-arrow-size); height: var(--service-design-arrow-size); border-block-start: var(--line-strong) solid var(--color-accent-text); border-inline-end: var(--line-strong) solid var(--color-accent-text); transform: translate(-50%,-50%) rotate(45deg); pointer-events: none; }
+    .service-projects { grid-template-columns: repeat(3,minmax(0,1fr)); }
+    .service-contact { padding-block-end: var(--space-lg); padding-inline-end: var(--service-design-corner-clearance); grid-template-columns: minmax(0,2fr) minmax(0,3fr); align-items: center; }
+    .service-contact > div { border-inline-start: var(--line-thin) solid var(--color-on-ink-muted); padding-inline-start: var(--space-lg); }
+    .service-other ul { grid-template-columns: repeat(5,minmax(0,1fr)); }
+    .service-other ul:has(>li:nth-child(6)) { grid-template-columns: repeat(6,minmax(0,1fr)); }
+    .service-detail:has(>.service-highlights) { grid-template-columns: minmax(0,2fr) minmax(0,1fr); }
+  }
+
+</style>

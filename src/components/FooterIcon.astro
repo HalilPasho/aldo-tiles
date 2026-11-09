@@ -1,0 +1,20 @@
+﻿---
+interface Props { name: string; }
+const { name } = Astro.props;
+const paths: Record<string, string> = {
+  bath: 'M4 24h40v7a10 10 0 0 1-10 10H14A10 10 0 0 1 4 31Zm4 17-2 4m34-4 2 4M38 24V8a5 5 0 0 0-10 0v3m-3 0h10',
+  layers: 'm4 12 20-9 20 9-20 9Zm2 11-2 2 20 9 20-9-2-2M6 35l-2 2 20 9 20-9-2-2',
+  bricks: 'M3 7h42M3 18h42M3 29h42M3 40h42M12 7v11m24-11v11M23 18v11M12 29v11m24-11v11M3 7v33m42-33v33',
+  building: 'M13 44V5h22v39M5 44V20h8m22 0h8v24M2 44h44M20 12h2m5 0h2m-9 8h2m5 0h2m-9 8h2m5 0h2m-9 16V35h9v9',
+  home: 'm3 23 21-19 21 19M9 20v24h11V31h8v13h11V20M34 12V6h6v11',
+  people: 'M16 25a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm17-14a7 7 0 0 1 0 14M3 44v-6a11 11 0 0 1 22 0v6ZM32 32a11 11 0 0 1 13 10v2H32',
+  mail: 'M4 10h40v28H4Zm0 0 20 17 20-17',
+  pin: 'M24 45S8 27 8 18a16 16 0 0 1 32 0c0 9-16 27-16 27ZM24 24a6 6 0 1 0 0-12 6 6 0 0 0 0 12Z',
+  chevron: 'm18 10 14 14-14 14',
+};
+---
+<svg class:list={['footer-icon', `footer-icon--${name}`]} viewBox="0 0 48 48" aria-hidden="true"><path d={paths[name] ?? paths.home} /></svg>
+<style>
+  .footer-icon { flex: none; width: var(--footer-icon-size); height: var(--footer-icon-size); fill: none; stroke: var(--color-accent-on-ink); stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+  .footer-icon--chevron { width: var(--footer-arrow-size); height: var(--footer-arrow-size); margin-inline-start: auto; }
+</style>

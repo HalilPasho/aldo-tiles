@@ -1,0 +1,53 @@
+﻿---
+import { Image } from 'astro:assets';
+import copy from '../data/copy.json';
+import tiles from '../assets/sample-marble-tile-stack.png';
+import Button from './Button.astro';
+import CallLink from './CallLink.astro';
+interface Props {
+  compactTypography?: boolean;
+  content?: { eyebrow: string; headingPrefix: string; headingAccent: string; text: string; messageLabel: string; imageAlt: string; };
+}
+const { content: words = copy.home.cta, compactTypography = false } = Astro.props;
+---
+<section class:list={['cta-band','home-cta',{'home-cta--compact':compactTypography}]}>
+  <div class="wrap home-cta__inner">
+    <div class="home-cta__copy">
+      <p class="home-cta__eyebrow">{words.eyebrow}</p>
+      <h2>{words.headingPrefix}{' '}<span>{words.headingAccent}</span></h2>
+      <p class="home-cta__text">{words.text}</p>
+      <div class="home-cta__actions">
+        <CallLink variant="button" />
+        <Button href={copy.site.cta.messagePath} variant="secondary">{words.messageLabel}<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h18m-6-6 6 6-6 6" /></svg></Button>
+      </div>
+    </div>
+  </div>
+  <div class="home-cta__photo">
+    <Image src={tiles} alt={words.imageAlt} widths={[480,768,1024,1536]} sizes="(min-width: 1000px) 58vw, 100vw" format="webp" loading="lazy" />
+  </div>
+</section>
+<style>
+  .home-cta { position: relative; isolation: isolate; overflow: clip; border-block-start: var(--line-thin) solid var(--color-accent); background: var(--color-surface-raised); }
+  .home-cta__inner { max-width: var(--home-wrap-width); padding: var(--home-cta-padding); }
+  .home-cta__copy { background: var(--color-surface-raised); display: grid; gap: var(--space-md); max-width: var(--home-cta-copy-width); }
+  .home-cta__eyebrow { font-size: var(--home-eyebrow-size); letter-spacing: var(--home-eyebrow-tracking); font-weight: var(--weight-strong); text-transform: uppercase; }
+  .home-cta__eyebrow::before { content: ''; display: inline-block; width: var(--home-eyebrow-line); height: var(--line-strong); margin-inline-end: var(--space-sm); vertical-align: middle; background: var(--color-accent); }
+  h2 { font-family: var(--font-reference-display); font-weight: var(--weight-body); font-size: var(--home-cta-title); letter-spacing: var(--home-heading-tracking); text-wrap: initial; }
+  h2 span { display: block; color: var(--color-accent-text); }
+  .home-cta--compact h2 { font-size: var(--about-cta-title); }
+  .home-cta--compact .home-cta__text { font-size: var(--about-body-size); }
+  .home-cta--compact .home-cta__actions :global(.button) { font-size: var(--about-step-title-size); }
+  .home-cta__text { color: var(--color-muted); line-height: var(--leading-lead); }
+  .home-cta__actions { display: flex; flex-wrap: wrap; gap: var(--space-sm); margin-block-start: var(--space-xs); }
+  .home-cta__actions :global(.button) { font-size: var(--home-area-size); padding-inline: var(--space-lg); }
+  .home-cta__actions svg { flex: none; width: var(--icon-size); height: var(--icon-size); fill: none; stroke: var(--color-accent-text); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .home-cta__actions :global(.button--secondary:hover) svg { stroke: currentColor; }
+  .home-cta__photo { position: relative; height: var(--home-cta-photo-height); background: linear-gradient(115deg,var(--color-gold-button-start),var(--color-gold-button-end)); padding-block-start: var(--line-strong); }
+  .home-cta__photo img { width: 100%; height: 100%; object-fit: cover; }
+  @media (min-width: 1000px) {
+    .home-cta__inner { min-height: var(--home-cta-min-height); }
+    .home-cta__copy { width: 48%; max-width: var(--home-cta-copy-width); }
+    .home-cta__photo { position: absolute; z-index: -1; inset-block: 0; inset-inline-end: 0; width: var(--home-cta-photo-width); height: auto; padding: 0; clip-path: polygon(var(--home-cta-diagonal) 0,100% 0,100% 100%,0 100%); }
+    .home-cta__photo img { clip-path: polygon(calc(var(--home-cta-diagonal) + var(--home-cta-gold-edge)) 0,100% 0,100% 100%,var(--home-cta-gold-edge) 100%); }
+  }
+</style>

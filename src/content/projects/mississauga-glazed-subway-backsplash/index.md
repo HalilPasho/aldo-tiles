@@ -11,8 +11,8 @@ sample: true
 photos:
   - src: ./sample-subway-backsplash-full-wall.jpg
     alt: "Sample placeholder image: ivory subway tile in an offset pattern between navy cabinets and a pale counter"
-  - src: ./sample-subway-backsplash-tile-detail.jpg
-    alt: "Sample placeholder image: close view of glazed ivory subway tile with light grout lines"
+  - src: ./sample-service-kitchen.jpg
+    alt: "Sample design illustration: ivory glazed subway backsplash with warm lighting"
 ---
 
 These homeowners had just finished a kitchen refresh and wanted a backsplash that would stay in style. They chose a slightly varied glazed tile, so we blended boxes as we went to keep the colour even across the wall.

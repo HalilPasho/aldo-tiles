@@ -11,8 +11,8 @@ sample: true
 photos:
   - src: ./sample-large-format-basement-floor.jpg
     alt: "Sample placeholder image: large grey concrete-look square tile on a basement floor"
-  - src: ./sample-large-format-basement-stair-landing.jpg
-    alt: "Sample placeholder image: grey concrete-look rectangular tile in a one-third offset for a stair landing"
+  - src: ./sample-service-floor.jpg
+    alt: "Sample design illustration: large grey porcelain tiles in a light-filled living space"
 ---
 
 The slab in this basement dipped by nearly an inch toward the floor drain, which would have been obvious under big square tile. We tested for moisture, levelled the low area and added an uncoupling membrane over the hairline cracks.

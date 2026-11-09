@@ -4,18 +4,20 @@ import Button from './Button.astro';
 
 interface Props {
   services: { id: string; title: string }[];
+  showIntro?: boolean;
+  showSubmitIcon?: boolean;
 }
 
-const { services } = Astro.props;
+const { services, showIntro = true, showSubmitIcon = false } = Astro.props;
 const { form } = copy.contact;
 const { privacyPath } = copy.site.footer;
 ---
 
 <div class="contact-form">
-  <div class="contact-form__intro">
+  {showIntro && <div class="contact-form__intro">
     <h2>{form.heading}</h2>
     <p class="contact-form__note">{form.requiredNote}</p>
-  </div>
+  </div>}
 
   <form name="contact" method="POST" action="/thank-you/" data-netlify="true" netlify-honeypot="bot-field">
     <input type="hidden" name="subject" value={form.subject} />
@@ -95,7 +97,7 @@ const { privacyPath } = copy.site.footer;
     </div>
 
     <div class="contact-form__actions">
-      <Button type="submit">{form.submit}</Button>
+      <Button type="submit">{showSubmitIcon && <svg class="submit-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>}{form.submit}</Button>
       <p class="contact-form__privacy">
         {form.privacyNote}{' '}
         <a class="contact-form__privacy-link" href={privacyPath}>{form.privacyLink}</a>
@@ -105,6 +107,7 @@ const { privacyPath } = copy.site.footer;
 </div>
 
 <style>
+  .submit-icon { flex: none; width: var(--icon-size); height: var(--icon-size); fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
   .contact-form {
     display: grid;
     gap: var(--space-lg);

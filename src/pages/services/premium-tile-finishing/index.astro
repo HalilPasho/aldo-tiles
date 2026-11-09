@@ -1,0 +1,7 @@
+---
+import ServicePage from '../../../components/ServicePage.astro';
+import services from '../../../data/additional-services.json';
+const id = "premium-tile-finishing";
+const service = { id, data: services[id] };
+---
+<ServicePage {service} standalone />

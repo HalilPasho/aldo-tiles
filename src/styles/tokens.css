@@ -1,131 +1,701 @@
-@import '@fontsource/brygada-1918/latin-500.css';
-@import '@fontsource/hanken-grotesk/latin-400.css';
-@import '@fontsource/hanken-grotesk/latin-600.css';
+@import '@fontsource/arimo/latin-400.css';
+
+@import '@fontsource/arimo/latin-700.css';
+
+@import '@fontsource/gelasio/latin-400.css';
+
+
+
 
 :root {
+
   --color-ink: #091e2b;
+
   --color-accent: #b6812a;
+
   --color-accent-text: #9a6618;
+
   --color-surface: #f8f7f5;
+
   --color-surface-raised: #ffffff;
+
   --color-line: #d8d3ca;
+
   --color-muted: #4d5760;
 
+
+
   --color-on-accent: var(--color-ink);
+
   --color-on-ink: #f8f7f5;
+
   --color-on-ink-muted: #c3ccd2;
+
   --color-accent-on-ink: #d4a34e;
+
   --color-line-on-ink: #2c4656;
+
   --color-focus: var(--color-ink);
+
   --color-focus-on-ink: #f8f7f5;
+
   --color-field-line: var(--color-muted);
+
   --color-error: #a3261b;
 
-  --font-display: 'Brygada 1918', Georgia, 'Times New Roman', serif;
-  --font-body: 'Hanken Grotesk', 'Segoe UI', Arial, sans-serif;
-  --weight-display: 500;
-  --weight-body: 400;
-  --weight-strong: 600;
 
-  --text-sm: 0.9375rem;
-  --text-base: 1.0625rem;
-  --text-lg: 1.25rem;
+
+  --font-display: 'Gelasio', serif;
+
+  --font-body: 'Arimo', sans-serif;
+
+  --font-reference-display: var(--font-display);
+
+  --color-home-hero: #f7f5f2;
+
+  --color-home-soft: #faf9f7;
+
+  --color-home-filter: #f1efed;
+
+  --color-footer-panel: #102a3a;
+
+  --footer-nav-min: 9rem;
+
+  --footer-padding-block: 1.5rem;
+
+  --footer-gutter: 6%;
+
+  --footer-grid-bottom: 1.25rem;
+
+  --footer-desktop-gap: 1.75rem;
+
+  --footer-logo-width: 12.5rem;
+
+  --footer-link-size: 0.9375rem;
+
+  --footer-copy-size: 0.875rem;
+
+  --footer-marble-zoom: 400%;
+
+  --footer-heading-size: var(--type-subheading);
+
+  --footer-heading-line: 3rem;
+
+  --footer-contact-padding: min(1rem,4vw);
+
+  --footer-contact-radius: 1rem;
+
+  --footer-phone-size: var(--footer-link-size);
+
+  --footer-marble-opacity: 0.4;
+
+  --footer-icon-size: 1.5rem;
+
+  --footer-arrow-size: 1rem;
+
+  --footer-corner-width: 7%;
+
+  --footer-corner-height: 9rem;
+
+  --footer-brand-measure: 30ch;
+
+  --color-gold-button-start: #d4a34e;
+
+  --color-gold-button-end: #b6812a;
+
+  --color-gold-button-text: #091e2b;
+
+  --home-hero-padding: 2.625rem 7% 2.125rem;
+
+  --home-hero-desktop-padding: 3rem 1% 2.8125rem 6.8%;
+
+  --home-hero-min-height: 22.1875rem;
+
+  --home-hero-copy-width: 46.4%;
+
+  --home-hero-heading: var(--type-title);
+
+  --home-hero-heading-tablet: var(--type-title);
+
+  --home-heading-tracking: -0.0286em;
+
+  --home-hero-lead-width: 27.5rem;
+
+  --home-eyebrow-size: var(--type-label);
+
+  --home-eyebrow-tracking: 0.1875rem;
+
+  --home-eyebrow-line: 2.125rem;
+
+  --home-button-size: 0.875rem;
+
+  --home-section-title: var(--type-section);
+
+  --home-card-title: var(--type-card-title);
+
+  --home-section-space: 3rem;
+
+  --home-project-photo-ratio: 1.7;
+
+  --home-projects-gutter: 1rem;
+
+  --home-projects-row-gap: 1.25rem;
+
+  --home-project-card-min: 10rem;
+
+  --home-project-card-radius: 0.75rem;
+
+  --home-project-photo-height: 10.9375rem;
+
+  --home-project-caption-padding: 0.8125rem min(0.9375rem, 3vw);
+
+  --home-project-category-size: 0.75rem;
+
+  --home-project-filter-padding: 1.1875rem;
+
+  --home-project-filter-size: 0.8125rem;
+
+  --shadow-home-project-card: 0 1px 6px #091e2b12;
+
+  --color-trust-icon-surface: #f5efe5;
+
+  --trust-card-min: 18rem;
+
+  --trust-card-radius: 0.875rem;
+
+  --trust-card-padding: min(1.25rem,5vw);
+
+  --trust-icon-size: min(4rem,18vw);
+
+  --trust-number-size: min(3rem,18vw);
+
+  --trust-fact-size: var(--type-body);
+
+  --trust-quote-inset: min(2rem,7vw);
+
+  --trust-quote-mark-size: 3.25rem;
+
+  --trust-review-heading-min: 16rem;
+
+  --trust-star-size: 1rem;
+
+  --trust-heading-size: var(--type-section);
+
+  --trust-copy-size: 1rem;
+
+  --trust-meta-size: 0.75rem;
+
+  --trust-card-gap: 1rem;
+
+  --trust-section-gap: 1.25rem;
+
+  --shadow-trust-card: 0 4px 9px #091e2b14;
+
+  --home-area-min: 13rem;
+
+  --home-area-padding: 0.75rem min(1.5rem,4vw);
+
+  --home-area-height: 3.5rem;
+
+  --home-area-radius: 0.625rem;
+
+  --home-area-size: var(--type-body);
+
+  --home-area-icon: 2rem;
+
+  --shadow-home-area-base: 0 5px 10px #b6812a38;
+
+  --home-cta-padding: 1.5rem 5% 1.75rem;
+
+  --home-cta-title: var(--type-cta);
+
+  --home-cta-copy-width: 28rem;
+
+  --home-cta-photo-height: clamp(13rem,30vw,23rem);
+
+  --home-cta-min-height: 18rem;
+
+  --home-cta-photo-width: 58%;
+
+  --home-cta-diagonal: 23%;
+
+  --home-cta-gold-edge: 1.75%;
+
+  --home-wrap-width: 90rem;
+
+  --home-message-height: 6.25rem;
+
+  --consult-column-gap: clamp(1.5rem,2.5vw,3rem);
+
+  --consult-heading-size: var(--type-section);
+
+  --consult-value-min: 8rem;
+
+  --consult-value-size: 1rem;
+
+  --consult-icon-size: 2.75rem;
+
+  --consult-message-height: 5rem;
+
+  --consult-privacy-size: 0.8125rem;
+
+  --home-bottom-gap: 4.0625rem;
+
+  --home-bottom-heading: var(--type-section);
+
+  --weight-display: 400;
+
+  --weight-body: 400;
+
+  --weight-strong: 700;
+
+
+
+  --text-sm: var(--type-small);
+
+  --text-base: var(--type-body);
+
+  --text-lg: 1.0625rem;
+
   /* The vw caps only matter at large text on a phone. They keep a long word like "Installation" whole. 11vw keeps --text-xl above 200% body text from 320px up. */
-  --text-xl: min(clamp(1.375rem, 1.25rem + 0.6vw, 1.625rem), 11vw);
-  --text-2xl: min(clamp(1.875rem, 1.5rem + 1.7vw, 2.75rem), 12vw);
-  --text-3xl: min(clamp(2.375rem, 1.7rem + 3.2vw, 4.25rem), 14vw);
+
+  --text-xl: var(--type-subheading);
+
+  --text-2xl: var(--type-section);
+
+  --text-3xl: var(--type-title);
+
   --leading-body: 1.6;
+
   --leading-heading: 1.12;
+
   --leading-tight: 1.2;
+
   --leading-lead: 1.45;
+
   --tracking-heading: -0.012em;
+
   --measure: 65ch;
 
+
+
   --space-2xs: 0.25rem;
+
   --space-xs: 0.5rem;
+
   --space-sm: 0.75rem;
+
   --space-md: 1rem;
+
   --space-lg: 1.5rem;
+
   --space-xl: 2.5rem;
+
   --space-2xl: clamp(3rem, 2rem + 4vw, 5.5rem);
 
+
+
   /* Tile language: the gap between tiles, the barely eased edge of a cut tile, and the lean of the logo's tile panel. */
+
   --grout: 6px;
-  --radius-tile: 2px;
-  --radius-field: 3px;
+
+  --radius-tile: 8px;
+
+  --radius-field: 6px;
+
   --rake: 31deg;
+
   --tile-tone-faint: 0.12;
+
   --tile-tone-soft: 0.2;
+
   --tile-tone-mid: 0.45;
+
   --tile-tone-strong: 0.68;
+
   --tile-tone-deep: 0.85;
 
+
+
   --wrap-width: 80rem;
+
   --gutter: min(clamp(1rem, 0.4rem + 3vw, 3rem), 5vw);
+
   --tap-target: 44px;
+
   --button-height: 48px;
+
   --line-thin: 1px;
+
   --line-strong: 2px;
+
   --underline-offset: 0.2em;
+
   --icon-size: 1.125em;
+
   --focus-width: 3px;
+
   /* The bar's height while it's sticky, always one row of buttons from 320px up, so the scroll padding never lets it cover a focused link. Past that, MobileCallBar stops being sticky. */
+
   --call-bar-height: max(60px, calc(2.275rem + 22px));
+
   --header-height: 76px;
+
   --header-sticky-height: 88px;
 
-  --logo-width-small: 90px;
-  --logo-width-header: 104px;
-  --logo-width-header-wide: 124px;
+
+
+  --logo-width-small: 82px;
+
+  --logo-width-header: 90px;
+
+  --logo-width-header-wide: 144px;
+
+  --home-header-logo-width: clamp(9rem,13vw,14.5rem);
+
+  --home-header-height: clamp(5.5rem,6.2vw,7rem);
+
+  --home-header-padding: 0.375rem 4%;
+
+  --home-header-nav-size: var(--header-nav-text);
+
+  --home-header-nav-offset: clamp(1rem,3.5vw,4rem);
+
+  --home-header-nav-gap: clamp(1.25rem,2.1vw,2.375rem);
+
+  --home-header-button-size: var(--home-button-size);
+
+  --color-home-header-gold-start: #9f6b10;
+
+  --color-home-header-gold-end: #8d5d0d;
+
+  --header-nav-gap: 1.875rem;
+
+  --header-nav-text: 0.9375rem;
+
   --logo-width-footer: 168px;
+
   --logo-width-footer-wide: 196px;
 
+
+
   --nav-divider-height: 1.25rem;
+
   --breadcrumb-divider-height: 0.9em;
+
   --menu-glyph-tile: 7px;
+
   --menu-glyph-gap: 2px;
+
   --menu-tile-min-height: 84px;
+
   --menu-tile-min-width: 8.5rem;
+
   --footer-column-min: 9.5rem;
 
+
+
   --panel-padding: min(clamp(1.25rem, 0.75rem + 2vw, 2.5rem), 6.25vw);
+
   --panel-split-columns: minmax(0, 1.75fr) minmax(0, 1fr);
+
   --text-row-columns: minmax(0, 1fr) minmax(0, 2fr);
+
   --field-message-height: 10rem;
+
   --select-chevron-size: 0.5rem;
+
   --call-panel-tile-width: 11rem;
+
   --call-panel-field-min-height: 9rem;
 
+
+
   --cta-copy-width: 30rem;
+
   --cta-field-strip-height: 7rem;
+
   --cta-field-start: 60%;
+
   --cta-field-tile-width: 14rem;
 
-  --hero-copy-share: 0.52;
+
+
+  --hero-copy-share: 0.45;
+
+  --hero-title-size: var(--type-title);
+
+  --home-service-min-width: 9rem;
+
   --hero-photo-ratio: 5 / 3;
-  --hero-photo-min-height: 34rem;
+
+  --hero-photo-min-height: 27rem;
+
   --hero-strip-height: clamp(1.75rem, 1rem + 2.4vw, 3.25rem);
+
   --hero-strip-tile-width: clamp(6rem, 4rem + 8vw, 11rem);
+
+  --color-portfolio-surface: #faf9f7;
+
+  --color-portfolio-gold-start: #9f6b10;
+
+  --color-portfolio-gold-end: #8d5d0d;
+
+  --color-portfolio-on-gold: #ffffff;
+
+  --portfolio-filter-columns: 1fr 1.28fr 0.93fr 1.03fr 1.22fr;
+
+  --portfolio-head-padding: 0 0 1.25rem;
+
+  --portfolio-art-scale: 90% 145%;
+
+  --portfolio-art-mask: linear-gradient(to right, transparent 0 64%, #000 73% 100%), linear-gradient(to bottom, #000 0 82%, transparent 100%);
+
+  --about-hero-height: clamp(15rem,23vw,18rem);
+
+  --about-section-gap: 1.5rem;
+
+  --about-step-gap: 1rem;
+
+  --about-hero-phone-height: 60vw;
+
+  --about-hero-copy-width: 41%;
+
+  --about-hero-photo-width: 55%;
+
+  --about-hero-diagonal: 31%;
+
+  --about-hero-gold-edge: 1.5%;
+
+  --about-title-size: var(--type-title);
+
+  --about-eyebrow-size: var(--type-label);
+
+  --about-heading-size: var(--type-section);
+
+  --about-body-size: var(--type-body);
+
+  --about-cta-title: var(--type-cta);
+
+  --about-lead-size: var(--type-body);
+
+  --about-copy-size: var(--type-body);
+
+  --about-step-title-size: var(--type-card-title);
+
+  --about-step-copy-size: 0.875rem;
+
+  --about-step-padding: min(1rem,5vw);
+
+  --about-step-min: 10rem;
+
+  --about-icon-size: 2.25rem;
+
+  --about-icon-circle: 3.5rem;
+
+  --about-card-radius: 0.875rem;
+
+  --about-fact-number: 1.75rem;
+
+  --about-facts-title: var(--type-subheading);
+
+  --about-facts-subheading: var(--type-card-title);
+
+  --about-facts-copy: 0.8125rem;
+
+  --about-facts-icon: 1.75rem;
+
+  --about-fact-min: 8rem;
+
+  --about-facts-padding: min(1rem,6vw);
+
+  --about-facts-columns: minmax(0,1.7fr) minmax(0,1fr);
+
+  --about-facts-corner-width: min(6rem,12vw);
+
+  --about-facts-corner-desktop: 6rem;
+
+  --about-area-min: 6.5rem;
+
+  --about-facts-corner-height: 6rem;
+
+  --portfolio-gutter: 5%;
+
+  --portfolio-heading-size: var(--type-title);
+
+  --portfolio-eyebrow-size: var(--type-label);
+
+  --portfolio-copy-width: 62%;
+
+  --portfolio-art-width: 40%;
+
+  --portfolio-art-edge: 0.375rem;
+
+  --portfolio-chevron-size: 0.375rem;
+
+  --portfolio-filter-min: 10rem;
+
+  --portfolio-filter-size: 0.875rem;
+
+  --portfolio-filter-radius: 0.625rem;
+
+  --portfolio-filter-face-height: 2.25rem;
+
+  --portfolio-filter-hit-padding: 0.375rem;
+
+  --portfolio-filter-icon: 1.5rem;
+
+  --portfolio-photo-ratio: 2.1;
+
+  --portfolio-photo-radius: 0.875rem;
+
+  --portfolio-badge-radius: 2rem;
+
+  --portfolio-badge-icon: 1rem;
+
+  --portfolio-card-title: var(--type-card-title);
+
   --project-photo-ratio: 4 / 3;
+
   --service-photo-ratio: 4 / 3;
+
   --service-head-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+
   --gallery-row-height-phone: 20rem;
+
   --gallery-row-height: min(20rem, 8.75rem + 14.1vw);
+
   --gallery-photo-max-height: 45rem;
+
   --gallery-facts-basis: 32rem;
+
   --proof-fact-min-width: 8rem;
+
   --proof-fact-wide-min-width: 16rem;
+
   --area-tile-min-width: 8rem;
+
   --area-tile-min-height: 7.5rem;
+
+  --contact-hero-icon: 1.5rem;
+
+  --contact-hero-height: clamp(18rem,24vw,22rem);
+
+  --contact-title-size: var(--type-title);
+
+  --contact-section-heading: var(--type-section);
+
+  --contact-panel-padding: min(clamp(1rem,2vw,2rem),5vw);
+
+  --contact-page-columns: minmax(0,1.73fr) minmax(0,1fr);
+
+  --contact-page-copy: 0.875rem;
+
+  --contact-page-meta: 0.8125rem;
+
+  --contact-page-message-height: 5rem;
+
+  --contact-step-number-size: 2rem;
+
+  --contact-page-panel-radius: 0.875rem;
+
+  --contact-marble-wash: 0.7;
+
   --contact-area-min-width: 7rem;
+
   --bullet-size: 0.625rem;
+
   --bullet-offset: 0.5em;
 
+
+
   --layer-header: 20;
+
   --layer-call-bar: 30;
+
   --layer-skip-link: 40;
 
+
+
   --pressed-opacity: 0.7;
+
   --duration-quick: 150ms;
+
   --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+
 }
+
+
+
+:root {
+
+  --service-design-h1: var(--type-title);
+
+  --service-design-h2: var(--type-section);
+
+  --service-design-body: var(--type-body);
+
+  --service-design-small: 0.9375rem;
+
+  --service-design-copy-width: 24rem;
+
+  --service-design-photo-height: 15rem;
+
+  --service-design-feature-height: 5.25rem;
+
+  --service-design-icon: 2.75rem;
+
+  --service-design-number: 1.75rem;
+
+  --service-design-corner: 7.5rem;
+
+  --service-design-corner-clearance: 8rem;
+
+  --service-design-inspiration-ratio: 1.5;
+
+  --service-design-arrow-size: 0.5rem;
+
+}
+
+
+
+:root { --service-design-radius: 0.875rem; }
+
+
+:root { --service-design-hero-padding: 1rem; --service-design-hero-gap: 0.625rem; --service-design-lead: var(--type-body); --service-design-rule: 0.25rem; }
+
+:root { --service-design-mobile-clearance: 4rem; }
+
+:root { --service-design-heading-weight: var(--weight-display); }
+
+:root { --service-design-phone-photo-height: 10rem; }
+
+:root { --service-design-cta-phone-heading: max(var(--text-base),min(var(--service-design-cta-heading),9vw)); }
+
+:root {
+  --service-design-card-label: 0.875rem;
+  --service-design-card-icon: 2rem;
+  --service-design-card-padding: 0.5rem;
+  --service-design-card-gap: 0.25rem;
+  --service-design-card-radius: 0.625rem;
+  --service-design-process-gap: 1.25rem;
+  --service-design-step-height: 5.75rem;
+}
+
+:root { --service-design-other-height: 5.5rem; }
+
+:root { --service-design-cta-heading: var(--type-cta); }
+
+/* Shared type scale: all pages use the same family and role sizes. */
+:root {
+  --type-title: min(clamp(1.875rem,3vw,2.5rem),12vw);
+  --type-section: min(clamp(1.5rem,2.2vw,1.75rem),11vw);
+  --type-subheading: min(clamp(1.125rem,1.5vw,1.25rem),11vw);
+  --type-card-title: 1rem;
+  --type-body: 1rem;
+  --type-small: 0.875rem;
+  --type-label: 0.75rem;
+  --type-cta: max(var(--text-base),min(clamp(1.375rem,2vw,1.75rem),9vw));
+}
+
+:root { --home-hero-media-start: 48%; }

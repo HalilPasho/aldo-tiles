@@ -1,15 +1,23 @@
 ---
-import logo from '../assets/logo.svg?raw';
-import logoOnDark from '../assets/logo-on-dark.svg?raw';
+import { getImage } from 'astro:assets';
+import logo from '../assets/em-tile-complete.png';
+import darkLogo from '../assets/em-tile-on-dark.png';
 
 interface Props {
   tone?: 'light' | 'dark';
 }
 
 const { tone = 'light' } = Astro.props;
+const selectedLogo = tone === 'dark' ? darkLogo : logo;
+const artwork = await getImage({ src: selectedLogo, width: 900, format: 'webp', quality: 90 });
 ---
 
-<span class:list={['logo', `logo--${tone}`]} set:html={tone === 'dark' ? logoOnDark : logo} />
+<span class:list={['logo', `logo--${tone}`]}>
+  <!-- Frame only the excess blank canvas; keep generous space around the complete mark and its shadow. -->
+  <svg viewBox="40 240 1480 580" width="1480" height="580" aria-hidden="true" focusable="false">
+    <image href={artwork.src} width={selectedLogo.width} height={selectedLogo.height} />
+  </svg>
+</span>
 
 <style>
   .logo {
@@ -17,21 +25,13 @@ const { tone = 'light' } = Astro.props;
     width: 100%;
   }
 
-  .logo :global(svg) {
+  .logo svg {
     width: 100%;
     height: auto;
   }
 
-  /* These override the fills saved in the SVG files, so a change in tokens.css also recolours the logo. */
-  .logo--light :global(.logo-ink) {
-    fill: var(--color-ink);
+  .logo--dark {
+    background: transparent;
   }
 
-  .logo--dark :global(.logo-ink) {
-    fill: var(--color-on-ink);
-  }
-
-  .logo :global(.logo-gold) {
-    fill: var(--color-accent);
-  }
 </style>

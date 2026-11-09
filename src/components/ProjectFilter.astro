@@ -3,12 +3,21 @@ import copy from '../data/copy.json';
 
 interface Props {
   options: { id: string; label: string }[];
+  allLabel?: string;
+  showIcons?: boolean;
 }
 
-const { options } = Astro.props;
+const { options, allLabel, showIcons = false } = Astro.props;
 const { filterLegend, filterAll } = copy.projects;
 
-const choices = [{ id: 'all', label: filterAll }, ...options];
+const iconPaths: Record<string,string> = {
+  all: 'M4 4h14v14H4Zm26 0h14v14H30ZM4 30h14v14H4Zm26 0h14v14H30Z',
+  'bathroom-shower-tile-installation': 'M12 44V14a9 9 0 0 1 18 0v5M23 20h14l-2-5H25Zm2 6v3m9-3v3m-4 5v3m-10-3v3m19-3v3M7 44h10',
+  'floor-tile-installation': 'm4 12 20-9 20 9-20 9Zm2 11-2 2 20 9 20-9-2-2M6 35l-2 2 20 9 20-9-2-2',
+  'kitchen-backsplash-installation': 'M3 7h42M3 18h42M3 29h42M3 40h42M12 7v11m24-11v11M23 18v11M12 29v11m24-11v11M3 7v33m42-33v33',
+  'commercial-tile-installation': 'M13 44V5h22v39M5 44V20h8m22 0h8v24M2 44h44M20 12h2m5 0h2m-9 8h2m5 0h2m-9 8h2m5 0h2m-9 16V35h9v9',
+};
+const choices = [{ id: 'all', label: allLabel ?? filterAll }, ...options];
 ---
 
 <fieldset class="project-filter" data-project-filter>
@@ -18,7 +27,7 @@ const choices = [{ id: 'all', label: filterAll }, ...options];
       choices.map(({ id, label }, index) => (
         <label class="project-filter__option">
           <input class="project-filter__radio" type="radio" name="project-filter" value={id} checked={index === 0} />
-          <span class="project-filter__tile">{label}</span>
+          <span class="project-filter__tile">{showIcons && <svg class="project-filter__icon" viewBox="0 0 48 48" aria-hidden="true"><path d={iconPaths[id] ?? iconPaths.all} /></svg>}<span>{label}</span></span>
         </label>
       ))
     }
@@ -26,6 +35,7 @@ const choices = [{ id: 'all', label: filterAll }, ...options];
 </fieldset>
 
 <style>
+  .project-filter__icon { flex: none; width: var(--portfolio-filter-icon); height: var(--portfolio-filter-icon); fill: none; stroke: currentColor; stroke-width: 2.7; stroke-linecap: round; stroke-linejoin: round; }
   /* A fieldset refuses to shrink below its content unless told to, which would push a phone's page sideways. */
   .project-filter {
     min-width: 0;

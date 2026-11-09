@@ -1,167 +1,112 @@
----
+﻿---
 import { getCollection } from 'astro:content';
-import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import { Image, getImage } from 'astro:assets';
 import CallLink from '../../components/CallLink.astro';
 import ContactForm from '../../components/ContactForm.astro';
+import AboutIcon from '../../components/AboutIcon.astro';
+import bathroom from '../../assets/sample-about-shower-illustration.png';
+import marble from '../../assets/sample-marble-tile-stack.png';
 import business from '../../data/business.json';
 import copy from '../../data/copy.json';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { byOrder } from '../../lib/order';
 import { breadcrumbSchema } from '../../lib/seo';
-
 const { contact } = copy;
 const path = '/contact/';
-const breadcrumbs = [
-  { name: copy.site.breadcrumbHome, path: '/' },
-  { name: contact.breadcrumb, path },
-];
-const services = (await getCollection('services'))
-  .sort(byOrder)
-  .map(({ id, data }) => ({ id, title: data.title }));
+const breadcrumbs = [{ name: copy.site.breadcrumbHome, path: '/' }, { name: contact.breadcrumb, path }];
+const services = (await getCollection('services')).sort(byOrder).map(({id,data})=>({id,title:data.title}));
 const areas = business.areasServed.value;
+const stone = await getImage({src:marble,width:1200,format:'webp'});
 ---
-
-<BaseLayout
-  title={contact.metaTitle}
-  description={contact.metaDescription}
-  {path}
-  schema={[breadcrumbSchema(business.siteUrl.value, breadcrumbs)]}
->
-  <div class="wrap page-head">
-    <Breadcrumbs items={breadcrumbs} />
-    <h1>{contact.h1}</h1>
-    <p class="page-head__lead">{contact.intro}</p>
-  </div>
-
-  <div class="wrap contact-page tile-grid tile-grid--split">
-    <section class="panel">
-      <ContactForm {services} />
-    </section>
-
-    <div class:list={['tile-grid contact-side', { 'contact-side--no-areas': areas.length === 0 }]}>
-      <section class="panel on-ink contact-direct">
-        <h2>{contact.direct.heading}</h2>
-        <p class="contact-direct__text">{contact.direct.text}</p>
-        <dl class="contact-direct__list">
-          <div>
-            <dt>{contact.direct.phoneLabel}</dt>
-            <dd><CallLink variant="button" /></dd>
-          </div>
-          <div>
-            <dt>{contact.direct.emailLabel}</dt>
-            <dd><a class="contact-direct__email" href={`mailto:${business.email.value}`}>{business.email.value}</a></dd>
-          </div>
-        </dl>
-      </section>
-
-      <section class="panel contact-note">
-        <h2>{contact.next.heading}</h2>
-        <ol class="contact-steps">
-          {contact.next.steps.map((step) => <li>{step}</li>)}
-        </ol>
-      </section>
-
-      {
-        areas.length > 0 && (
-          <section class="panel contact-note">
-            <h2>{contact.areas.heading}</h2>
-            <p class="contact-note__text">{contact.areas.intro}</p>
-            <ul class="contact-areas">
-              {areas.map((area) => (
-                <li>{area}</li>
-              ))}
-            </ul>
-          </section>
-        )
-      }
+<BaseLayout title={contact.metaTitle} description={contact.metaDescription} {path} schema={[breadcrumbSchema(business.siteUrl.value,breadcrumbs)]}>
+  <section class="contact-hero">
+    <div class="wrap contact-hero__inner">
+      <div class="contact-hero__copy">
+        <p class="contact-eyebrow">{contact.eyebrow}</p>
+        <h1>{contact.headingPrefix}{' '}<span>{contact.headingAccent}</span></h1>
+        <p class="contact-hero__intro">{contact.intro}</p>
+        <div class="contact-hero__links">
+          <CallLink />
+          <a class="contact-hero__email" href={`mailto:${business.email.value}`}><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="1"/><path d="m2 4 10 9L22 4"/></svg><span>{business.email.value}</span></a>
+        </div>
+      </div>
+    </div>
+    <div class="contact-hero__photo"><Image src={bathroom} alt={contact.imageAlt} widths={[640,1024,1536]} sizes="(min-width: 900px) 55vw, 100vw" format="webp" loading="eager" fetchpriority="high" /></div>
+  </section>
+  <div class="contact-main" style={{backgroundImage:`url(${stone.src})`}}>
+    <div class="wrap contact-page">
+      <section class="contact-form-panel"><ContactForm {services} showSubmitIcon /></section>
+      <div class="contact-side">
+        <section class="contact-next on-ink">
+          <h2>{contact.next.heading}</h2>
+          <ol class="contact-steps">{contact.next.steps.map(step=><li>{step}</li>)}</ol>
+        </section>
+        {areas.length > 0 && <section class="contact-areas-panel">
+          <h2>{contact.areas.heading}</h2><p>{contact.areas.intro}</p>
+          <ul class="contact-areas">{areas.map(area=><li><AboutIcon name="pin" /><span>{area}</span></li>)}</ul>
+        </section>}
+      </div>
     </div>
   </div>
 </BaseLayout>
-
 <style>
-  .contact-page {
-    padding-block-end: var(--space-2xl);
+  :global(body:has(.contact-hero)) { background: var(--color-surface-raised); }
+  .wrap { padding-inline: var(--portfolio-gutter); }
+  h1,h2 { font-family: var(--font-reference-display); font-weight: var(--weight-body); letter-spacing: var(--home-heading-tracking); text-wrap: initial; }
+  h1 { font-size: var(--contact-title-size); }
+  h1 span { display: block; color: var(--color-accent-text); }
+  h2 { font-size: var(--contact-section-heading); }
+  .contact-hero { position: relative; isolation: isolate; overflow: clip; background: var(--color-surface-raised); }
+  .contact-hero__inner { padding-block: var(--space-lg) var(--space-md); }
+  .contact-hero__copy { display: grid; gap: var(--space-md); min-width: 0; background: var(--color-surface-raised); }
+  .contact-eyebrow { font-size: var(--contact-page-copy); text-transform: uppercase; }
+  .contact-eyebrow::before { content: ''; display: inline-block; width: var(--home-eyebrow-line); height: var(--line-strong); background: var(--color-accent); margin-inline-end: var(--space-lg); vertical-align: middle; }
+  .contact-hero__intro { font-size: var(--about-copy-size); line-height: var(--leading-lead); color: var(--color-muted); }
+  .contact-hero__links { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-xs) var(--space-lg); }
+  .contact-hero__links > * { min-width: 0; max-width: 100%; }
+  .contact-hero__links :global(.call-plain) { font-size: var(--contact-page-copy); }
+  .contact-hero__email { display: inline-flex; align-items: center; gap: var(--space-xs); min-height: var(--tap-target); font-size: var(--contact-page-copy); font-weight: var(--weight-strong); text-decoration: none; }
+  .contact-hero__email span { min-width: 0; overflow-wrap: anywhere; }
+  .contact-hero__email:hover { text-decoration: underline; }
+  .contact-hero__email svg { flex: none; width: var(--icon-size); height: var(--icon-size); fill: none; stroke: var(--color-accent-text); stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+  .contact-hero__links :global(.call-icon), .contact-hero__email svg { width: var(--contact-hero-icon); height: var(--contact-hero-icon); padding: var(--space-2xs); border: var(--line-thin) solid var(--color-line); border-radius: 50%; background: var(--color-trust-icon-surface); }
+  @media(min-width: 1100px) {
+    .contact-hero__email { border-inline-start: var(--line-thin) solid var(--color-accent-text); padding-inline-start: var(--space-lg); }
   }
-
-  .contact-side {
-    grid-template-rows: auto auto 1fr;
-  }
-
-  .contact-side--no-areas {
-    grid-template-rows: auto 1fr;
-  }
-
-  .contact-side h2 {
-    font-size: var(--text-xl);
-  }
-
-  .contact-direct,
-  .contact-note {
-    display: grid;
-    gap: var(--space-sm);
-  }
-
-  .contact-direct__text,
-  .contact-direct__list dt {
-    color: var(--color-on-ink-muted);
-  }
-
-  .contact-direct__list {
-    display: grid;
-    gap: var(--space-sm);
-    margin: var(--space-xs) 0 0;
-  }
-
-  .contact-direct__list dt {
-    font-size: var(--text-sm);
-  }
-
-  .contact-direct__list dd {
-    margin: 0;
-  }
-
-  .contact-direct__list :global(.button) {
-    width: 100%;
-  }
-
-  .contact-direct__email {
-    display: inline-flex;
-    align-items: center;
-    min-height: var(--tap-target);
-    overflow-wrap: anywhere;
-    text-decoration-color: var(--color-accent-on-ink);
-  }
-
-  .contact-note__text {
-    color: var(--color-muted);
-  }
-
-  .contact-steps {
-    display: grid;
-    gap: var(--space-sm);
-    counter-reset: step;
-  }
-
-  .contact-steps li {
-    display: grid;
-    grid-template-columns: var(--space-lg) minmax(0, 1fr);
-    gap: var(--space-xs);
-    counter-increment: step;
-  }
-
-  .contact-steps li::before {
-    content: counter(step);
-    color: var(--color-accent-text);
-    font-family: var(--font-display);
-    font-size: var(--text-lg);
-    font-weight: var(--weight-display);
-    line-height: var(--leading-body);
-  }
-
-  .contact-areas {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, max(var(--contact-area-min-width), 50% - var(--space-md))), 1fr));
-    gap: var(--space-2xs) var(--space-md);
-    font-weight: var(--weight-strong);
+  .contact-hero__photo { position: relative; height: var(--about-hero-phone-height); padding-block-start: var(--line-strong); background: linear-gradient(115deg,var(--color-gold-button-start),var(--color-gold-button-end)); }
+  .contact-hero__photo img { width: 100%; height: 100%; object-fit: cover; }
+  .contact-main { position: relative; isolation: isolate; background-size: auto var(--footer-marble-zoom); background-position: right top; }
+  .contact-main::before { content: ''; position: absolute; z-index: -1; inset: 0; background: var(--color-surface-raised); opacity: var(--contact-marble-wash); }
+  .contact-page { display: grid; gap: var(--space-lg); align-items: start; padding-block: var(--space-lg) var(--space-xl); }
+  .contact-form-panel,.contact-next,.contact-areas-panel { min-width: 0; padding: var(--contact-panel-padding); border: var(--line-thin) solid var(--color-line); border-radius: var(--contact-page-panel-radius); box-shadow: var(--shadow-home-project-card); background: var(--color-surface-raised); }
+  .contact-form-panel :global(.contact-form) { gap: var(--space-md); height: auto; grid-template-rows: auto; }
+  .contact-form-panel :global(.contact-form__intro h2) { font-family: var(--font-reference-display); font-size: var(--contact-section-heading); font-weight: var(--weight-body); }
+  .contact-form-panel :global(.contact-form__note),.contact-form-panel :global(.field__hint) { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .contact-form-panel :global(form) { gap: var(--space-sm) var(--space-md); grid-template-rows: none; }
+  .contact-form-panel :global(.field) { gap: var(--space-2xs); }
+  .contact-form-panel :global(.field__label),.contact-form-panel :global(.field__mark),.contact-form-panel :global(.field__control) { font-size: var(--contact-page-copy); }
+  .contact-form-panel :global(.field__control) { font-size: var(--text-base); min-height: var(--tap-target); padding-block: var(--space-2xs); }
+  .contact-form-panel :global(.field--wide) { grid-template-rows: auto auto; }
+  .contact-form-panel :global(.field__control--message) { min-height: var(--contact-page-message-height); height: var(--contact-page-message-height); }
+  .contact-form-panel :global(.contact-form__actions) { gap: var(--space-md); }
+  .contact-form-panel :global(.contact-form__privacy) { font-size: var(--contact-page-meta); }
+  .contact-form-panel :global(.contact-form__privacy-link) { display: flex; }
+  .contact-form-panel :global(.button) { font-size: var(--contact-page-copy); }
+  .contact-side { display: grid; gap: var(--space-sm); min-width: 0; }
+  .contact-next { display: grid; gap: var(--space-md); background: var(--color-ink); border-color: var(--color-ink); }
+  .contact-steps { display: grid; gap: var(--space-md); counter-reset: step; }
+  .contact-steps li { display: grid; grid-template-columns: var(--contact-step-number-size) minmax(0,1fr); gap: var(--space-md); align-items: start; font-size: var(--contact-page-copy); line-height: var(--leading-lead); counter-increment: step; }
+  .contact-steps li::before { content: counter(step); display: grid; place-items: center; width: var(--contact-step-number-size); height: var(--contact-step-number-size); border: var(--line-thin) solid var(--color-accent-on-ink); border-radius: 50%; background: var(--color-footer-panel); color: var(--color-accent-on-ink); font-family: var(--font-reference-display); font-size: var(--text-lg); line-height: 1; }
+  .contact-areas-panel { display: grid; gap: var(--space-sm); }
+  .contact-areas-panel p { font-size: var(--contact-page-copy); line-height: var(--leading-lead); color: var(--color-muted); }
+  .contact-areas { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(100%,max(var(--contact-area-min-width),50% - var(--space-md))),1fr)); gap: var(--space-xs) var(--space-md); }
+  .contact-areas li { display: flex; align-items: center; gap: var(--space-xs); min-width: 0; font-size: var(--contact-page-copy); }
+  .contact-areas :global(.about-icon) { width: var(--icon-size); height: var(--icon-size); color: var(--color-accent-text); }
+  @media(min-width: 900px) {
+    .contact-hero__inner { min-height: var(--contact-hero-height); }
+    .contact-hero__copy { width: var(--about-hero-copy-width); }
+    .contact-hero__photo { position: absolute; z-index: -1; inset-block: 0; inset-inline-end: 0; width: var(--about-hero-photo-width); height: auto; padding: 0; clip-path: polygon(var(--about-hero-diagonal) 0,100% 0,100% 100%,0 100%); }
+    .contact-hero__photo img { clip-path: polygon(calc(var(--about-hero-diagonal) + var(--about-hero-gold-edge)) 0,100% 0,100% 100%,var(--about-hero-gold-edge) 100%); }
+    .contact-page { grid-template-columns: var(--contact-page-columns); }
   }
 </style>

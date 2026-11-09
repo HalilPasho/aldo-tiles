@@ -1,0 +1,190 @@
+{
+  "bathroom-shower-tile-installation": {
+    "heading": "Bathroom Tiling & Renovations",
+    "intro": "Careful preparation and detailed tile installation for bathrooms and showers.",
+    "features": [
+      "Waterproofing|and preparation",
+      "Tile installation|(walls and floors)",
+      "Shower walls|and niches",
+      "Floor tiling|and drainage",
+      "Clean edges|and profiles",
+      "Grout and|final finishing"
+    ],
+    "cta": "Planning a bathroom renovation?",
+    "icon": "bath",
+    "featureIcons": [
+      "shield",
+      "layers",
+      "niche",
+      "grid",
+      "corner",
+      "sparkle"
+    ],
+    "heroLines": [
+      "Bathroom Tiling &",
+      "Renovations"
+    ]
+  },
+  "floor-tile-installation": {
+    "heading": "Floor Tile Installation",
+    "intro": "Well-prepared floors, accurate layouts and a clean, durable finish.",
+    "features": [
+      "Surface|preparation",
+      "Tile installation|(all types)",
+      "Leveling|& alignment",
+      "Grouting|& sealing",
+      "Transitions|& edges",
+      "Durable|& clean finish"
+    ],
+    "cta": "Ready to transform your floors?",
+    "icon": "floor",
+    "featureIcons": [
+      "layers",
+      "grid",
+      "level",
+      "drop",
+      "corner",
+      "sparkle"
+    ],
+    "heroLines": [
+      "Floor Tile",
+      "Installation"
+    ]
+  },
+  "kitchen-backsplash-installation": {
+    "heading": "Kitchen Backsplashes",
+    "intro": "A considered backsplash layout with neat cuts and a carefully finished edge.",
+    "features": [
+      "Layout & design|advice",
+      "Tile installation|(wall area)",
+      "Clean edges|& trim",
+      "Grouting|& sealing",
+      "Heat & moisture|resistant",
+      "Clean &|polished finish"
+    ],
+    "cta": "Thinking about a new backsplash?",
+    "icon": "bricks",
+    "featureIcons": [
+      "grid",
+      "layers",
+      "corner",
+      "drop",
+      "heat",
+      "sparkle"
+    ],
+    "heroLines": [
+      "Kitchen",
+      "Backsplashes"
+    ]
+  },
+  "wall-tiling": {
+    "heading": "Wall Tiling",
+    "intro": "High quality wall tiling with careful preparation, accurate installation and a smooth, long-lasting result.",
+    "features": [
+      "Surface|preparation",
+      "Wall tile|installation",
+      "Clean edges|& corners",
+      "Grouting|& sealing",
+      "Various tile|styles & sizes",
+      "Durable|& easy to clean"
+    ],
+    "cta": "Upgrade your walls with quality tiling?",
+    "icon": "layers",
+    "featureIcons": [
+      "bricks",
+      "grid",
+      "diamond",
+      "drop",
+      "layers",
+      "shield"
+    ],
+    "heroLines": [
+      "Wall Tiling"
+    ]
+  },
+  "custom-tile-layouts": {
+    "heading": "Custom Tile Layouts",
+    "intro": "Custom tile layout planning and professional installation with precision, creative designs and a flawless finish.",
+    "features": [
+      "Custom design|& patterns",
+      "Layout|planning",
+      "Pattern|combinations",
+      "Precise cuts|& fitting",
+      "All tile types|& sizes",
+      "Clean &|polished finish"
+    ],
+    "cta": "Have a custom tile idea?",
+    "icon": "grid",
+    "featureIcons": [
+      "grid",
+      "layers",
+      "diamond",
+      "corner",
+      "layers",
+      "sparkle"
+    ],
+    "steps": [
+      "Consult|your idea",
+      "Design|the layout",
+      "Choose|the tiles",
+      "Install|with precision",
+      "Final check|and cleanup"
+    ],
+    "heroLines": [
+      "Custom Tile",
+      "Layouts"
+    ]
+  },
+  "premium-tile-finishing": {
+    "heading": "Premium Tile Finishing",
+    "intro": "A refined tile finish with high precision, clean lines and premium detailing for a luxury look.",
+    "features": [
+      "Precision cuts|& detailing",
+      "Custom edges|& profiles",
+      "Premium grout|& sealing",
+      "Pattern & layout|alignment",
+      "High-end|materials",
+      "Flawless|final finish"
+    ],
+    "cta": "Looking for a premium tile finish?",
+    "icon": "gem",
+    "featureIcons": [
+      "gem",
+      "corner",
+      "drop",
+      "layers",
+      "layers",
+      "sparkle"
+    ],
+    "heroLines": [
+      "Premium Tile",
+      "Finishing"
+    ]
+  },
+  "commercial-tile-installation": {
+    "heading": "Commercial Tile Installation",
+    "intro": "Careful preparation and practical tile layouts for commercial spaces.",
+    "features": [
+      "Surface preparation",
+      "Floor & wall tile",
+      "Layout planning",
+      "Precise cuts & fitting",
+      "Grouting & sealing",
+      "Final check & clean up"
+    ],
+    "cta": "Have a commercial tile project?",
+    "icon": "layers",
+    "featureIcons": [
+      "bricks",
+      "grid",
+      "plan",
+      "corner",
+      "drop",
+      "check"
+    ],
+    "heroLines": [
+      "Commercial Tile",
+      "Installation"
+    ]
+  }
+}

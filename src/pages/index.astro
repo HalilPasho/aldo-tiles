@@ -1,11 +1,17 @@
 ---
 import { getCollection } from 'astro:content';
-import Button from '../components/Button.astro';
-import CtaBand from '../components/CtaBand.astro';
+import HomeCta from '../components/HomeCta.astro';
 import Hero from '../components/Hero.astro';
+import ContactForm from '../components/ContactForm.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import ReviewsSection from '../components/ReviewsSection.astro';
-import ServiceCard from '../components/ServiceCard.astro';
+import HomeServices from '../components/HomeServices.astro';
+import ProjectFilter from '../components/ProjectFilter.astro';
+import { projectFilterCss } from '../lib/project-filter';
+import preview1 from '../assets/sample-reference-project-1.jpg';
+import preview2 from '../assets/sample-reference-project-2.jpg';
+import preview3 from '../assets/sample-reference-project-3.jpg';
+import preview4 from '../assets/sample-reference-project-4.jpg';
 import business from '../data/business.json';
 import copy from '../data/copy.json';
 import BaseLayout from '../layouts/BaseLayout.astro';
@@ -23,234 +29,197 @@ const years = business.yearsExperience.value;
 const areas = business.areasServed.value;
 const credentials = business.credentials.value;
 const hasProof = Boolean(years) || areas.length > 0 || credentials.length > 0;
+
+const previews = [preview1, preview2, preview3, preview4];
+const categoryFor = (project: (typeof projects)[number]) =>
+  (home.reference.projectCategories as Record<string, string>)[project.id] ?? project.data.service.id;
+const usedCategories = new Set(projects.map(categoryFor));
+const filterOptions = [
+  ...home.reference.projectFilters,
+  ...services.map((service) => ({ id: service.id, label: service.data.title })),
+].filter((option, index, options) => usedCategories.has(option.id) && options.findIndex(({ id }) => id === option.id) === index);
+const previewIndexFor = (project: (typeof projects)[number]) =>
+  (home.reference.previewByCategory as Record<string, number>)[categoryFor(project)];
 ---
-
 <BaseLayout title={home.metaTitle} description={home.metaDescription} path="/" schema={[localBusinessSchema(business)]}>
+  <style slot="head" is:inline set:html={projectFilterCss(filterOptions.map(({ id }) => id))} />
   <Hero />
-
+  <HomeServices />
+  {projects.length > 0 && <section class="wrap home-projects" id="projects">
+    <div class="home-projects__heading"><p class="home-eyebrow">{home.reference.eyebrowProjects}</p><h2>{home.projects.heading}</h2></div>
+    <ProjectFilter options={filterOptions} allLabel={home.reference.filters[0]} />
+    <a class="home-projects__more button-look" href="/projects/">{home.projects.linkLabel}<span aria-hidden="true"> &rarr;</span></a>
+    <ul class="home-projects__grid" data-project-grid>
+      {projects.map((project) => <li data-project-service={categoryFor(project)}><ProjectCard {project} previewPhoto={project.data.sample ? previews[previewIndexFor(project)] : undefined} previewAlt={project.data.sample ? home.reference.projectAlts[previewIndexFor(project)] : undefined} categoryLabel={filterOptions.find((option) => option.id === categoryFor(project))?.label} sizes="(min-width: 900px) calc((100vw - 5rem) / 4), (min-width: 640px) calc((100vw - 3rem) / 2), 100vw" /></li>)}
+    </ul>
+  </section>}
+  <div class="home-support">
   {
     hasProof && (
       <section class="wrap tile-grid proof" data-proof>
-        <h2 class="panel on-ink proof__heading">{home.proof.heading}</h2>
+        <p class="home-eyebrow proof__eyebrow">{home.proof.eyebrow}</p>
+        <h2 class="panel proof__heading">{home.proof.headingPrefix}{' '}<span>{home.proof.headingAccent}</span></h2>
         {years ? (
           <p class="panel proof__fact">
+            <span class="proof__icon" aria-hidden="true"><svg viewBox="0 0 48 48"><rect x="7" y="10" width="34" height="32" rx="4"/><path d="M7 20h34M15 6v9M33 6v9"/><circle cx="17" cy="28" r="1"/><circle cx="30" cy="28" r="1"/><circle cx="17" cy="35" r="1"/></svg></span>
+            <span class="proof__content">
             <span class="proof__number">{years}</span>
             <span class="proof__label">{home.proof.yearsLabel}</span>
+            </span>
           </p>
         ) : null}
         {areas.length > 0 && (
           <p class="panel proof__fact">
+            <span class="proof__icon" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M24 44S8 26 8 18a16 16 0 0 1 32 0c0 8-16 26-16 26Z"/><circle cx="24" cy="18" r="6"/></svg></span>
+            <span class="proof__content">
             <span class="proof__number">{areas.length}</span>
             <span class="proof__label">{home.proof.areasLabel}</span>
+            </span>
           </p>
         )}
         {credentials.length > 0 && (
           <div class="panel proof__fact proof__fact--wide">
+            <span class="proof__icon" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M24 4 7 10v13c0 11 17 21 17 21s17-10 17-21V10L24 4Z"/><path d="m15 24 6 6 13-14"/></svg></span>
+            <div class="proof__content">
             <ul class="proof__credentials">
               {credentials.map((credential) => (
                 <li>{credential}</li>
               ))}
             </ul>
             <p class="proof__label">{home.proof.credentialsLabel}</p>
+            </div>
           </div>
         )}
       </section>
     )
   }
 
-  <section class="wrap home-services">
-    <div class="home-intro">
-      <h2>{home.services.heading}</h2>
-      <p class="home-muted">{home.services.intro}</p>
-    </div>
-    <ul class="tile-grid home-services__grid">
-      {
-        services.map((service) => (
-          <li>
-            <ServiceCard {service} />
-          </li>
-        ))
-      }
-    </ul>
-  </section>
-
-  {
-    projects.length > 0 && (
-      <section class="wrap home-projects">
-        <div class="home-intro">
-          <h2>{home.projects.heading}</h2>
-          <p class="home-muted">{home.projects.intro}</p>
-        </div>
-        <ul class="home-projects__grid">
-          {projects.map((project) => (
-            <li>
-              <ProjectCard
-                {project}
-                sizes="(min-width: 1280px) 296px, (min-width: 1100px) 25vw, (min-width: 640px) 50vw, 100vw"
-              />
-            </li>
-          ))}
-        </ul>
-        <div>
-          <Button href="/projects/" variant="secondary">
-            {home.projects.linkLabel}
-          </Button>
-        </div>
-      </section>
-    )
-  }
 
   <ReviewsSection {reviews} />
-
   {
     areas.length > 0 && (
       <section class="wrap home-areas">
         <div class="home-intro">
-          <h2>{home.areas.heading}</h2>
+          <p class="home-eyebrow">{home.areas.eyebrow}</p>
+          <h2>{home.areas.headingPrefix} {business.baseCity} &amp; <span>{home.areas.headingAccent}</span></h2>
           <p class="home-muted">{home.areas.intro}</p>
         </div>
         <ul class="tile-grid home-areas__list" data-areas>
           {areas.map((area) => (
-            <li class:list={['home-area', area === business.baseCity ? 'home-area--base' : 'on-ink']}>{area}</li>
+            <li class="home-area"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 44S9 26 9 18a15 15 0 0 1 30 0c0 8-15 26-15 26Z"/><circle cx="24" cy="18" r="5"/></svg><span>{area}</span></li>
           ))}
         </ul>
       </section>
     )
   }
 
-  <CtaBand heading={home.cta.heading} text={home.cta.text} />
+
+  </div>
+  <HomeCta />
+  <div class="home-bottom"><div class="wrap home-bottom__grid">
+    <section class="home-about" id="about"><p class="home-eyebrow">{home.reference.eyebrowAbout}</p><h2>{home.reference.aboutHeadingPrefix}{' '}<span class="home-about__ending">{home.reference.aboutHeadingConnector}{' '}<span>{home.reference.aboutHeadingAccent}</span></span></h2><p>{home.reference.aboutText}</p>
+      <ul class="home-about__values">
+        {home.reference.aboutValues.map((label, index) => <li><svg viewBox="0 0 48 48" aria-hidden="true">{index === 0 ? <><path d="M24 4 7 10v13c0 11 17 21 17 21s17-10 17-21V10L24 4Z"/><path d="m15 24 6 6 13-14"/></> : index === 1 ? <><path d="m4 14 20-10 20 10-20 10Z"/><path d="m10 21-6 4 20 10 20-10-6-4M10 32l-6 4 20 10 20-10-6-4"/></> : <><rect x="7" y="10" width="34" height="32" rx="4"/><path d="M7 20h34M15 6v9M33 6v9"/><circle cx="17" cy="28" r="1"/><circle cx="30" cy="28" r="1"/><circle cx="17" cy="35" r="1"/></>}</svg><span>{label}</span></li>)}
+      </ul></section>
+    <section class="home-contact" id="contact"><p class="home-eyebrow">{home.reference.eyebrowContact}</p><h2>{home.reference.contactHeadingPrefix}{' '}<span>{home.reference.contactHeadingAccent}</span></h2><p>{home.reference.contactIntro}</p><ContactForm showSubmitIcon showIntro={false} services={services.map((service) => ({ id: service.id, title: service.data.title }))} /></section>
+  </div></div>
+
 </BaseLayout>
 
 <style>
-  .home-muted {
-    color: var(--color-muted);
+  :global(body:has(.home-projects)) { background: var(--color-surface-raised); }
+  .wrap { max-width: var(--home-wrap-width); padding-inline: 5%; }
+  h2 { font-family: var(--font-reference-display); font-weight: var(--weight-body); font-size: var(--home-section-title); letter-spacing: var(--home-heading-tracking); }
+  .home-eyebrow { font-size: var(--home-eyebrow-size); letter-spacing: var(--home-eyebrow-tracking); font-weight: var(--weight-strong); text-transform: uppercase; }
+  .home-eyebrow::before { content: ''; display: inline-block; width: var(--home-eyebrow-line); height: var(--line-strong); background: var(--color-accent); vertical-align: middle; margin-inline-end: var(--space-sm); }
+  .home-projects { display: grid; gap: var(--home-projects-row-gap); max-width: none; padding-inline: var(--home-projects-gutter); padding-block: var(--home-section-space); }
+  .home-projects__heading h2 { margin-block-start: var(--space-xs); }
+  .home-projects__grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(100%,var(--home-project-card-min)),1fr)); gap: var(--space-md); }
+  .home-projects :global(.project-card) { border-radius: var(--home-project-card-radius); overflow: clip; background: var(--color-home-soft); box-shadow: var(--shadow-home-project-card); gap: 0; }
+  .home-projects :global(.project-card__photo) { height: var(--home-project-photo-height); aspect-ratio: auto; border-radius: 0; }
+  .home-projects :global(.project-card__text) { padding: var(--home-project-caption-padding); gap: var(--space-2xs); }
+  .home-projects :global(.project-card__title) { font-family: var(--font-display); font-weight: var(--weight-display); font-size: var(--home-card-title); letter-spacing: 0; }
+  .home-projects :global(.project-card__city) { color: var(--color-accent-text); font-size: var(--home-project-category-size); font-weight: var(--weight-body); }
+  .home-projects :global(.project-card__tile) { display: none; }
+  .home-projects :global(.project-filter__legend) { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .home-projects :global(.project-filter) { justify-self: center; max-width: 100%; }
+  .home-projects :global(.project-filter__options) { justify-content: center; gap: var(--space-xs); }
+  .home-projects :global(.project-filter__option) { flex: 0 0 auto; }
+  .home-projects :global(.project-filter__tile) { border: 0; background: var(--color-home-filter); padding: var(--space-xs) var(--home-project-filter-padding); font-size: var(--home-project-filter-size); }
+  .home-projects :global(.project-filter__tile::before) { display: none; }
+  .home-projects :global(.project-filter__radio:checked + .project-filter__tile) { background: linear-gradient(115deg,var(--color-gold-button-start),var(--color-gold-button-end)); color: var(--color-gold-button-text); text-decoration: underline; }
+  .button-look { display: inline-flex; align-items: center; justify-content: center; min-height: var(--button-height); padding: var(--space-xs) var(--space-md); border: var(--line-thin) solid var(--color-ink); border-radius: var(--radius-tile); font-size: var(--home-button-size); font-weight: var(--weight-strong); text-decoration: none; justify-self: center; }
+  .home-projects__more:hover,
+  .home-projects__more:focus-visible,
+  .home-projects__more:active {
+    background: linear-gradient(115deg, var(--color-gold-button-start), var(--color-gold-button-end));
+    border-color: var(--color-accent);
+    color: var(--color-gold-button-text);
   }
+  .home-bottom { background: var(--color-home-soft); border-block: var(--line-thin) solid var(--color-line); }
+  .home-bottom__grid { display: grid; gap: var(--space-xl); padding-block: var(--home-section-space); }
+  .home-about, .home-contact { display: grid; align-content: start; gap: var(--space-md); min-width: 0; }
+  .home-about > p:not(.home-eyebrow), .home-contact > p:not(.home-eyebrow) { color: var(--color-muted); }
+  .home-contact :global(.contact-form) { gap: 0; }
+  .home-contact :global(form) { gap: var(--space-sm); grid-template-rows: auto; }
+  .home-contact :global(.field__label) { font-size: var(--home-button-size); }
+  .home-contact :global(.field) { gap: var(--space-2xs); }
+  .home-contact :global(.field--wide) { grid-template-rows: auto; }
+  .home-contact :global(.field__control--message) { min-height: var(--consult-message-height); height: var(--consult-message-height); }
+  .home-contact :global(.field__hint) { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .home-bottom h2 span { color: var(--color-accent-text); }
+  .home-bottom h2 { text-wrap: initial; }
+  .home-bottom h2 .home-about__ending { display: block; color: var(--color-ink); }
+  .home-about__values { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(100%,var(--consult-value-min)),1fr)); gap: var(--space-sm); margin-block-start: var(--space-xl); }
+  .home-about__values li { display: grid; justify-items: center; align-content: start; gap: var(--space-sm); text-align: center; font-size: var(--consult-value-size); font-weight: var(--weight-strong); line-height: var(--leading-tight); padding-inline: var(--space-2xs); }
+  .home-about__values li + li { border-inline-start: var(--line-thin) solid var(--color-line); }
+  .home-about__values svg { width: var(--consult-icon-size); height: var(--consult-icon-size); fill: none; stroke: var(--color-accent); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+  .home-contact :global(.field__control) { min-height: var(--tap-target); padding-block: var(--space-2xs); font-size: var(--text-base); }
+  .home-contact :global(.contact-form__privacy) { font-size: var(--consult-privacy-size); }
+  .home-contact :global(.contact-form__privacy-link) { display: flex; }
+  .home-contact :global(.contact-form__actions) { gap: var(--space-md); }
+  .home-contact :global(.contact-form__actions .button) { padding-inline: var(--space-md); }
+  .home-support { background: var(--color-home-soft); }
+  .proof { display: flex; flex-wrap: wrap; gap: var(--trust-card-gap); padding-block: var(--space-lg) var(--trust-section-gap); }
+  .proof__eyebrow, .proof__heading { flex: 1 1 100%; }
+  .proof__heading { font-size: var(--trust-heading-size); text-wrap: initial; padding: 0; border: 0; border-radius: 0; background: transparent; margin-block-start: calc(var(--space-sm) * -1); }
+  .proof__heading span { color: var(--color-accent-text); }
+  .proof__fact { display: grid; flex: 1 1 var(--trust-card-min); min-width: 0; grid-template-columns: var(--trust-icon-size) minmax(0,1fr); align-items: center; gap: min(var(--space-lg),4vw); max-width: none; padding: var(--trust-card-padding); border-radius: var(--trust-card-radius); border-block-end: var(--line-strong) solid var(--color-accent); box-shadow: var(--shadow-trust-card); }
+  .proof__icon { display: grid; place-items: center; width: var(--trust-icon-size); height: var(--trust-icon-size); border-radius: 50%; background: var(--color-trust-icon-surface); }
+  .proof__icon svg { width: 60%; height: 60%; fill: none; stroke: var(--color-accent); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+  .proof__content { display: grid; gap: var(--space-2xs); align-content: center; min-width: 0; padding-inline-start: min(var(--space-lg),4vw); border-inline-start: var(--line-thin) solid var(--color-line); }
+  .proof__number { font-family: var(--font-reference-display); font-size: var(--trust-number-size); line-height: 1; }
+  .proof__label { font-size: var(--trust-fact-size); line-height: var(--leading-tight); }
+  .proof__credentials { font-size: var(--trust-fact-size); font-weight: var(--weight-strong); line-height: var(--leading-lead); }
+  .proof__fact--wide .proof__label, .home-muted { color: var(--color-muted); }
+  .home-areas { display: grid; gap: var(--space-lg); padding-block: var(--space-sm) var(--space-xl); }
+  .home-areas .home-intro { display: grid; gap: var(--space-xs); }
+  .home-areas h2 { font-size: var(--trust-heading-size); text-wrap: initial; }
+  .home-areas h2 span { color: var(--color-accent-text); }
+  .home-areas .home-muted { max-width: none; }
+  .home-areas__list { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(100%,var(--home-area-min)),1fr)); gap: var(--space-md); }
+  .home-area { display: flex; align-items: center; gap: var(--space-md); min-width: 0; padding: var(--home-area-padding); min-height: var(--home-area-height); border: var(--line-thin) solid var(--color-line); border-radius: var(--home-area-radius); background: var(--color-surface-raised); box-shadow: var(--shadow-trust-card); font-weight: var(--weight-strong); font-size: var(--home-area-size); line-height: var(--leading-tight); }
+  .home-area svg { flex: none; width: var(--home-area-icon); height: var(--home-area-icon); fill: none; stroke: var(--color-accent-text); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
 
-  .home-intro {
-    display: grid;
-    align-content: start;
-    gap: var(--space-xs);
+
+  @media(max-width: 639px) {
+    .home-about__values { grid-template-columns: 1fr; margin-block-start: var(--space-md); }
+    .home-about__values li { display: flex; align-items: center; text-align: start; border: 0; padding-block: var(--space-xs); }
+    .home-about__values li + li { border-inline-start: 0; border-block-start: var(--line-thin) solid var(--color-line); }
+    .home-about__values svg { flex: none; }
   }
-
-  /* Flex, not grid, so the tiles close up and leave no hole when a fact is missing from business.json. */
-  .proof {
-    display: flex;
-    flex-wrap: wrap;
-    padding-block-start: var(--space-lg);
+  @media(min-width: 640px) {
+    .home-contact :global(.contact-form__privacy) { border-inline-start: var(--line-thin) solid var(--color-line); padding-inline-start: var(--space-lg); }
   }
-
-  .proof__heading {
-    flex: 1 1 100%;
-    font-size: var(--text-xl);
-  }
-
-  .proof__fact {
-    display: grid;
-    flex: 1 1 var(--proof-fact-min-width);
-    align-content: space-between;
-    gap: var(--space-xs);
-    max-width: none;
-  }
-
-  .proof__fact--wide {
-    flex-basis: var(--proof-fact-wide-min-width);
-  }
-
-  .proof__number {
-    font-family: var(--font-display);
-    font-size: var(--text-3xl);
-    font-weight: var(--weight-display);
-    line-height: 1;
-  }
-
-  .proof__credentials {
-    font-family: var(--font-display);
-    font-size: var(--text-xl);
-    font-weight: var(--weight-display);
-    line-height: var(--leading-tight);
-  }
-
-  .proof__label {
-    color: var(--color-muted);
-  }
-
-  .home-services {
-    display: grid;
-    gap: var(--space-lg) var(--space-xl);
-    padding-block: var(--space-2xl);
-  }
-
-  .home-services__grid {
-    min-width: 0;
-  }
-
-  .home-projects {
-    display: grid;
-    gap: var(--space-lg);
-    padding-block-end: var(--space-2xl);
-  }
-
-  .home-projects__grid {
-    display: grid;
-    gap: var(--space-xl) var(--grout);
-  }
-
-  .home-areas {
-    display: grid;
-    gap: var(--space-lg);
-    padding-block-end: var(--space-2xl);
-  }
-
-  .home-areas__list {
-    display: flex;
-    flex-wrap: wrap;
-  }
-
-  .home-area {
-    display: flex;
-    flex: 1 1 var(--area-tile-min-width);
-    align-items: flex-end;
-    min-height: var(--area-tile-min-height);
-    padding: var(--space-sm);
-    border-radius: var(--radius-tile);
-    font-family: var(--font-display);
-    font-size: var(--text-lg);
-    font-weight: var(--weight-display);
-    line-height: var(--leading-tight);
-  }
-
-  .home-area--base {
-    background: var(--color-accent);
-    color: var(--color-on-accent);
-  }
-
-  @media (min-width: 640px) {
-    .home-services__grid,
-    .home-projects__grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .home-area {
-      padding: var(--space-md);
-      font-size: var(--text-xl);
-    }
-  }
-
-  @media (min-width: 900px) {
-    .home-services {
-      grid-template-columns: var(--text-row-columns);
-    }
-  }
-
-  @media (min-width: 1100px) {
-    .proof__heading,
-    .proof__fact {
-      flex: 1 1 0;
-      min-width: 0;
-    }
-
-    .home-projects__grid {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-    }
+  @media(min-width: 900px) {
+    .home-projects { grid-template-columns: minmax(0,1fr) auto minmax(0,1fr); align-items: end; }
+    .home-projects__heading { grid-column: 1; grid-row: 1; }
+    .home-projects :global(.project-filter) { grid-column: 2; grid-row: 1; }
+    .home-projects__more { grid-column: 3; grid-row: 1; justify-self: end; }
+    .home-projects__grid { grid-column: 1 / -1; }
+    .home-projects__grid { grid-template-columns: repeat(4,minmax(0,1fr)); }
+    .home-bottom__grid { grid-template-columns: minmax(0,0.72fr) minmax(0,1fr); gap: var(--consult-column-gap); }
+    .home-contact { padding-inline-start: var(--consult-column-gap); border-inline-start: var(--line-thin) solid var(--color-line); }
+    .home-bottom h2 { font-size: var(--consult-heading-size); }
   }
 </style>

@@ -1,5 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
+import { getImage } from 'astro:assets';
+import tileStack from '../../assets/sample-projects-marble-banner.png';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import Button from '../../components/Button.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
@@ -12,10 +14,11 @@ import { projectFilterCss } from '../../lib/project-filter';
 import { breadcrumbSchema } from '../../lib/seo';
 
 const { projects: words, site } = copy;
+const tileArtwork = await getImage({ src: tileStack, width: 1800, format: 'webp' });
 const path = '/projects/';
 const breadcrumbs = [
   { name: site.breadcrumbHome, path: '/' },
-  { name: words.h1, path },
+  { name: words.breadcrumbLabel, path },
 ];
 
 const projects = (await getCollection('projects')).sort(byOrder);
@@ -35,9 +38,12 @@ const filterOptions = services.map(({ id, data }) => ({
 >
   {projects.length > 0 && <style slot="head" is:inline set:html={projectFilterCss(filterOptions.map(({ id }) => id))} />}
 
-  <div class="wrap page-head">
-    <Breadcrumbs items={breadcrumbs} />
-    <h1>{words.h1}</h1>
+  <div class="portfolio-head">
+    <div class="portfolio-head__art" aria-hidden="true" style={{ backgroundImage: `url(${tileArtwork.src})` }}></div>
+    <div class="wrap page-head portfolio-head__inner">
+    <Breadcrumbs items={breadcrumbs} showHomeIcon />
+    <div class="portfolio-head__copy"><p class="portfolio-head__eyebrow">{words.eyebrow}</p>
+    <h1>{words.headingPrefix}{' '}<span>{words.headingAccent}</span></h1>
     <p class="page-head__lead">{projects.length > 0 ? words.intro : words.emptyText}</p>
     {
       projects.length === 0 && (
@@ -46,18 +52,21 @@ const filterOptions = services.map(({ id, data }) => ({
         </div>
       )
     }
+    </div>
+    </div>
   </div>
 
   {
     projects.length > 0 && (
       <section class="wrap projects-browser">
-        <ProjectFilter options={filterOptions} />
+        <ProjectFilter options={filterOptions} showIcons />
         <h2 class="visually-hidden">{words.listHeading}</h2>
         <ul class="projects-grid" data-project-grid>
           {projects.map((project, index) => (
             <li data-project-service={project.data.service.id}>
               <ProjectCard
                 {project}
+                badgeLabel={words.cardBadge}
                 eager={index === 0}
                 sizes="(min-width: 1280px) 393px, (min-width: 1024px) 31vw, (min-width: 640px) 46vw, 92vw"
               />
@@ -70,6 +79,40 @@ const filterOptions = services.map(({ id, data }) => ({
 </BaseLayout>
 
 <style>
+  :global(body:has(.portfolio-head)) { background: var(--color-portfolio-surface); }
+  .portfolio-head__inner, .projects-browser { padding-inline: var(--portfolio-gutter); }
+  .portfolio-head { position: relative; isolation: isolate; width: 100%; overflow: clip; background: var(--color-portfolio-surface); }
+  .portfolio-head__inner { padding: var(--portfolio-head-padding); padding-inline: var(--portfolio-gutter); }
+  .portfolio-head__art { display: none; }
+  .portfolio-head :global(.breadcrumbs) { position: relative; }
+  .portfolio-head :global(.breadcrumbs__link) { text-decoration: none; }
+  .portfolio-head :global(.breadcrumbs__current) { color: var(--color-accent-text); font-weight: var(--weight-strong); }
+  .portfolio-head :global(.breadcrumbs__item:not(:last-child)::after) { width: var(--portfolio-chevron-size); height: var(--portfolio-chevron-size); border-block-start: var(--line-thin) solid var(--color-ink); border-inline-end: var(--line-thin) solid var(--color-ink); rotate: 45deg; background: transparent; }
+  .portfolio-head__copy { position: relative; display: grid; gap: var(--space-xs); background: var(--color-portfolio-surface); }
+  .portfolio-head__eyebrow { font-size: var(--portfolio-eyebrow-size); font-weight: var(--weight-strong); letter-spacing: var(--home-eyebrow-tracking); text-transform: uppercase; }
+  .portfolio-head__eyebrow::before { content: ''; display: inline-block; width: var(--home-eyebrow-line); height: var(--line-strong); vertical-align: middle; margin-inline-end: var(--space-sm); background: var(--color-accent-text); }
+  h1 { font-family: var(--font-reference-display); font-size: var(--portfolio-heading-size); font-weight: var(--weight-body); letter-spacing: var(--home-heading-tracking); text-wrap: initial; }
+  h1 span { color: var(--color-accent-text); }
+  .page-head__lead { font-size: var(--text-base); line-height: var(--leading-lead); color: var(--color-muted); }
+  .projects-browser :global(.project-filter__options) { gap: var(--space-sm); }
+  .projects-browser :global(.project-filter__option) { flex: 1 1 var(--portfolio-filter-min); min-width: 0; padding-block: var(--portfolio-filter-hit-padding); }
+  .projects-browser :global(.project-filter__tile) { justify-content: center; min-height: var(--portfolio-filter-face-height); padding: var(--space-2xs) var(--space-md); border-radius: var(--portfolio-filter-radius); box-shadow: var(--shadow-trust-card); font-size: var(--portfolio-filter-size); font-weight: var(--weight-strong); }
+  .projects-browser :global(.project-filter__tile::before) { display: none; }
+  .projects-browser :global(.project-filter__icon) { color: var(--color-accent-text); }
+  .projects-browser :global(.project-filter__radio:checked + .project-filter__tile) { background: linear-gradient(115deg,var(--color-portfolio-gold-start),var(--color-portfolio-gold-end)); color: var(--color-portfolio-on-gold); border-color: var(--color-accent-text); text-decoration: underline; }
+  .projects-browser :global(.project-filter__radio:checked + .project-filter__tile .project-filter__icon) { color: currentColor; }
+  .projects-browser :global(.project-card__photo) { aspect-ratio: var(--portfolio-photo-ratio); border-radius: var(--portfolio-photo-radius); }
+  .projects-browser :global(.project-card__title) { font-family: var(--font-display); font-size: var(--portfolio-card-title); font-weight: var(--weight-display); }
+  .projects-browser :global(.project-card__city) { color: var(--color-accent-text); font-size: var(--text-sm); }
+  .projects-browser :global(.project-card__tile) { color: var(--color-muted); font-size: var(--text-sm); }
+  @media(min-width: 1100px) {
+    .projects-browser :global(.project-filter__options) { display: grid; grid-template-columns: var(--portfolio-filter-columns); }
+  }
+  @media(min-width: 900px) {
+    .portfolio-head__copy { width: var(--portfolio-copy-width); }
+    .portfolio-head__art { display: block; position: absolute; z-index: -1; inset-block: 0; inset-inline-end: 0; width: 100%; background-size: var(--portfolio-art-scale); background-repeat: no-repeat; background-position: right top; mask-image: var(--portfolio-art-mask); mask-composite: intersect; }
+  }
+
   .projects-browser {
     display: grid;
     gap: var(--space-xl);
@@ -78,7 +121,7 @@ const filterOptions = services.map(({ id, data }) => ({
 
   .projects-grid {
     display: grid;
-    gap: var(--space-xl) var(--grout);
+    gap: var(--space-xl) var(--space-sm);
     min-width: 0;
   }
 

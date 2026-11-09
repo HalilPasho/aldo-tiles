@@ -1,0 +1,7 @@
+---
+import ServicePage from '../../../components/ServicePage.astro';
+import services from '../../../data/additional-services.json';
+const id = "wall-tiling";
+const service = { id, data: services[id] };
+---
+<ServicePage {service} standalone />
