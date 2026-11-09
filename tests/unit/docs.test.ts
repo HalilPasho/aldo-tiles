@@ -70,7 +70,7 @@ function missingNames(markdown: string, docDir = '.') {
 }
 
 const DATA_FILES: Record<string, unknown> = Object.fromEntries(
-  ['src/data/copy.json', 'src/data/business.json'].map((file) => [file, JSON.parse(read(file))]),
+  ['src/data/copy.json', 'src/data/business.json', 'src/data/site-settings.json'].map((file) => [file, JSON.parse(read(file))]),
 );
 const COPY_FILE = 'src/data/copy.json';
 

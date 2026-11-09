@@ -2,7 +2,7 @@
   "launchReady": false,
   "name": "EM Tile",
   "baseCity": "Mississauga", "province": "ON", "country": "CA",
-  "siteUrl": { "value": "https://aldotile.example", "sample": true },
+  "siteUrl": { "value": "https://em-tile.pages.dev", "sample": false },
   "phone": { "display": "+905 904 5116", "e164": "+9059045116", "sample": false },
   "email": { "value": "meco.erald90@gmail.com", "sample": false },
   "areasServed": { "value": ["Mississauga", "Brampton", "Oakville", "Etobicoke"], "sample": true },

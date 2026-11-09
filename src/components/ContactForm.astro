@@ -1,5 +1,7 @@
 ---
 import copy from '../data/copy.json';
+import business from '../data/business.json';
+import settings from '../data/site-settings.json';
 import Button from './Button.astro';
 
 interface Props {
@@ -11,6 +13,9 @@ interface Props {
 const { services, showIntro = true, showSubmitIcon = false } = Astro.props;
 const { form } = copy.contact;
 const { privacyPath } = copy.site.footer;
+const usesFormSubmit = settings.formProvider === 'formsubmit';
+const action = usesFormSubmit ? `https://formsubmit.co/${business.email.value}` : '/thank-you/';
+const nextUrl = new URL('/thank-you/', business.siteUrl.value).href;
 ---
 
 <div class="contact-form">
@@ -19,12 +24,21 @@ const { privacyPath } = copy.site.footer;
     <p class="contact-form__note">{form.requiredNote}</p>
   </div>}
 
-  <form name="contact" method="POST" action="/thank-you/" data-netlify="true" netlify-honeypot="bot-field">
+  <form name="contact" method="POST" action={action} data-netlify="true" netlify-honeypot="bot-field">
     <input type="hidden" name="subject" value={form.subject} />
+    {usesFormSubmit && <>
+      <input type="hidden" name="_subject" value={form.subject} />
+      <input type="hidden" name="_next" value={nextUrl} />
+      <input type="hidden" name="_template" value="table" />
+    </>}
 
     <p class="contact-form__trap">
       <label for="contact-bot-field">{form.honeypot}</label>
       <input id="contact-bot-field" type="text" name="bot-field" tabindex="-1" autocomplete="off" />
+      {usesFormSubmit && <>
+        <label for="contact-provider-honey">{form.honeypot}</label>
+        <input id="contact-provider-honey" type="text" name="_honey" tabindex="-1" autocomplete="off" />
+      </>}
     </p>
 
     <div class="field">

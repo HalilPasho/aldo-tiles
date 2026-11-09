@@ -1,5 +1,5 @@
 import { readdir, readFile } from 'node:fs/promises';
-import { join, relative, sep } from 'node:path';
+import { dirname, join, relative, sep } from 'node:path';
 import { load } from 'cheerio';
 
 export const REQUIRED_ROUTES = [
@@ -125,8 +125,11 @@ function checkRobots($, route, launchReady) {
   return [];
 }
 
-function checkPreviewBanner($, route, launchReady, previewBanner) {
+function checkPreviewBanner($, route, launchReady, previewBanner, showPreviewBanner = true) {
   if (launchReady) return [];
+  if (!showPreviewBanner) {
+    return $('.preview-banner').length ? [`Page ${route} still shows the preview banner although site-settings.json disables it.`] : [];
+  }
   // Without the wording, every page would contain the empty text and the check would quietly pass.
   if (!previewBanner?.trim()) {
     throw new Error(`The audit needs the preview banner's wording, site.previewBanner in ${COPY_FILE}, to check the pages before launch.`);
@@ -217,12 +220,12 @@ function checkContact($, route, phoneE164) {
     .map((number) => `Page ${route} has a tap-to-call link to ${number}, but the business number is ${phoneE164}. Use the phone from src/data/business.json.`);
 }
 
-export function auditPage(html, route, { launchReady, siteUrl, phoneE164, previewBanner }) {
+export function auditPage(html, route, { launchReady, siteUrl, phoneE164, previewBanner, showPreviewBanner = true }) {
   const $ = load(html);
   return [
     ...checkBasics($, route, siteUrl),
     ...checkRobots($, route, launchReady),
-    ...checkPreviewBanner($, route, launchReady, previewBanner),
+    ...checkPreviewBanner($, route, launchReady, previewBanner, showPreviewBanner),
     ...checkStructuredData($, route),
     ...checkImages($, route),
     ...checkContact($, route, phoneE164),
@@ -236,7 +239,7 @@ function formProblem(lost, consequence) {
   };
 }
 
-export function auditForm(html) {
+export function auditForm(html, delivery = {}) {
   const $ = load(html);
   const named = $('form[name="contact"]');
   const form = named.length > 0 ? named.first() : $('form').first();
@@ -248,16 +251,31 @@ export function auditForm(html) {
   }
 
   const problems = named.length > 0 ? [] : [formProblem('name="contact"', "messages won't be delivered")];
-  for (const [attribute, value, consequence] of FORM_ATTRIBUTES) {
+  const provider = delivery.provider ?? 'netlify';
+  if (!['netlify', 'formsubmit'].includes(provider)) return [{ where: '/contact/', message: 'The form delivery provider is not supported.' }];
+  if (provider === 'formsubmit' && (!delivery.recipientEmail || !delivery.siteUrl)) return [{ where: '/contact/', message: 'FormSubmit needs the business email and website address to deliver messages and return visitors.' }];
+  const attributes = provider === 'formsubmit' ? [
+    ['method', 'POST', "the browser won't send the message correctly"],
+    ['action', `https://formsubmit.co/${delivery.recipientEmail}`, "messages won't reach the business email"],
+  ] : FORM_ATTRIBUTES;
+  for (const [attribute, value, consequence] of attributes) {
     const actual = form.attr(attribute);
     const matches = attribute === 'method' ? actual?.toUpperCase() === value : actual === value;
     if (!matches) problems.push(formProblem(`${attribute}="${value}"`, consequence));
   }
   const fields = new Set(form.find('input, select, textarea').map((_, field) => $(field).attr('name')).get());
-  for (const field of FORM_FIELDS) {
+  const requiredFields = provider === 'formsubmit' ? [...FORM_FIELDS, '_subject', '_next', '_honey'] : FORM_FIELDS;
+  for (const field of requiredFields) {
     if (!fields.has(field)) {
       problems.push(formProblem(`its "${field}" field`, FORM_FIELD_CONSEQUENCES[field] ?? "that detail won't reach the business"));
     }
+  }
+  if (provider === 'formsubmit') {
+    const expectedNext = new URL('/thank-you/', delivery.siteUrl).href;
+    if (fields.has('_next') && form.find('[name="_next"]').attr('value') !== expectedNext) problems.push(formProblem('its correct "_next" return address', "people won't return to the site's thank-you page"));
+    const subject = form.find('[name="subject"]').attr('value');
+    if (fields.has('_subject') && (!subject || form.find('[name="_subject"]').attr('value') !== subject)) problems.push(formProblem('its matching "_subject" value', 'email notifications will have the wrong subject'));
+    if (fields.has('_honey') && (form.find('[name="_honey"]').attr('type') !== 'text' || form.find('[name="_honey"]').attr('tabindex') !== '-1')) problems.push(formProblem('its protected "_honey" spam trap', 'spam protection or keyboard navigation may fail'));
   }
   return problems;
 }
@@ -439,6 +457,7 @@ async function readBusiness(businessPath) {
     launchReady: Boolean(business.launchReady),
     siteUrl: business.siteUrl.value,
     phoneE164: business.phone.e164,
+    recipientEmail: business.email?.value,
   };
 }
 
@@ -447,7 +466,7 @@ async function readCopy(copyPath) {
   return JSON.parse(text.replace(/^\uFEFF/, ''));
 }
 
-export async function auditSite(distDir, businessPath, copyPath) {
+export async function auditSite(distDir, businessPath, copyPath, settingsPath = join(dirname(businessPath), 'site-settings.json')) {
   let options;
   try {
     options = await readBusiness(businessPath);
@@ -460,6 +479,16 @@ export async function auditSite(distDir, businessPath, copyPath) {
   } catch {
     return [{ where: copyPath, message: `${copyPath} has a mistake or is missing, so the site could not be checked. Fix the file and run the check again.` }];
   }
+  let settings = {};
+  try {
+    settings = JSON.parse(await readFile(settingsPath, 'utf8'));
+  } catch (error) {
+    if (error.code !== 'ENOENT') return [{ where: settingsPath, message: 'Site settings cannot be read. Fix the configuration before publishing.' }];
+  }
+  if (settings.showPreviewBanner !== undefined && typeof settings.showPreviewBanner !== 'boolean') return [{ where: settingsPath, message: 'showPreviewBanner must be true or false.' }];
+  if (settings.formProvider !== undefined && !['netlify', 'formsubmit'].includes(settings.formProvider)) return [{ where: settingsPath, message: 'Choose a supported form delivery provider.' }];
+  options.showPreviewBanner = settings.showPreviewBanner !== false;
+  options.formProvider = settings.formProvider ?? 'netlify';
   options.previewBanner = copy.site?.previewBanner;
   if (!options.launchReady && !(typeof options.previewBanner === 'string' && options.previewBanner.trim())) {
     return [{ where: copyPath, message: `${copyPath} has no site.previewBanner, the wording of the "Preview: sample content" banner, so the pages could not be checked for it. Put the wording back under site.previewBanner.` }];
@@ -482,7 +511,7 @@ export async function auditSite(distDir, businessPath, copyPath) {
     ...checkRoutes(routes),
     ...(await checkSitemap(distDir, files, options.siteUrl)),
     ...[...htmlByRoute].flatMap(([route, html]) => auditPage(html, route, options)),
-    ...(htmlByRoute.has('/contact/') ? auditForm(htmlByRoute.get('/contact/')) : []),
+    ...(htmlByRoute.has('/contact/') ? auditForm(htmlByRoute.get('/contact/'), { provider: options.formProvider, recipientEmail: options.recipientEmail, siteUrl: options.siteUrl }) : []),
     ...checkDuplicates(pages, 'title', ($) => $('head > title').first().text().trim()),
     ...checkDuplicates(pages, 'description', ($) => metaContent($, 'meta[name="description"]')),
     ...checkLinks(pages, files, options.siteUrl),

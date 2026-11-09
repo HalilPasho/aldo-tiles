@@ -1,14 +1,16 @@
 # Aldo Tile website
 
-The website of Aldo Tile, a tile installer in Mississauga, Ontario. A small static site built with Astro and plain CSS, hosted on Netlify, with a Netlify Forms contact form. It works with JavaScript off.
+The website of Aldo Tile, a tile installer in Mississauga, Ontario. A small static site built with Astro and plain CSS, hosted on Cloudflare Pages, with a FormSubmit contact form. It works with JavaScript off.
 
-It starts with sample content. While `launchReady` in `src/data/business.json` is `false`, every page is `noindex` and shows a "Preview: sample content" banner. The design is meant to be reworked through Codex, OpenAI's coding agent.
+It starts with sample content. While `launchReady` in `src/data/business.json` is `false`, every page is `noindex`. The owner-controlled preview banner is currently hidden. The design is meant to be reworked through Codex, OpenAI's coding agent.
 
 - [START-HERE.md](START-HERE.md): plain-language guide for changing the site through Codex.
 - [AGENTS.md](AGENTS.md): the rules Codex follows.
 - [docs/owner-setup.md](docs/owner-setup.md): GitHub, Netlify and Windows setup.
 - [docs/launch-checklist.md](docs/launch-checklist.md): from samples to the live site.
 - [design-system/aldo-tile/MASTER.md](design-system/aldo-tile/MASTER.md): the design record.
+
+See [Cloudflare setup and form activation](docs/cloudflare.md) for the current hosting workflow. Older Netlify instructions remain for legacy compatibility.
 
 ## Where things are
 
@@ -17,7 +19,7 @@ It starts with sample content. While `launchReady` in `src/data/business.json` i
 - `src/data/copy.json`: page wording.
 - `src/content/`: services, projects (one folder each, with photos) and reviews.
 - `src/components/seo/Seo.astro` and `src/lib/seo.ts`: titles, robots, canonical and structured data.
-- `src/components/ContactForm.astro`: the Netlify form.
+- `src/components/ContactForm.astro`: the shared form; delivery and preview visibility are configured in `src/data/site-settings.json`.
 - `scripts/`: the check, audit, launch check, launch guard and launch rehearsal.
 
 ## Commands

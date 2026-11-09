@@ -1,9 +1,12 @@
 import { readFileSync } from 'node:fs';
 import { expect, test, type Locator, type Page } from '@playwright/test';
 import { services } from './site';
+const business = JSON.parse(readFileSync('src/data/business.json', 'utf8'));
+const settings = JSON.parse(readFileSync('src/data/site-settings.json', 'utf8'));
+const formAction = settings.formProvider === 'formsubmit' ? `https://formsubmit.co/${business.email.value}` : '/thank-you/';
 
 const FIELD_ORDER = ['name', 'phone', 'email', 'city', 'projectType', 'service', 'message'];
-const VISIBLE_FIELDS = 'input:not([type="hidden"]):not([name="bot-field"]), select, textarea';
+const VISIBLE_FIELDS = 'input:not([type="hidden"]):not([name="bot-field"]):not([name="_honey"]), select, textarea';
 
 const { form: formCopy } = JSON.parse(readFileSync('src/data/copy.json', 'utf8')).contact;
 
@@ -134,11 +137,47 @@ test.describe('contact form with JavaScript off', () => {
     await page.goto('/contact/');
     const form = contactForm(page);
 
-    await expect(form).toHaveAttribute('action', '/thank-you/');
+    await expect(form).toHaveAttribute('action', formAction);
     await expect(form).toHaveAttribute('method', 'POST');
     for (const name of FIELD_ORDER) {
       await expect(field(form, name)).toBeVisible();
     }
     await expect(form.locator('button[type="submit"]')).toBeVisible();
+  });
+});
+
+
+test.describe('Cloudflare form delivery', () => {
+  test.use({ javaScriptEnabled: false });
+  for (const path of ['/', '/contact/']) test(`posts ${path} to the configured recipient and returns only after provider acceptance`, async ({page, baseURL}) => {
+    test.skip(settings.formProvider !== 'formsubmit', 'FormSubmit transport only');
+    let sent: URLSearchParams | undefined;
+    await page.route(formAction, async route => {
+      sent = new URLSearchParams(route.request().postData() ?? '');
+      await route.fulfill({ status: 303, headers: { location: new URL('/thank-you/', baseURL).href } });
+    });
+    await page.goto(path);
+    const form = contactForm(page);
+    await fillRequiredFields(form);
+    await form.locator('button[type="submit"]').click();
+    await expect(page).toHaveURL(/\/thank-you\/$/);
+    expect(sent).toBeDefined();
+    expect(sent!.get('name')).toBe('Sam Example');
+    expect(sent!.get('phone')).toBe('647 555 0100');
+    expect(sent!.get('message')).toBe('A small bathroom floor, about 40 square feet.');
+    expect(sent!.get('_subject')).toBe(formCopy.subject);
+    expect(sent!.get('_next')).toBe(new URL('/thank-you/', business.siteUrl.value).href);
+    expect(sent!.get('_honey')).toBe('');
+    expect(sent!.get('email')).toBe('');
+    for (const name of FIELD_ORDER) expect(sent!.has(name)).toBe(true);
+  });
+  test('does not display the site success page when the provider rejects the submission', async ({page}) => {
+    test.skip(settings.formProvider !== 'formsubmit', 'FormSubmit transport only');
+    await page.route(formAction, route => route.fulfill({ status: 503, contentType: 'text/html', body: '<h1>Submission unavailable</h1>' }));
+    await page.goto('/contact/');
+    await fillRequiredFields(contactForm(page));
+    await contactForm(page).locator('button[type="submit"]').click();
+    await expect(page).not.toHaveURL(/\/thank-you\/$/);
+    await expect(page.getByRole('heading', {name:'Submission unavailable'})).toBeVisible();
   });
 });

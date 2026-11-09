@@ -143,6 +143,10 @@ function currentState(path: string) {
     display: none;
   }
 
+  @media (max-width: 760px) {
+    .site-header__call--compact { display: none; }
+  }
+
   @media (max-width: 389.98px) {
     .site-header__logo {
       width: var(--logo-width-small);

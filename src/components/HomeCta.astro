@@ -44,6 +44,12 @@ const { content: words = copy.home.cta, compactTypography = false } = Astro.prop
   .home-cta__actions :global(.button--secondary:hover) svg { stroke: currentColor; }
   .home-cta__photo { position: relative; height: var(--home-cta-photo-height); background: linear-gradient(115deg,var(--color-gold-button-start),var(--color-gold-button-end)); padding-block-start: var(--line-strong); }
   .home-cta__photo img { width: 100%; height: 100%; object-fit: cover; }
+  @media (max-width: 760px) {
+    .home-cta__actions { flex-wrap: nowrap; gap: var(--space-xs); align-items: stretch; }
+    .home-cta__actions :global(.button) { flex: 1 1 0; min-width: 0; padding-inline: var(--space-2xs); gap: var(--space-2xs); font-size: var(--home-button-size); }
+    .home-cta__actions :global(svg) { width: var(--text-base); height: var(--text-base); flex: none; }
+    .home-cta__actions :global(.call-number) { min-width: 0; }
+  }
   @media (min-width: 1000px) {
     .home-cta__inner { min-height: var(--home-cta-min-height); }
     .home-cta__copy { width: 48%; max-width: var(--home-cta-copy-width); }

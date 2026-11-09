@@ -34,6 +34,10 @@ const { hero } = copy.home;
   .hero__actions :global(.button) { font-size: var(--home-button-size); }
   .hero__media { position: relative; aspect-ratio: var(--hero-photo-ratio); }
   .hero__media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  @media (max-width: 760px) {
+    .hero__actions { width: 100%; flex-wrap: nowrap; gap: var(--space-xs); align-items: stretch; }
+    .hero__actions :global(.button) { min-width: 0; padding-inline: var(--space-xs); flex: 1 1 0; }
+  }
   @media (min-width: 761px) {
     .hero { min-height: var(--home-hero-min-height); }
     .hero__copy { width: var(--home-hero-copy-width); padding: var(--home-hero-desktop-padding); }

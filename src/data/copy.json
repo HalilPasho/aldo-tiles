@@ -272,11 +272,16 @@
   "thankYou": {
     "metaTitle": "Message Sent | EM Tile",
     "metaDescription": "Your message has been sent to EM Tile. We'll read it and reply about your tile project using the details you shared with us.",
-    "h1": "Thanks, Your Message Is on Its Way",
+    "h1": "Thanks, Your Message Is on Its Way!",
     "text": "We'll read it and get back to you about your project using the details you gave us.",
     "callPrompt": "Need to talk sooner? Give us a call.",
     "homeLabel": "Back to the home page",
-    "projectsLabel": "Look through our projects"
+    "projectsLabel": "Look through our projects",
+    "imageAlt": "Design illustration of a beige tiled shower with gold fixtures and an illuminated niche",
+    "titleLines": [
+      "Thanks, Your Message",
+      "Is on Its Way!"
+    ]
   },
   "notFound": {
     "metaTitle": "Page Not Found | EM Tile",
@@ -341,8 +346,8 @@
       {
         "heading": "Where it goes",
         "paragraphs": [
-          "Your message is stored by Netlify, the company that hosts this website and runs the form, and it's emailed to EM Tile.",
-          "Netlify may also record technical details, such as your IP address and browser information, to manage spam."
+          "Your message is sent through FormSubmit and emailed to EM Tile. This website is hosted on Cloudflare Pages.",
+          "FormSubmit may ask you to complete a spam check before it accepts your message."
         ]
       },
       {
